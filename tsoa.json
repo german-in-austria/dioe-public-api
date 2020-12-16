@@ -1,0 +1,20 @@
+{
+  "entryFile": "src/server.ts",
+  "spec": {
+    "outputDirectory": "./dist",
+    "specVersion": 3,
+    "securityDefinitions": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "X-API-Key",
+        "in": "header"
+      }
+    }
+  },
+  "routes": {
+    "basePath": "/api",
+    "entryFile": "./src/server.ts",
+    "routesDir": "./src",
+    "authenticationModule": "./src/authentication.ts"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "transforms": [
+    {
+      "mode": "ts",
+      "include": "*.ts",
+      "emitTemplate": "{{dir}}/{{name}}.queries.ts"
+    }
+  ],
+  "srcDir": "./src/",
+  "camelCaseColumnNames": true,
+  "db": {
+    "port": 54320,
+    "host": "dioe.at",
+    "user": "dioeuser",
+    "dbName": "dioedb",
+    "password": "deutschinoesterreich"
+  }
+}
