@@ -16,6 +16,7 @@ export interface ISelectTagsResult {
   tagEbeneName: string;
   tagEbeneId: number;
   childIds: numberArray | null;
+  parentIds: numberArray | null;
 }
 
 /** 'SelectTags' query type */
