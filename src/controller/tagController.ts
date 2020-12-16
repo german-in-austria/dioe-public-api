@@ -18,11 +18,12 @@ export class TagController extends Controller {
   public async getTags(): Promise<ISelectTagsResult[]> {
     return tagService.getTagTree()
   }
-  @Get('{param}')
+  // demonstration of API
+  @Get('/{something}')
   public async getControllerDemo(
     @Body() body: any,
     @Query('query_param') query: string,
-    @Path('param') param: string
+    @Path('something') param: string
   ): Promise<{test: 'ok', data: any}> {
     return {
       test: 'ok',

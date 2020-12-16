@@ -31,6 +31,7 @@ const tagDao = {
           WHERE "id_ChildTag_id" = t.id
         ) as parent_ids
       FROM "KorpusDB_tbl_tags" t
+      -- get all the adjunct data
       LEFT JOIN "KorpusDB_tbl_phaenomene" p
         ON t."zu_Phaenomen_id" = p.id
       LEFT JOIN "KorpusDB_tbl_tagebenezutag" tet
