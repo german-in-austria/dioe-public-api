@@ -1,7 +1,8 @@
 import { TaggedQuery } from '@pgtyped/query'
-import { Pool, types } from 'pg'
+import pg, { Pool, types } from 'pg'
 import { db } from '../../../pgconfig.json'
-
+import pgCamelCase from 'pg-camelcase'
+pgCamelCase.inject(pg)
 // set type parser for numeric types since pg connect would parse numeric (float) as string
 types.setTypeParser(1700, 'text', parseFloat)
 
