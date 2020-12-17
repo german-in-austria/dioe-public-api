@@ -1,3 +1,5 @@
+///<reference path="external.d.ts" />
+
 process.title = 'dioe-public-api'
 
 import fs from 'fs'
