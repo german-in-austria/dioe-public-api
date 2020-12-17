@@ -10,16 +10,16 @@ import {
   SuccessResponse,
 } from 'tsoa'
 
-import tagService from '../service/tag'
+import tagService, { TagTree } from '../service/tag'
 
 @Route('tags')
 export class TagController extends Controller {
   @Get()
-  public async getTags(): Promise<ISelectTagsResult[]> {
+  public async getTags(): Promise<TagTree[]> {
     return tagService.getTagTree()
   }
-  // demonstration of API
-  @Get('/{something}')
+  // demonstration of tsoa API
+  @Post('/{something}')
   public async getControllerDemo(
     @Body() body: any,
     @Query('query_param') query: string,
