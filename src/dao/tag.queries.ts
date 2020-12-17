@@ -15,7 +15,7 @@ export interface ISelectTagsResult {
   phenomenName: string;
   tagEbeneName: string;
   tagEbeneId: number;
-  childIds: numberArray | null;
+  childrenIds: numberArray | null;
   parentIds: numberArray | null;
 }
 

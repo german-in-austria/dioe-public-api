@@ -18,13 +18,13 @@ const tagDao = {
         -- ebene
         te."Name" as tag_ebene_name,
         te.id as tag_ebene_id,
-        -- children as array
+        -- child ids as array or null
         (
           SELECT array_agg("id_ChildTag_id")
           FROM "KorpusDB_tbl_tagfamilie"
           WHERE "id_ParentTag_id" = t.id
-        ) as child_ids,
-        -- parents as array
+        ) as children_ids,
+        -- parent ids as array or null
         (
           SELECT array_agg("id_ParentTag_id")
           FROM "KorpusDB_tbl_tagfamilie"
@@ -40,7 +40,7 @@ const tagDao = {
         ON tet."id_TagEbene_id" = te.id
     `
     return await query(selectTags)
-  }
+  },
 }
 
 export default tagDao
