@@ -14,6 +14,7 @@ if (
   }
 }
 
+import './lib/log'
 import bodyParser from 'body-parser'
 import express from 'express'
 import methodOverride from 'method-override'
