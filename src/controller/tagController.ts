@@ -23,7 +23,7 @@ export class TagController extends Controller {
   public async getControllerDemo(
     @Body() body: any,
     @Query('query_param') query: string,
-    @Path('something') param: string
+    @Path('something') param?: string
   ): Promise<{test: 'ok', data: any}> {
     return {
       test: 'ok',

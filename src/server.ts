@@ -17,6 +17,7 @@ if (
 }
 
 import './lib/log'
+import errorHandler from './error/error-handler'
 import bodyParser from 'body-parser'
 import express from 'express'
 import methodOverride from 'method-override'
@@ -55,10 +56,9 @@ app.use(cookieSession({
 // different origins
 app.use(cors({
   credentials : true,
-  origin: [
-    'http://localhost:8080',
-    'https://localhost:8080',
-  ]
+  origin: process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.trim().split(',').map(t => t.trim())
+    : []
 }))
 
 // attach rawBody to request
@@ -77,6 +77,8 @@ app.use(basePath + '/swagger.json', async (_req, res) => {
 })
 
 RegisterRoutes(app)
+
+app.use(errorHandler)
 
 // start the server
 app.listen(process.env.NODE_PORT, () => {
