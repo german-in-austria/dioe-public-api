@@ -2,7 +2,7 @@
   "transforms": [
     {
       "mode": "ts",
-      "include": "*.ts",
+      "include": "**/dao/**.ts",
       "emitTemplate": "{{dir}}/{{name}}.queries.ts"
     }
   ],

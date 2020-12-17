@@ -17,15 +17,16 @@
     "alwaysStrict": true,
 
     /* Additional Checks */
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
 
     /* Module Resolution Options */
     "moduleResolution": "node",
     "baseUrl": ".",
     "esModuleInterop": true,
+    "resolveJsonModule": true,
 
     /* Experimental Options */
     "experimentalDecorators": true,
