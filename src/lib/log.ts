@@ -13,12 +13,11 @@ const clog = function(...args: any[]){
     Error.captureStackTrace(obj, clog)
     const lineNumber = obj.stack.split('\n')[1] // .match(/\(\/.{1,}\)/)
     log.apply(console, args.map( a => util.inspect(a, { depth: 4 })).concat('\n' + colors.dim(lineNumber)))
-  } else {
-    log.apply(console, args)
   }
 }
-
-console.log = clog
-console.error = clog
-console.info = clog
-console.warn = clog
+if (process.env.NODE_ENV === 'development') {
+  console.log = clog
+  console.error = clog
+  console.info = clog
+  console.warn = clog
+}

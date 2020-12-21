@@ -7,12 +7,5 @@
     }
   ],
   "srcDir": "./src/",
-  "camelCaseColumnNames": true,
-  "db": {
-    "port": 54320,
-    "host": "dioe.at",
-    "user": "dioeuser",
-    "dbName": "dioedb",
-    "password": "deutschinoesterreich"
-  }
+  "camelCaseColumnNames": true
 }

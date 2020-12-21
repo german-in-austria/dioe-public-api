@@ -8,8 +8,10 @@
     "tsoa:swagger": "tsoa swagger",
     "tsoa:routes": "tsoa routes",
     "tsoa:watch": "nodemon -e ts --watch src/ --ignore src/routes.ts --exec 'tsoa swagger && tsoa routes'",
-    "sql-types:watch": "npx pgtyped -w -c pgconfig.json",
-    "dev": "ts-node-dev ./src/server.ts & npm run sql-types:watch & npm run tsoa:watch"
+    "sql-types:watch": "export $(cat env-dev.env | xargs) && npx pgtyped -w -c pgconfig.json",
+    "dev": "ts-node-dev ./src/server.ts & npm run sql-types:watch & npm run tsoa:watch",
+    "build": "npx pgtyped -c pgconfig.json && npm run tsoa:routes && npm run tsoa:swagger",
+    "start": "ts-node ./src/server.ts"
   },
   "repository": {
     "type": "git",

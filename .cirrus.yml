@@ -1,0 +1,15 @@
+docker_builder: 
+  env: 
+    DOCKER_PASSWORD: ENCRYPTED[3ee344f0037b1dfa79e0e3672bca50b5c7447dabd0ec78f90470d590fd8448794bea2c5952f26100039eb1b46a2b1350]
+    DOCKER_USERNAME: ENCRYPTED[222fd639b669ce62bb9f36643cf01d789ba5bedbdef36c0a0b7cc45e379ad4ebce1c9e871850dbc60a65366a9ddd8b00]
+    PGHOST: ENCRYPTED[75638b77d51313303b7e603128a6598c6096d4d32b06d095e88a6a29c88cb21808d4dcc4744b6f12d8621850e56186b6]
+    PGUSER: ENCRYPTED[bb5309f2452c790998ad60df398f4e71a0875a5860030af24f3123189190cf61e4002d554f03ae0763ec19c86b20ea5f]
+    PGPASSWORD: ENCRYPTED[27d0c3f7e91f06609ba6e94d02e9afe2a5647b0f9be18f1af3e40c9589841aa2bf0d4d9c11dbfe0b5750b189cac78b8e]
+    PGDATABASE: ENCRYPTED[76c2c10f9f87ce265776cba251f43b38508300342108d45e0c6fb9af086d1e46b5ea7850c8013e2ffc9b24e7308abbc5]
+    PGPORT: ENCRYPTED[13d72952005d4e2510c8feef8832ea77f96f39db65c03d2fa5d2ce702c2e13a8e1456594beae11e68fd3f817068ecd43]
+  script:
+    - git submodule init
+    - git submodule update
+  build_script: "curl -i -X POST -H \"Content-Type: application/json\" -d '{\"text\": \"Starting build: dioe/dioe-public-api\\n in branch: '$CIRRUS_BRANCH' \\n details: https://cirrus-ci.com/task/'$CIRRUS_TASK_ID'\"}' https://mm.dioe.at/hooks/9xkct75bzpbn3cm1kiut3jx1ur && docker build --cache-from dioe/dioe-public-api --tag dioe/dioe-public-api ."
+  login_script: "docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD"
+  push_script: "test $CIRRUS_BRANCH == \"main\" && docker push dioe/dioe-public-api && curl -i -X POST -H \"Content-Type: application/json\" -d '{\"text\": \"Cirrus CI built and pushed dioe/dioe-public-api\\n details: https://cirrus-ci.com/task/'$CIRRUS_TASK_ID'\"}' https://mm.dioe.at/hooks/9xkct75bzpbn3cm1kiut3jx1ur\n"

@@ -23,4 +23,4 @@ RUN npm run build
 
 # START AND EXPOSE TO HOST-DAEMON
 EXPOSE 3000
-CMD ["node", "/usr/src/app/dist/server.js"]
+ENTRYPOINT ["/usr/local/bin/npm", "run"]

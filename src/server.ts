@@ -1,10 +1,13 @@
 ///<reference path="external.d.ts" />
 
 process.title = 'dioe-public-api'
+const defaultPort = 3000
 
 import fs from 'fs'
 import dotenv from 'dotenv'
 
+// this is to allow cross platform env vars in dev mode;
+// not used in production
 if (
   process.env.NODE_ENV !== 'production'
   && process.env.NODE_ENV !== 'staging'
@@ -27,9 +30,9 @@ import cors from 'cors'
 import cookieSession from 'cookie-session'
 import _ from 'lodash'
 
+// import all controllers here
 import './controller/tagController'
 
-declare function require(path: string): any
 const tsoaConfig = require('./../tsoa.json')
 
 // allow unhandled rejections
@@ -45,7 +48,6 @@ const app = express()
 app.use(compression())
 
 // file upload
-
 app.use(cookieSession({
   keys : [ 'happiness is a virtue, not a reward, and my horse is in a stable. Its colour is black. Maybe white. We dont really know' ],
   maxAge : 1000 * 60 * 60 * 24 * 60, // 60 days.
@@ -71,7 +73,7 @@ app.use(methodOverride())
 
 const basePath = tsoaConfig.routes.basePath
 
-// Swagger Spec JSON
+// serve the Swagger spec JSON
 app.use(basePath + '/swagger.json', async (_req, res) => {
   res.sendFile(`${ __dirname }/swagger.json`)
 })
@@ -81,8 +83,8 @@ RegisterRoutes(app)
 app.use(errorHandler)
 
 // start the server
-app.listen(process.env.NODE_PORT, () => {
-  console.log(`Started server on port ${process.env.NODE_PORT}`)
+app.listen(process.env.NODE_PORT || defaultPort, () => {
+  console.log(`Started server on port ${process.env.NODE_PORT || defaultPort}`)
 })
 
 
