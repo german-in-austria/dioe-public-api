@@ -8,6 +8,7 @@ docker_builder:
     PGDATABASE: ENCRYPTED[76c2c10f9f87ce265776cba251f43b38508300342108d45e0c6fb9af086d1e46b5ea7850c8013e2ffc9b24e7308abbc5]
     PGPORT: ENCRYPTED[13d72952005d4e2510c8feef8832ea77f96f39db65c03d2fa5d2ce702c2e13a8e1456594beae11e68fd3f817068ecd43]
   script:
+    - printenv
     - git submodule init
     - git submodule update
   build_script: "curl -i -X POST -H \"Content-Type: application/json\" -d '{\"text\": \"Starting build: dioe/dioe-public-api\\n in branch: '$CIRRUS_BRANCH' \\n details: https://cirrus-ci.com/task/'$CIRRUS_TASK_ID'\"}' https://mm.dioe.at/hooks/9xkct75bzpbn3cm1kiut3jx1ur && docker build --cache-from dioe/dioe-public-api --tag dioe/dioe-public-api ."
