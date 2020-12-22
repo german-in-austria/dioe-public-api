@@ -21,7 +21,8 @@ docker_builder:
       --build-arg PGPASSWORD=$PGPASSWORD \
       --build-arg PGDATABASE=$PGDATABASE \
       --build-arg PGPORT=$PGPORT
-  login_script: docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+  login_script: >
+    docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
   push_script: >
     test $CIRRUS_BRANCH == "main"
     && docker push dioe/dioe-public-api
