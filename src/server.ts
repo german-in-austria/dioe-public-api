@@ -74,8 +74,8 @@ app.use(methodOverride())
 const basePath = tsoaConfig.routes.basePath
 
 // serve the Swagger spec JSON
-app.use(basePath + '/swagger.json', async (_req, res) => {
-  res.sendFile(`${ __dirname }/swagger.json`)
+app.use(basePath + '/docs/swagger.json', async (_req, res) => {
+  res.sendFile(`${ __dirname }/docs/swagger.json`)
 })
 
 RegisterRoutes(app)

@@ -1,4 +1,3 @@
-import { ISelectTagsResult } from 'src/dao/tag.queries'
 import {
   Body,
   Controller,
@@ -7,7 +6,6 @@ import {
   Post,
   Query,
   Route,
-  SuccessResponse,
 } from 'tsoa'
 
 import tagService, { TagTree } from '../service/tag'
@@ -18,7 +16,11 @@ export class TagController extends Controller {
   public async getTags(): Promise<TagTree[]> {
     return tagService.getTagTree()
   }
-  // demonstration of tsoa API
+}
+
+// demonstration of TSOA API
+@Route('test')
+export class TestController extends Controller {
   @Post('/{something}')
   public async getControllerDemo(
     @Body() body: any,

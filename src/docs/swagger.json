@@ -1,0 +1,199 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"TagTree": {
+				"properties": {
+					"tagId": {
+						"type": "number",
+						"format": "double"
+					},
+					"tagAbbrev": {
+						"type": "string"
+					},
+					"tagName": {
+						"type": "string",
+						"nullable": true
+					},
+					"tagComment": {
+						"type": "string",
+						"nullable": true
+					},
+					"tagOrder": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"phenomenId": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"phenomenName": {
+						"type": "string"
+					},
+					"tagEbeneName": {
+						"type": "string"
+					},
+					"tagEbeneId": {
+						"type": "number",
+						"format": "double"
+					},
+					"childrenIds": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/numberArray"
+							}
+						],
+						"nullable": true
+					},
+					"parentIds": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/numberArray"
+							}
+						],
+						"nullable": true
+					},
+					"children": {
+						"items": {
+							"$ref": "#/components/schemas/TagTree"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"tagId",
+					"tagAbbrev",
+					"tagName",
+					"tagComment",
+					"tagOrder",
+					"phenomenId",
+					"phenomenName",
+					"tagEbeneName",
+					"tagEbeneId",
+					"childrenIds",
+					"parentIds",
+					"children"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"numberArray": {
+				"items": {
+					"type": "number",
+					"format": "double"
+				},
+				"type": "array",
+				"description": "Types generated for queries found in \"src/dao/tag.ts\""
+			}
+		},
+		"securitySchemes": {
+			"api_key": {
+				"type": "apiKey",
+				"name": "X-API-Key",
+				"in": "header"
+			}
+		}
+	},
+	"info": {
+		"title": "dioe-public-api",
+		"version": "1.0.0",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/tags": {
+			"get": {
+				"operationId": "GetTags",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/TagTree"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/test/{something}": {
+			"post": {
+				"operationId": "GetControllerDemo",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {},
+										"test": {
+											"type": "string",
+											"enum": [
+												"ok"
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"data",
+										"test"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "query_param",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "path",
+						"name": "something",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {}
+						}
+					}
+				}
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

@@ -4,6 +4,8 @@
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, HttpStatusCodeLiteral, TsoaResponse } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { TagController } from './controller/tagController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { TestController } from './controller/tagController';
 import { expressAuthentication } from './authentication';
 import * as express from 'express';
 
@@ -65,7 +67,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/api/tags/:something',
+        app.post('/api/test/:something',
             function (request: any, response: any, next: any) {
             const args = {
                     body: {"in":"body","name":"body","required":true,"dataType":"any"},
@@ -82,7 +84,7 @@ export function RegisterRoutes(app: express.Router) {
                 return next(err);
             }
 
-            const controller = new TagController();
+            const controller = new TestController();
 
 
             const promise = controller.getControllerDemo.apply(controller, validatedArgs as any);
