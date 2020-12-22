@@ -12,9 +12,9 @@ This project uses a three-tiered layer-cake architecture:
 
 ## Basics
 
-- Controllers should not call DAOs directly and contain no significant business logic.
+- Controllers should not call DAOs directly and contain no significant business logic. New Controllers must be imported in `./src/server.ts` to get registered.
 - Services only deal with business logic, not with the transport protocol or the persistence layer.
-- DAOs and Services can call each other to combine data, if necessary.
+- DAOs and Services can call each other within their respective layers to combine data, if necessary.
 - All methods must have type signatures, especially in controllers. Requests should usually not take longer than 250 ms.
 - Object properties coming from Postgres are automatically converted to `camelCase`, I. e. `SELECT id as user_id from users` will result in `[{userId: 1}, …]`. This is accounted for in the generated types.
 
