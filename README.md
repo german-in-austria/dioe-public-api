@@ -22,4 +22,9 @@ This project uses a three-tiered layer-cake architecture:
 
 - This project uses TSOA for routing and generating the OpenAPI Spec (see http://github.com/lukeautry/tsoa).
 - Queries are performed and type checked via pg-typed (see https://pgtyped.now.sh)
+- use `npm run dev` to start the development environment
 - For maximum comfort and safety when writing queries, use with VSCode plugin "SQL tagged template literals" (`frigus02.vscode-sql-tagged-template-literals`).
+
+## Build and Deploy
+
+Run `./docker-build-and-push.sh`. You might have to make the script it executable using `chmod 775 docker-build-and-push.sh`. Remote CI is WIP.
