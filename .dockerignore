@@ -1,9 +1,11 @@
 .git
 Dockerfile
 .DS_Store
+.vscode/*
 .gitignore
 .gitlab-ci.yml
 env-dev.env
+*.env
 node_modules/*
 dist/*
 .idea

@@ -11,6 +11,19 @@ docker_builder:
     - printenv
     - git submodule init
     - git submodule update
-  build_script: "curl -i -X POST -H \"Content-Type: application/json\" -d '{\"text\": \"Starting build: dioe/dioe-public-api\\n in branch: '$CIRRUS_BRANCH' \\n details: https://cirrus-ci.com/task/'$CIRRUS_TASK_ID'\"}' https://mm.dioe.at/hooks/9xkct75bzpbn3cm1kiut3jx1ur && docker build --cache-from dioe/dioe-public-api --tag dioe/dioe-public-api ."
-  login_script: "docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD"
-  push_script: "test $CIRRUS_BRANCH == \"main\" && docker push dioe/dioe-public-api && curl -i -X POST -H \"Content-Type: application/json\" -d '{\"text\": \"Cirrus CI built and pushed dioe/dioe-public-api\\n details: https://cirrus-ci.com/task/'$CIRRUS_TASK_ID'\"}' https://mm.dioe.at/hooks/9xkct75bzpbn3cm1kiut3jx1ur\n"
+  build_script: >
+    curl -i -X POST -H "Content-Type: application/json" -d '{"text": "Starting build: dioe/dioe-public-api\n in branch: '$CIRRUS_BRANCH' \n details: https://cirrus-ci.com/task/'$CIRRUS_TASK_ID'"}' https://mm.dioe.at/hooks/9xkct75bzpbn3cm1kiut3jx1ur
+    && docker build
+      --b
+      --cache-from dioe/dioe-public-api
+      --build-arg PGHOST=$PGHOST
+      --build-arg PGUSER=$PGUSER
+      --build-arg PGPASSWORD=$PGPASSWORD
+      --build-arg PGDATABASE=$PGDATABASE
+      --build-arg PGPORT=$PGPORT
+      --tag dioe/dioe-public-api .
+  login_script: docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+  push_script: >
+    test $CIRRUS_BRANCH == "main"
+    && docker push dioe/dioe-public-api
+    && curl -i -X POST -H "Content-Type: application/json" -d '{"text": "Cirrus CI built and pushed dioe/dioe-public-api\n details: https://cirrus-ci.com/task/'$CIRRUS_TASK_ID'"}' https://mm.dioe.at/hooks/9xkct75bzpbn3cm1kiut3jx1ur
