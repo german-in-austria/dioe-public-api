@@ -4,6 +4,11 @@
       "mode": "ts",
       "include": "**/dao/**.ts",
       "emitTemplate": "{{dir}}/{{name}}.queries.ts"
+    },
+    {
+      "mode": "ts",
+      "include": "**/scripts/**.ts",
+      "emitTemplate": "{{dir}}/{{name}}.queries.ts"
     }
   ],
   "srcDir": "./src/",

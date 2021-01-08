@@ -11,7 +11,8 @@
     "sql-types:watch": "export $(cat env-dev.env | xargs) && npx pgtyped -w -c pgconfig.json",
     "dev": "ts-node-dev ./src/server.ts & npm run sql-types:watch & npm run tsoa:watch",
     "build": "npx pgtyped -c pgconfig.json && npm run tsoa:routes && npm run tsoa:swagger",
-    "start": "ts-node ./src/server.ts"
+    "start": "ts-node ./src/server.ts",
+    "script:tag-sentence": "export $(cat env-dev.env | xargs) && ts-node ./src/scripts/tag-pos-spacy.ts"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,7 @@
     "express": "^4.17.1",
     "lodash": "^4.17.20",
     "method-override": "^3.0.0",
+    "node-fetch": "^2.6.1",
     "pg": "^8.5.1",
     "pg-camelcase": "0.0.3",
     "ts-node": "^9.1.1",
@@ -50,6 +52,7 @@
     "@types/express": "^4.17.9",
     "@types/lodash": "^4.14.165",
     "@types/method-override": "0.0.31",
+    "@types/node-fetch": "^2.5.7",
     "@types/pg": "^7.14.7",
     "nodemon": "^2.0.6"
   }

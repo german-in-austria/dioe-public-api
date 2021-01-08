@@ -6,7 +6,7 @@ export interface TagTree extends ISelectTagsResult {
   children: TagTree[]
 }
 
-const tagService = {
+export default {
 
   async getTagList(): Promise<ISelectTagsResult[]> {
     return tagDao.getTagTree()
@@ -33,7 +33,5 @@ const tagService = {
       }
     })
   }
-
 }
 
-export default tagService
