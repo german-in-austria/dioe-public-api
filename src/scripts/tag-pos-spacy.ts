@@ -8,6 +8,7 @@ import fetch from 'node-fetch'
 import _ from 'lodash'
 
 process.title = 'dioe-spacy-tagger'
+const spacyEndpoint = 'http://localhost:2222'
 
 interface WritableToken {
   id: string
@@ -121,7 +122,7 @@ async function runTaggerAndUpdate(transcriptId: number): Promise<any> {
   for (let s of ss) {
     if (s.sentence !== null && s.ids !== null) {
       const sentence = cleanUpSentence(s as any)
-      const r = await fetch('http://localhost:2222', {
+      const r = await fetch(spacyEndpoint, {
         method: 'POST',
         body: sentence.sentence,
       })
