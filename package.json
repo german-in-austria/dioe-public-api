@@ -12,7 +12,7 @@
     "dev": "ts-node-dev ./src/server.ts & npm run sql-types:watch & npm run tsoa:watch",
     "build": "npx pgtyped -c pgconfig.json && npm run tsoa:routes && npm run tsoa:swagger",
     "start": "ts-node ./src/server.ts",
-    "script:tag-sentence": "export $(cat env-dev.env | xargs) && ts-node ./src/scripts/tag-pos-spacy.ts"
+    "script:tag-sentence": "export $(cat env-production.env | xargs) && ts-node ./src/scripts/tag-pos-spacy.ts"
   },
   "repository": {
     "type": "git",

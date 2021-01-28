@@ -38,12 +38,12 @@ function cleanUpSentence(s: { sentence: string, ids: numberArray|null }): { sent
     .filter((t, i) => {
       if (
         // pause "((0,6s))"
-        /\(\(\d,?\d?s\)\)/.test(t) ||
+        /\(\(\d,?\d?s\)\)/.test(t)
         // stuff like "((lachen))"
-        /\(\([a-zA-ZÜüÄäÖöß']+\)\)/.test(t) ||
+        || /\(\([a-zA-ZÜüÄäÖöß']+\)\)/.test(t)
         // interrupted tokens (we don’t want to tag
         // them, so we don’t confuse spacy)
-        /([a-zA-ZÜüÄäÖöß']+\/$)|(\/[a-zA-ZÜüÄäÖöß']+$)/
+        || /([a-zA-ZÜüÄäÖöß']+\/$)|(\/[a-zA-ZÜüÄäÖöß']+$)/.test(t)
       ) {
         deletedIndexes.push(i)
         return false
@@ -129,6 +129,7 @@ async function runTaggerAndUpdate(transcriptId: number): Promise<any> {
       ssWithTags.push({...sentence, tags: await r.json()})
     }
   }
+  console.log(ss)
   // convert sentences to tokens with tags
   const tokens = ssWithTags.reduce((m, e, i, l) => {
     // only if every token in the sentence has a tag
@@ -140,8 +141,7 @@ async function runTaggerAndUpdate(transcriptId: number): Promise<any> {
         })
       })
     } else {
-      console.log('the lengths didn’t match')
-      // console.log(e)
+      console.log('the lengths didn’t match', e)
     }
     return m
   }, [] as WritableToken[])
@@ -155,7 +155,7 @@ async function runTaggerAndUpdate(transcriptId: number): Promise<any> {
 }
 
 (async () => {
-  const transcriptIds = [1] // await getTranscripts()
+  const transcriptIds = await getTranscripts() // [1]
   for (const id of transcriptIds) {
     await runTaggerAndUpdate(id)
   }

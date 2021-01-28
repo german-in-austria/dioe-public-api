@@ -8,6 +8,10 @@ export interface TagTree extends ISelectTagsResult {
 
 export default {
 
+  async getTagLayers() {
+    return tagDao.getTagLayers()
+  },
+
   async getTagList(): Promise<ISelectTagsResult[]> {
     return tagDao.getTagTree()
   },

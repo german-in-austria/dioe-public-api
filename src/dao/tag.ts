@@ -1,8 +1,19 @@
 import { sql } from '@pgtyped/query'
 import query from './connect/pg'
-import { ISelectTagsQuery } from './tag.queries'
+import { ISelectTagsQuery, ISelectTagsLayersQuery } from './tag.queries'
 
 const tagDao = {
+
+  async getTagLayers() {
+    const selectTagsLayers = sql<ISelectTagsLayersQuery>`
+      SELECT
+        id,
+        "Name"
+      FROM
+        "KorpusDB_tbl_tagebene"`
+    return query(selectTagsLayers)
+  },
+
   async getTagTree() {
     const selectTags = sql<ISelectTagsQuery>`
       SELECT

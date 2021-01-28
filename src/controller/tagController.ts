@@ -1,3 +1,4 @@
+import { ISelectTagsLayersResult } from 'src/dao/tag.queries'
 import {
   Body,
   Controller,
@@ -15,6 +16,10 @@ export class TagController extends Controller {
   @Get()
   public async getTags(): Promise<TagTree[]> {
     return tagService.getTagTree()
+  }
+  @Get('/layers')
+  public async getTagLayers(): Promise<ISelectTagsLayersResult[]> {
+    return tagService.getTagLayers()
   }
 }
 

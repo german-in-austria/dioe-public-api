@@ -90,6 +90,24 @@
 				},
 				"type": "array",
 				"description": "Types generated for queries found in \"src/dao/tag.ts\""
+			},
+			"ISelectTagsLayersResult": {
+				"description": "'SelectTagsLayers' return type",
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"name"
+				],
+				"type": "object",
+				"additionalProperties": true
 			}
 		},
 		"securitySchemes": {
@@ -121,6 +139,28 @@
 								"schema": {
 									"items": {
 										"$ref": "#/components/schemas/TagTree"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/tags/layers": {
+			"get": {
+				"operationId": "GetTagLayers",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectTagsLayersResult"
 									},
 									"type": "array"
 								}
