@@ -8,7 +8,7 @@ import fetch from 'node-fetch'
 import _ from 'lodash'
 
 process.title = 'dioe-spacy-tagger'
-const spacyEndpoint = 'http://localhost:2222'
+const spacyEndpoint = 'https://spacy.dioe.at'
 
 interface WritableToken {
   id: string
