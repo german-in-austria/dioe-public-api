@@ -155,7 +155,7 @@ async function runTaggerAndUpdate(transcriptId: number): Promise<any> {
 }
 
 (async () => {
-  const transcriptIds = await getTranscripts() // [1]
+  const transcriptIds = await getTranscripts() // this can also be set manually, like, [1, 5, 19]
   for (const id of transcriptIds) {
     await runTaggerAndUpdate(id)
   }
