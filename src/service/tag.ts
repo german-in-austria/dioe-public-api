@@ -19,7 +19,6 @@ export default {
   async getTagOrte(tagId: number): Promise<ISelectOrtTagsResult[]> {
     return tagDao.getOrtTag(tagId);
   },
-
   async getTagTree() {
     const list = await this.getTagList()
     const listById = _.keyBy(list, 'tagId')
