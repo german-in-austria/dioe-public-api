@@ -1,4 +1,4 @@
-import { ISelectTagsLayersResult } from 'src/dao/tag.queries'
+import { ISelectOrtTagsResult, ISelectTagsLayersResult } from 'src/dao/tag.queries'
 import {
   Body,
   Controller,
@@ -14,12 +14,19 @@ import tagService, { TagTree } from '../service/tag'
 @Route('tags')
 export class TagController extends Controller {
   @Get()
-  public async getTags(): Promise<TagTree[]> {
+  public async getTags(): Promise<TagTree[]> {
     return tagService.getTagTree()
   }
   @Get('/layers')
   public async getTagLayers(): Promise<ISelectTagsLayersResult[]> {
     return tagService.getTagLayers()
+  }
+
+  @Get('/ort/{tagId}')
+  public async getTagOrte(
+    @Path() tagId: number
+  ): Promise<ISelectOrtTagsResult[]> {
+    return tagService.getTagOrte(tagId);
   }
 }
 
@@ -31,7 +38,7 @@ export class TestController extends Controller {
     @Body() body: any,
     @Query('query_param') query: string,
     @Path('something') param?: string
-  ): Promise<{test: 'ok', data: any}> {
+  ): Promise<{ test: 'ok', data: any }> {
     return {
       test: 'ok',
       data: {

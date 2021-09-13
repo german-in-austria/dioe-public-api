@@ -40,3 +40,25 @@ export interface ISelectTagsQuery {
   result: ISelectTagsResult;
 }
 
+/** 'SelectOrtTags' parameters type */
+export interface ISelectOrtTagsParams {
+  tagId: number | null | void;
+}
+
+/** 'SelectOrtTags' return type */
+export interface ISelectOrtTagsResult {
+  numTag: string | null;
+  tagName: string;
+  tagLang: string | null;
+  osmId: string | null;
+  ortNamelang: string;
+  lat: string | null;
+  lon: string | null;
+}
+
+/** 'SelectOrtTags' query type */
+export interface ISelectOrtTagsQuery {
+  params: ISelectOrtTagsParams;
+  result: ISelectOrtTagsResult;
+}
+
