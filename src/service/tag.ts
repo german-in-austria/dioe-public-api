@@ -1,4 +1,4 @@
-import { ISelectTagsResult } from 'src/dao/tag.queries'
+import { ISelectOrtTagsResult, ISelectTagsResult } from 'src/dao/tag.queries'
 import tagDao from '../dao/tag'
 import _ from 'lodash'
 
@@ -16,6 +16,9 @@ export default {
     return tagDao.getTagTree()
   },
 
+  async getTagOrte(tagId: number): Promise<ISelectOrtTagsResult[]> {
+    return tagDao.getOrtTag(tagId);
+  },
   async getTagTree() {
     const list = await this.getTagList()
     const listById = _.keyBy(list, 'tagId')
