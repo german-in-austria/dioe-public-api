@@ -1,3 +1,10 @@
+/**
+ * This script reads sentences from DiÖ Transcripts,
+ * uses spacy to tag them, and then writes the results
+ * back into the database.
+ */
+
+
 ///<reference path="../external.d.ts" />
 
 import { sql } from '@pgtyped/query'
@@ -8,7 +15,10 @@ import fetch from 'node-fetch'
 import _ from 'lodash'
 
 process.title = 'dioe-spacy-tagger'
-const spacyEndpoint = 'http://localhost:2222'
+// IMPORTANT NOTE:
+// This script expects the spacy tagger (https://github.com/german-in-austria/spacy-service)
+// as a peer, running either locally or remotely at spacy.dioe.at.
+const spacyEndpoint = 'https://spacy.dioe.at'
 
 interface WritableToken {
   id: string
@@ -19,7 +29,7 @@ interface WritableToken {
   spacy_entity_type: string
 }
 
-function replaceAllSpecialChars(s: string): string {
+function replaceSpecialChars(s: string): string {
   return s
     .replace(/\*/, '')
     .replace(/\_/, '')
@@ -62,12 +72,12 @@ function cleanUpSentence(s: { sentence: string, ids: numberArray|null }): { sent
         const nextToken = l[i + 1]
         // set the next token up to be replaced
         l[i + 1] = '*'
-        return replaceAllSpecialChars(
+        return replaceSpecialChars(
           // append the next token to the current one.
           t.replace('=', nextToken)
         )
       }
-      return replaceAllSpecialChars(t)
+      return replaceSpecialChars(t)
     })
   const filteredIds = s.ids!.filter((v, i) => !deletedIndexes.includes(i) )
   return {
@@ -154,8 +164,9 @@ async function runTaggerAndUpdate(transcriptId: number): Promise<any> {
   return true
 }
 
+/** This is the script’s entry point, and main loop */
 (async () => {
-  const transcriptIds = await getTranscripts() // [1]
+  const transcriptIds = await getTranscripts() // this can also be set manually, like, [1, 5, 19]
   for (const id of transcriptIds) {
     await runTaggerAndUpdate(id)
   }
