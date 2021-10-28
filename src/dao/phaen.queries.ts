@@ -32,3 +32,22 @@ export interface ISelectPhaenQuery {
   result: ISelectPhaenResult;
 }
 
+/** 'SelectSinglePhaen' parameters type */
+export interface ISelectSinglePhaenParams {
+  berId: number | null | void;
+}
+
+/** 'SelectSinglePhaen' return type */
+export interface ISelectSinglePhaenResult {
+  id: number;
+  bezPhaenomen: string;
+  beschrPhaenomen: string | null;
+  bezPhaenber: string;
+}
+
+/** 'SelectSinglePhaen' query type */
+export interface ISelectSinglePhaenQuery {
+  params: ISelectSinglePhaenParams;
+  result: ISelectSinglePhaenResult;
+}
+

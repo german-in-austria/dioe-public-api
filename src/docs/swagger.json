@@ -195,6 +195,33 @@
 				],
 				"type": "object",
 				"additionalProperties": true
+			},
+			"ISelectSinglePhaenResult": {
+				"description": "'SelectSinglePhaen' return type",
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"bezPhaenomen": {
+						"type": "string"
+					},
+					"beschrPhaenomen": {
+						"type": "string",
+						"nullable": true
+					},
+					"bezPhaenber": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"bezPhaenomen",
+					"beschrPhaenomen",
+					"bezPhaenber"
+				],
+				"type": "object",
+				"additionalProperties": true
 			}
 		},
 		"securitySchemes": {
@@ -391,6 +418,38 @@
 				},
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/phaen/{berId}": {
+			"get": {
+				"operationId": "GetSinglePhaen",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectSinglePhaenResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "berId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		}
 	},
