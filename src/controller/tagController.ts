@@ -1,28 +1,26 @@
-import { ISelectOrtTagsResult, ISelectTagsLayersResult } from 'src/dao/tag.queries'
 import {
-  Body,
-  Controller,
-  Get,
-  Path,
-  Post,
-  Query,
-  Route,
-} from 'tsoa'
+  ISelectOrtTagsResult,
+  ISelectTagsLayersResult,
+} from "src/dao/tag.queries";
 
-import tagService, { TagTree } from '../service/tag'
+import { Body, Controller, Get, Path, Post, Query, Route } from "tsoa";
 
-@Route('tags')
+import tagService, { TagTree } from "../service/tag";
+
+import phaenService from "../service/phaen";
+
+@Route("tags")
 export class TagController extends Controller {
   @Get()
   public async getTags(): Promise<TagTree[]> {
-    return tagService.getTagTree()
+    return tagService.getTagTree();
   }
-  @Get('/layers')
+  @Get("/layers")
   public async getTagLayers(): Promise<ISelectTagsLayersResult[]> {
-    return tagService.getTagLayers()
+    return tagService.getTagLayers();
   }
 
-  @Get('/ort/{tagId}')
+  @Get("/ort/{tagId}")
   public async getTagOrte(
     @Path() tagId: number
   ): Promise<ISelectOrtTagsResult[]> {
@@ -31,22 +29,22 @@ export class TagController extends Controller {
 }
 
 // demonstration of TSOA API
-@Route('test')
+@Route("test")
 export class TestController extends Controller {
-  @Post('/{something}')
+  @Post("/{something}")
   public async getControllerDemo(
     @Body() body: any,
-    @Query('query_param') query: string,
-    @Path('something') param?: string
-  ): Promise<{ test: 'ok', data: any }> {
+    @Query("query_param") query: string,
+    @Path("something") param?: string
+  ): Promise<{ test: "ok"; data: any }> {
     return {
-      test: 'ok',
+      test: "ok",
       data: {
         body,
         query,
         param,
-        ...this.getHeaders()
-      }
-    }
+        ...this.getHeaders(),
+      },
+    };
   }
 }

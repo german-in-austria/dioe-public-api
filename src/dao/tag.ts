@@ -1,9 +1,13 @@
-import { sql } from '@pgtyped/query'
-import query from './connect/pg'
-import { ISelectTagsQuery, ISelectTagsLayersQuery, ISelectOrtTagsQuery, ISelectOrtTagsParams } from './tag.queries'
+import { sql } from "@pgtyped/query";
+import query from "./connect/pg";
+import {
+  ISelectTagsQuery,
+  ISelectTagsLayersQuery,
+  ISelectOrtTagsQuery,
+  ISelectOrtTagsParams,
+} from "./tag.queries";
 
 const tagDao = {
-
   async getTagLayers() {
     const selectTagsLayers = sql<ISelectTagsLayersQuery>`
       SELECT
@@ -11,8 +15,8 @@ const tagDao = {
         "Name"
       FROM
         "KorpusDB_tbl_tagebene"
-    `
-    return query(selectTagsLayers)
+    `;
+    return query(selectTagsLayers);
   },
 
   // Bei einzelnen Tags größe von Symbolen
@@ -60,12 +64,12 @@ const tagDao = {
         LEFT JOIN "KorpusDB_tbl_phaenomene" p ON t. "zu_Phaenomen_id" = p.id
         LEFT JOIN "KorpusDB_tbl_tagebenezutag" tet ON t. "id" = tet. "id_Tag_id"
         LEFT JOIN "KorpusDB_tbl_tagebene" te ON tet. "id_TagEbene_id" = te.id
-    `
-    return await query(selectTags)
+    `;
+    return await query(selectTags);
   },
 
   async getOrtTag(tagId: number) {
-    const selectOrtTags = sql<ISelectOrtTagsQuery & ISelectOrtTagsParams> `
+    const selectOrtTags = sql<ISelectOrtTagsQuery & ISelectOrtTagsParams>`
       SELECT
         count(*) AS num_tag,
         kdtt. "Tag" AS tag_name,
@@ -92,9 +96,9 @@ const tagDao = {
       ORDER BY
       num_tag DESC;
       
-    `
+    `;
     return await query(selectOrtTags, { tagId: tagId });
-  }
-}
+  },
+};
 
-export default tagDao
+export default tagDao;

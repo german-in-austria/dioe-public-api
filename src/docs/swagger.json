@@ -150,6 +150,51 @@
 				],
 				"type": "object",
 				"additionalProperties": true
+			},
+			"ISelectPhaenBerResult": {
+				"description": "'SelectPhaenBer' return type",
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"bezPhaenber": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"bezPhaenber"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ISelectPhaenResult": {
+				"description": "'SelectPhaen' return type",
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"bezPhaenomen": {
+						"type": "string"
+					},
+					"beschrPhaenomen": {
+						"type": "string",
+						"nullable": true
+					},
+					"bezPhaenber": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"bezPhaenomen",
+					"beschrPhaenomen",
+					"bezPhaenber"
+				],
+				"type": "object",
+				"additionalProperties": true
 			}
 		},
 		"securitySchemes": {
@@ -302,6 +347,50 @@
 						}
 					}
 				}
+			}
+		},
+		"/phaen/ber": {
+			"get": {
+				"operationId": "GetPhaenBer",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectPhaenBerResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/phaen": {
+			"get": {
+				"operationId": "GetPhaen",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectPhaenResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
 			}
 		}
 	},
