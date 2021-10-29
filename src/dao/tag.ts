@@ -35,6 +35,7 @@ const tagDao = {
         -- the basic tag
         t.id AS tag_id,
         t. "Tag" AS tag_abbrev,
+        t."Generation" AS tag_gene,
         t. "Tag_lang" AS tag_name,
         t. "Kommentar" AS tag_comment,
         t. "AReihung" AS tag_order,
