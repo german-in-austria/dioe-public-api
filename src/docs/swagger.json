@@ -228,6 +228,105 @@
 				],
 				"type": "object",
 				"additionalProperties": true
+			},
+			"ISelectAufgabenSetResult": {
+				"description": "'SelectAufgabenSet' return type",
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"kuerzel": {
+						"type": "string"
+					},
+					"nameAset": {
+						"type": "string",
+						"nullable": true
+					},
+					"fokus": {
+						"type": "string",
+						"nullable": true
+					},
+					"kommentar": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"kuerzel",
+					"nameAset",
+					"fokus",
+					"kommentar"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ISelectAufgabenResult": {
+				"description": "'SelectAufgaben' return type",
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"beschreibungAufgabe": {
+						"type": "string",
+						"nullable": true
+					},
+					"aufgabenstellung": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"beschreibungAufgabe",
+					"aufgabenstellung"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ISelectAufgabenFromSetResult": {
+				"description": "'SelectAufgabenFromSet' return type",
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"variante": {
+						"type": "number",
+						"format": "double"
+					},
+					"beschreibungAufgabe": {
+						"type": "string",
+						"nullable": true
+					},
+					"aufgabenstellung": {
+						"type": "string",
+						"nullable": true
+					},
+					"kuerzel": {
+						"type": "string"
+					},
+					"nameAset": {
+						"type": "string",
+						"nullable": true
+					},
+					"bezPhaenomen": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"variante",
+					"beschreibungAufgabe",
+					"aufgabenstellung",
+					"kuerzel",
+					"nameAset",
+					"bezPhaenomen"
+				],
+				"type": "object",
+				"additionalProperties": true
 			}
 		},
 		"securitySchemes": {
@@ -449,6 +548,102 @@
 					{
 						"in": "path",
 						"name": "berId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/aufgaben/sets/{phaenID}": {
+			"get": {
+				"operationId": "GetAufgabenSets",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectAufgabenSetResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "phaenID",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/aufgaben/{phaenID}": {
+			"get": {
+				"operationId": "GetAufgabenPhaen",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectAufgabenResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "phaenID",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/aufgaben/sets": {
+			"get": {
+				"operationId": "GetTagOrte",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectAufgabenFromSetResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "setID",
 						"required": true,
 						"schema": {
 							"format": "double",

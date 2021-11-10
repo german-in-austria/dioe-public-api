@@ -7,8 +7,6 @@ import { Body, Controller, Get, Path, Post, Query, Route } from "tsoa";
 
 import tagService, { TagTree } from "../service/tag";
 
-import phaenService from "../service/phaen";
-
 @Route("tags")
 export class TagController extends Controller {
   @Get()

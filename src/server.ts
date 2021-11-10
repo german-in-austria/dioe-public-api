@@ -33,6 +33,7 @@ import _ from "lodash";
 // import all controllers here
 import "./controller/tagController";
 import "./controller/phaenController";
+import "./controller/aufgabenController";
 
 const tsoaConfig = require("./../tsoa.json");
 
