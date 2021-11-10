@@ -109,6 +109,14 @@ const models: TsoaRoute.Models = {
         "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "aufgabenDto": {
+        "dataType": "refObject",
+        "properties": {
+            "ids": {"dataType":"array","array":{"dataType":"double"},"required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ISelectAufgabenResult": {
         "dataType": "refObject",
         "properties": {
@@ -306,7 +314,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function AufgabenController_getAufgabenSets(request: any, response: any, next: any) {
             const args = {
-                    phaenID: {"in":"body-prop","name":"phaen","required":true,"dataType":"array","array":{"dataType":"double"}},
+                    aufgabenDto: {"in":"body","name":"aufgabenDto","required":true,"ref":"aufgabenDto"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -329,7 +337,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function AufgabenController_getAufgabenPhaen(request: any, response: any, next: any) {
             const args = {
-                    phaenID: {"in":"body-prop","name":"phaen","required":true,"dataType":"array","array":{"dataType":"double"}},
+                    aufgabenDto: {"in":"body-prop","name":"phaen","required":true,"ref":"aufgabenDto"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -352,7 +360,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function AufgabenController_getTagOrte(request: any, response: any, next: any) {
             const args = {
-                    setID: {"in":"body-prop","name":"set","required":true,"dataType":"array","array":{"dataType":"double"}},
+                    aufgabenDto: {"in":"body-prop","name":"set","required":true,"ref":"aufgabenDto"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

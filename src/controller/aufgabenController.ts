@@ -17,25 +17,29 @@ import {
 
 import aufgabenService from "../service/aufgaben";
 
+interface aufgabenDto {
+  ids: number[];
+}
+
 @Route("aufgaben")
 export class AufgabenController extends Controller {
   @Post("/sets")
   public async getAufgabenSets(
-    @BodyProp("phaen") phaenID: number[]
+    @Body() aufgabenDto: aufgabenDto
   ): Promise<ISelectAufgabenSetResult[]> {
-    return aufgabenService.getAufgabenSetPhaen(phaenID);
+    return aufgabenService.getAufgabenSetPhaen(aufgabenDto.ids);
   }
   @Post()
   public async getAufgabenPhaen(
-    @BodyProp("phaen") phaenID: number[]
+    @BodyProp("phaen") aufgabenDto: aufgabenDto
   ): Promise<ISelectAufgabenResult[]> {
-    return aufgabenService.getAufgabenPhaen(phaenID);
+    return aufgabenService.getAufgabenPhaen(aufgabenDto.ids);
   }
 
   @Post("/setaufgabe")
   public async getTagOrte(
-    @BodyProp("set") setID: number[]
+    @BodyProp("set") aufgabenDto: aufgabenDto
   ): Promise<ISelectAufgabenFromSetResult[]> {
-    return aufgabenService.getAufgabenWithSet(setID);
+    return aufgabenService.getAufgabenWithSet(aufgabenDto.ids);
   }
 }

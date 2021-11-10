@@ -262,6 +262,22 @@
 				"type": "object",
 				"additionalProperties": true
 			},
+			"aufgabenDto": {
+				"properties": {
+					"ids": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"ids"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
 			"ISelectAufgabenResult": {
 				"description": "'SelectAufgaben' return type",
 				"properties": {
@@ -576,7 +592,17 @@
 					}
 				},
 				"security": [],
-				"parameters": []
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/aufgabenDto"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/aufgaben": {
