@@ -2,7 +2,7 @@
 
 /** 'SelectAufgabenSet' parameters type */
 export interface ISelectAufgabenSetParams {
-  phaenID: number | null | void;
+  phaenID: Array<number | null | void>;
 }
 
 /** 'SelectAufgabenSet' return type */
@@ -22,7 +22,7 @@ export interface ISelectAufgabenSetQuery {
 
 /** 'SelectAufgaben' parameters type */
 export interface ISelectAufgabenParams {
-  phaenID: number | null | void;
+  phaenID: Array<number | null | void>;
 }
 
 /** 'SelectAufgaben' return type */
@@ -40,7 +40,7 @@ export interface ISelectAufgabenQuery {
 
 /** 'SelectAufgabenFromSet' parameters type */
 export interface ISelectAufgabenFromSetParams {
-  aufgabenSet: number | null | void;
+  aufgabenSet: Array<number | null | void>;
 }
 
 /** 'SelectAufgabenFromSet' return type */

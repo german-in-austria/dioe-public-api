@@ -8,15 +8,15 @@ import _ from "lodash";
 
 export default {
   async getAufgabenSetPhaen(
-    phaen: number
+    phaen: number[]
   ): Promise<ISelectAufgabenSetResult[]> {
     return aufgabenDao.getAufgabenSetPhaen(phaen);
   },
-  async getAufgabenPhaen(phaen: number): Promise<ISelectAufgabenResult[]> {
+  async getAufgabenPhaen(phaen: number[]): Promise<ISelectAufgabenResult[]> {
     return aufgabenDao.getAufgabenPhaen(phaen);
   },
   async getAufgabenWithSet(
-    aufgabe: number
+    aufgabe: number[]
   ): Promise<ISelectAufgabenFromSetResult[]> {
     return aufgabenDao.getAufgabenWithSet(aufgabe);
   },

@@ -557,8 +557,8 @@
 				]
 			}
 		},
-		"/aufgaben/sets/{phaenID}": {
-			"get": {
+		"/aufgaben/sets": {
+			"post": {
 				"operationId": "GetAufgabenSets",
 				"responses": {
 					"200": {
@@ -576,21 +576,11 @@
 					}
 				},
 				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "phaenID",
-						"required": true,
-						"schema": {
-							"format": "double",
-							"type": "number"
-						}
-					}
-				]
+				"parameters": []
 			}
 		},
-		"/aufgaben/{phaenID}": {
-			"get": {
+		"/aufgaben": {
+			"post": {
 				"operationId": "GetAufgabenPhaen",
 				"responses": {
 					"200": {
@@ -608,21 +598,11 @@
 					}
 				},
 				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "phaenID",
-						"required": true,
-						"schema": {
-							"format": "double",
-							"type": "number"
-						}
-					}
-				]
+				"parameters": []
 			}
 		},
-		"/aufgaben/sets": {
-			"get": {
+		"/aufgaben/setaufgabe": {
+			"post": {
 				"operationId": "GetTagOrte",
 				"responses": {
 					"200": {
@@ -640,17 +620,7 @@
 					}
 				},
 				"security": [],
-				"parameters": [
-					{
-						"in": "query",
-						"name": "setID",
-						"required": true,
-						"schema": {
-							"format": "double",
-							"type": "number"
-						}
-					}
-				]
+				"parameters": []
 			}
 		}
 	},

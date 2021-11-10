@@ -302,11 +302,11 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/aufgaben/sets/:phaenID',
+        app.post('/api/aufgaben/sets',
 
             function AufgabenController_getAufgabenSets(request: any, response: any, next: any) {
             const args = {
-                    phaenID: {"in":"path","name":"phaenID","required":true,"dataType":"double"},
+                    phaenID: {"in":"body-prop","name":"phaen","required":true,"dataType":"array","array":{"dataType":"double"}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -325,11 +325,11 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/aufgaben/:phaenID',
+        app.post('/api/aufgaben',
 
             function AufgabenController_getAufgabenPhaen(request: any, response: any, next: any) {
             const args = {
-                    phaenID: {"in":"path","name":"phaenID","required":true,"dataType":"double"},
+                    phaenID: {"in":"body-prop","name":"phaen","required":true,"dataType":"array","array":{"dataType":"double"}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -348,11 +348,11 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/aufgaben/sets',
+        app.post('/api/aufgaben/setaufgabe',
 
             function AufgabenController_getTagOrte(request: any, response: any, next: any) {
             const args = {
-                    setID: {"in":"query","name":"setID","required":true,"dataType":"double"},
+                    setID: {"in":"body-prop","name":"set","required":true,"dataType":"array","array":{"dataType":"double"}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
