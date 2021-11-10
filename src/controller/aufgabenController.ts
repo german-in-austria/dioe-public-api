@@ -31,14 +31,14 @@ export class AufgabenController extends Controller {
   }
   @Post()
   public async getAufgabenPhaen(
-    @BodyProp("phaen") aufgabenDto: aufgabenDto
+    @Body() aufgabenDto: aufgabenDto
   ): Promise<ISelectAufgabenResult[]> {
     return aufgabenService.getAufgabenPhaen(aufgabenDto.ids);
   }
 
   @Post("/setaufgabe")
   public async getTagOrte(
-    @BodyProp("set") aufgabenDto: aufgabenDto
+    @Body() aufgabenDto: aufgabenDto
   ): Promise<ISelectAufgabenFromSetResult[]> {
     return aufgabenService.getAufgabenWithSet(aufgabenDto.ids);
   }

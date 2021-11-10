@@ -624,7 +624,17 @@
 					}
 				},
 				"security": [],
-				"parameters": []
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/aufgabenDto"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/aufgaben/setaufgabe": {
@@ -646,7 +656,17 @@
 					}
 				},
 				"security": [],
-				"parameters": []
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/aufgabenDto"
+							}
+						}
+					}
+				}
 			}
 		}
 	},
