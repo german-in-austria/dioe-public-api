@@ -15,6 +15,7 @@ export interface ISelectAntwortenResult {
   audiofile: string | null;
   tagId: number;
   osmid: string | null;
+  tagName: string | null;
 }
 
 /** 'SelectAntworten' query type */

@@ -11,7 +11,7 @@ const antwortenDao = {
     const selectAntworten = sql<ISelectAntwortenQuery & ISelectAntwortenParams>`
         select kdta."start_Antwort", kdta."stop_Antwort", 
         kdta."Kommentar", kdti."Dateipfad", kdti."Audiofile",
-        kdtt.id as tag_id, odto.osm_id as osmId
+        kdtt.id as tag_id, odto.osm_id as osmId, kdtt."Tag_lang" as tag_name
         from "KorpusDB_tbl_antworten" kdta 
         left join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Antwort_id" = kdta.id 
         left join "KorpusDB_tbl_tags" kdtt on kdtt.id = kdta2."id_Tag_id" 
