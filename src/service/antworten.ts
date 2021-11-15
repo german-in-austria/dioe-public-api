@@ -15,7 +15,10 @@ export default {
     tagIDs: number[],
     osmId: number
   ): Promise<AntwortenTags[]> {
-    const results = await antwortenDao.selectAntwortenAudio(tagIDs, osmId);
+    const results = await antwortenDao.selectAntwortenAudio(
+      tagIDs,
+      osmId.toString()
+    );
     const tagNum = await tagService.getTagOrte(tagIDs);
     // Combine the results and return them to the controller
     return this.mergeTagNum(results, tagNum);

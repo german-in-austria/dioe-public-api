@@ -7,10 +7,7 @@ import {
 } from "src/dao/antworten.queries";
 
 const antwortenDao = {
-  async selectAntwortenAudio(
-    tagID: number[],
-    osmId: ISelectAntwortenParams["osmId"]
-  ) {
+  async selectAntwortenAudio(tagID: number[], osmId: string) {
     const selectAntworten = sql<ISelectAntwortenQuery & ISelectAntwortenParams>`
         select kdta."start_Antwort", kdta."stop_Antwort", 
         kdta."Kommentar", kdti."Dateipfad", kdti."Audiofile",
