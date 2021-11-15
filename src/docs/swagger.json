@@ -389,6 +389,14 @@
 						"type": "number",
 						"format": "double"
 					},
+					"osmid": {
+						"type": "string",
+						"nullable": true
+					},
+					"tagName": {
+						"type": "string",
+						"nullable": true
+					},
 					"tagNum": {
 						"type": "string",
 						"nullable": true
@@ -401,6 +409,8 @@
 					"dateipfad",
 					"audiofile",
 					"tagId",
+					"osmid",
+					"tagName",
 					"tagNum"
 				],
 				"type": "object",

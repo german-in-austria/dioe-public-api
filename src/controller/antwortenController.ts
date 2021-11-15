@@ -16,6 +16,8 @@ export interface ISelectAntwortenResult {
   dateipfad: string | null;
   audiofile: string | null;
   tagId: number;
+  osmid: string | null;
+  tagName: string | null;
 }
 
 import antwortenService, { AntwortenTags } from "../service/antworten";
