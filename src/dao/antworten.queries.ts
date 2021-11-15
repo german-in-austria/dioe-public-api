@@ -3,6 +3,7 @@
 /** 'SelectAntworten' parameters type */
 export interface ISelectAntwortenParams {
   tagID: Array<number | null | void>;
+  osmId: string | null | void;
 }
 
 /** 'SelectAntworten' return type */
@@ -13,6 +14,7 @@ export interface ISelectAntwortenResult {
   dateipfad: string | null;
   audiofile: string | null;
   tagId: number;
+  osmid: string | null;
 }
 
 /** 'SelectAntworten' query type */

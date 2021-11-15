@@ -170,6 +170,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "ids": {"dataType":"array","array":{"dataType":"double"},"required":true},
+            "osmId": {"dataType":"double","required":true},
         },
         "additionalProperties": true,
     },

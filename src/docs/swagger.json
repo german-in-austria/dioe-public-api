@@ -414,10 +414,15 @@
 							"format": "double"
 						},
 						"type": "array"
+					},
+					"osmId": {
+						"type": "number",
+						"format": "double"
 					}
 				},
 				"required": [
-					"ids"
+					"ids",
+					"osmId"
 				],
 				"type": "object",
 				"additionalProperties": true

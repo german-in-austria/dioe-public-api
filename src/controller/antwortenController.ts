@@ -22,6 +22,7 @@ import antwortenService, { AntwortenTags } from "../service/antworten";
 
 interface antwortenDto {
   ids: number[];
+  osmId: number;
 }
 
 @Route("antworten")
@@ -30,6 +31,9 @@ export class AntwortenController extends Controller {
   public async getAntByTags(
     @Body() antwortenDto: antwortenDto
   ): Promise<AntwortenTags[]> {
-    return antwortenService.getAntwortenAudio(antwortenDto.ids);
+    return antwortenService.getAntwortenAudio(
+      antwortenDto.ids,
+      antwortenDto.osmId
+    );
   }
 }

@@ -11,8 +11,11 @@ export interface AntwortenTags extends ISelectAntwortenResult {
 }
 
 export default {
-  async getAntwortenAudio(tagIDs: number[]): Promise<AntwortenTags[]> {
-    const results = await antwortenDao.selectAntwortenAudio(tagIDs);
+  async getAntwortenAudio(
+    tagIDs: number[],
+    osmId: number
+  ): Promise<AntwortenTags[]> {
+    const results = await antwortenDao.selectAntwortenAudio(tagIDs, osmId);
     const tagNum = await tagService.getTagOrte(tagIDs);
     // Combine the results and return them to the controller
     return this.mergeTagNum(results, tagNum);
@@ -22,7 +25,9 @@ export default {
     tagNum: ISelectOrtTagsResult[]
   ): AntwortenTags[] {
     return antworten.map((a) => {
-      const num = tagNum.filter((e) => e.tagId === a.tagId)[0].numTag;
+      const num = tagNum.filter(
+        (e) => e.tagId === a.tagId && e.osmId === a.osmid
+      )[0].numTag;
       return {
         ...a,
         tagNum: num,

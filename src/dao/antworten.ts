@@ -7,11 +7,14 @@ import {
 } from "src/dao/antworten.queries";
 
 const antwortenDao = {
-  async selectAntwortenAudio(tagID: number[]) {
+  async selectAntwortenAudio(
+    tagID: number[],
+    osmId: ISelectAntwortenParams["osmId"]
+  ) {
     const selectAntworten = sql<ISelectAntwortenQuery & ISelectAntwortenParams>`
         select kdta."start_Antwort", kdta."stop_Antwort", 
         kdta."Kommentar", kdti."Dateipfad", kdti."Audiofile",
-        kdtt.id as tag_id
+        kdtt.id as tag_id, odto.osm_id as osmId
         from "KorpusDB_tbl_antworten" kdta 
         left join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Antwort_id" = kdta.id 
         left join "KorpusDB_tbl_tags" kdtt on kdtt.id = kdta2."id_Tag_id" 
@@ -19,10 +22,12 @@ const antwortenDao = {
         left join "PersonenDB_tbl_informanten" pdti on pdti.id = kdta."von_Inf_id" 
         left join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
         left join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
+        left join "OrteDB_tbl_orte" odto on kdti."Ort_id" = odto.id
         where kdtt.id IN $$tagID
-        AND kdta."start_Antwort" <> kdta."stop_Antwort";
+        AND kdta."start_Antwort" <> kdta."stop_Antwort"
+        AND odto.osm_id = $osmId;
         `;
-    return await query(selectAntworten, { tagID: tagID });
+    return await query(selectAntworten, { tagID: tagID, osmId: osmId });
   },
 };
 
