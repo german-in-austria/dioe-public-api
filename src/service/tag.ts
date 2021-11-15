@@ -15,7 +15,7 @@ export default {
     return tagDao.getTagTree();
   },
 
-  async getTagOrte(tagId: number): Promise<ISelectOrtTagsResult[]> {
+  async getTagOrte(tagId: number[]): Promise<ISelectOrtTagsResult[]> {
     return tagDao.getOrtTag(tagId);
   },
   async getTagTree() {

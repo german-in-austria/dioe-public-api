@@ -7,6 +7,10 @@ import { Body, Controller, Get, Path, Post, Query, Route } from "tsoa";
 
 import tagService, { TagTree } from "../service/tag";
 
+interface tagDto {
+  ids: number[];
+}
+
 @Route("tags")
 export class TagController extends Controller {
   @Get()
@@ -22,7 +26,14 @@ export class TagController extends Controller {
   public async getTagOrte(
     @Path() tagId: number
   ): Promise<ISelectOrtTagsResult[]> {
-    return tagService.getTagOrte(tagId);
+    return tagService.getTagOrte([tagId]);
+  }
+
+  @Post("/ort")
+  public async getTagOrteMultiple(
+    @Body() tagDto: tagDto
+  ): Promise<ISelectOrtTagsResult[]> {
+    return tagService.getTagOrte(tagDto.ids);
   }
 }
 

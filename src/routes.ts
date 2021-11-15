@@ -10,6 +10,8 @@ import { TestController } from './controller/tagController';
 import { PhaenController } from './controller/phaenController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AufgabenController } from './controller/aufgabenController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { AntwortenController } from './controller/antwortenController';
 import { expressAuthentication } from './authentication';
 // @ts-ignore - no great way to install types from subpackage
 const promiseAny = require('promise.any');
@@ -58,10 +60,19 @@ const models: TsoaRoute.Models = {
             "numTag": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "tagName": {"dataType":"string","required":true},
             "tagLang": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagId": {"dataType":"double","required":true},
             "osmId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "ortNamelang": {"dataType":"string","required":true},
             "lat": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "lon": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "tagDto": {
+        "dataType": "refObject",
+        "properties": {
+            "ids": {"dataType":"array","array":{"dataType":"double"},"required":true},
         },
         "additionalProperties": true,
     },
@@ -141,6 +152,28 @@ const models: TsoaRoute.Models = {
         "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AntwortenTags": {
+        "dataType": "refObject",
+        "properties": {
+            "startAntwort": {"dataType":"string","required":true},
+            "stopAntwort": {"dataType":"string","required":true},
+            "kommentar": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "dateipfad": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "audiofile": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagId": {"dataType":"double","required":true},
+            "tagNum": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "antwortenDto": {
+        "dataType": "refObject",
+        "properties": {
+            "ids": {"dataType":"array","array":{"dataType":"double"},"required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const validationService = new ValidationService(models);
 
@@ -215,6 +248,29 @@ export function RegisterRoutes(app: express.Router) {
 
 
             const promise = controller.getTagOrte.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/api/tags/ort',
+
+            function TagController_getTagOrteMultiple(request: any, response: any, next: any) {
+            const args = {
+                    tagDto: {"in":"body","name":"tagDto","required":true,"ref":"tagDto"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new TagController();
+
+
+            const promise = controller.getTagOrteMultiple.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -337,7 +393,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function AufgabenController_getAufgabenPhaen(request: any, response: any, next: any) {
             const args = {
-                    aufgabenDto: {"in":"body-prop","name":"phaen","required":true,"ref":"aufgabenDto"},
+                    aufgabenDto: {"in":"body","name":"aufgabenDto","required":true,"ref":"aufgabenDto"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -360,7 +416,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function AufgabenController_getTagOrte(request: any, response: any, next: any) {
             const args = {
-                    aufgabenDto: {"in":"body-prop","name":"set","required":true,"ref":"aufgabenDto"},
+                    aufgabenDto: {"in":"body","name":"aufgabenDto","required":true,"ref":"aufgabenDto"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -376,6 +432,29 @@ export function RegisterRoutes(app: express.Router) {
 
 
             const promise = controller.getTagOrte.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/api/antworten/tags',
+
+            function AntwortenController_getAntByTags(request: any, response: any, next: any) {
+            const args = {
+                    antwortenDto: {"in":"body","name":"antwortenDto","required":true,"ref":"antwortenDto"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new AntwortenController();
+
+
+            const promise = controller.getAntByTags.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

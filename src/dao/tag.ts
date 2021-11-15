@@ -69,12 +69,13 @@ const tagDao = {
     return await query(selectTags);
   },
 
-  async getOrtTag(tagId: number) {
+  async getOrtTag(tagId: number[]) {
     const selectOrtTags = sql<ISelectOrtTagsQuery & ISelectOrtTagsParams>`
       SELECT
         count(*) AS num_tag,
         kdtt. "Tag" AS tag_name,
         kdtt. "Tag_lang" AS tag_lang,
+        kdtt.id as tag_id,
         odto. "osm_id" AS osm_id,
         odto. "ort_namelang" AS ort_namelang,
         odto. "lat" AS lat,
@@ -86,12 +87,13 @@ const tagDao = {
         JOIN "PersonenDB_tbl_informanten" pdti ON kdta2. "von_Inf_id" = pdti.id
         JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
       WHERE
-        kdtt.id = $tagId
+        kdtt.id IN $$tagId
       GROUP BY
         odto.osm_id,
         odto.ort_namelang,
         kdtt. "Tag",
         kdtt. "Tag_lang",
+        kdtt.id,
         odto.lat,
         odto.lon
       ORDER BY

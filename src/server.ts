@@ -34,6 +34,7 @@ import _ from "lodash";
 import "./controller/tagController";
 import "./controller/phaenController";
 import "./controller/aufgabenController";
+import "./controller/antwortenController";
 
 const tsoaConfig = require("./../tsoa.json");
 

@@ -129,6 +129,10 @@
 						"type": "string",
 						"nullable": true
 					},
+					"tagId": {
+						"type": "number",
+						"format": "double"
+					},
 					"osmId": {
 						"type": "string",
 						"nullable": true
@@ -149,10 +153,27 @@
 					"numTag",
 					"tagName",
 					"tagLang",
+					"tagId",
 					"osmId",
 					"ortNamelang",
 					"lat",
 					"lon"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"tagDto": {
+				"properties": {
+					"ids": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"ids"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -343,6 +364,63 @@
 				],
 				"type": "object",
 				"additionalProperties": true
+			},
+			"AntwortenTags": {
+				"properties": {
+					"startAntwort": {
+						"type": "string"
+					},
+					"stopAntwort": {
+						"type": "string"
+					},
+					"kommentar": {
+						"type": "string",
+						"nullable": true
+					},
+					"dateipfad": {
+						"type": "string",
+						"nullable": true
+					},
+					"audiofile": {
+						"type": "string",
+						"nullable": true
+					},
+					"tagId": {
+						"type": "number",
+						"format": "double"
+					},
+					"tagNum": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"startAntwort",
+					"stopAntwort",
+					"kommentar",
+					"dateipfad",
+					"audiofile",
+					"tagId",
+					"tagNum"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"antwortenDto": {
+				"properties": {
+					"ids": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"ids"
+				],
+				"type": "object",
+				"additionalProperties": true
 			}
 		},
 		"securitySchemes": {
@@ -437,6 +515,38 @@
 						}
 					}
 				]
+			}
+		},
+		"/tags/ort": {
+			"post": {
+				"operationId": "GetTagOrteMultiple",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectOrtTagsResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/tagDto"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/test/{something}": {
@@ -663,6 +773,38 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/aufgabenDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/antworten/tags": {
+			"post": {
+				"operationId": "GetAntByTags",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/AntwortenTags"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/antwortenDto"
 							}
 						}
 					}

@@ -43,7 +43,7 @@ export interface ISelectTagsQuery {
 
 /** 'SelectOrtTags' parameters type */
 export interface ISelectOrtTagsParams {
-  tagId: number | null | void;
+  tagId: Array<number | null | void>;
 }
 
 /** 'SelectOrtTags' return type */
@@ -51,6 +51,7 @@ export interface ISelectOrtTagsResult {
   numTag: string | null;
   tagName: string;
   tagLang: string | null;
+  tagId: number;
   osmId: string | null;
   ortNamelang: string;
   lat: string | null;
