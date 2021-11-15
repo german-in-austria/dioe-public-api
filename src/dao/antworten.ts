@@ -19,7 +19,8 @@ const antwortenDao = {
         left join "PersonenDB_tbl_informanten" pdti on pdti.id = kdta."von_Inf_id" 
         left join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
         left join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
-        where kdtt.id IN $$tagID;
+        where kdtt.id IN $$tagID
+        AND kdta."start_Antwort" <> kdta."stop_Antwort";
         `;
     return await query(selectAntworten, { tagID: tagID });
   },
