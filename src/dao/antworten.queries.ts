@@ -16,6 +16,10 @@ export interface ISelectAntwortenResult {
   tagId: number;
   osmid: string | null;
   tagName: string | null;
+  ortho: string | null;
+  orthoText: string | null;
+  startTime: string | null;
+  endTime: string | null;
 }
 
 /** 'SelectAntworten' query type */

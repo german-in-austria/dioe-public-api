@@ -6,8 +6,18 @@ import { ISelectOrtTagsResult } from "src/dao/tag.queries";
 
 import { ISelectAntwortenResult } from "src/dao/antworten.queries";
 
-export interface AntwortenTags extends ISelectAntwortenResult {
+export interface AntwortenTags {
   tagNum: string | null;
+  startAntwort: string;
+  stopAntwort: string;
+  kommentar: string | null;
+  dateipfad: string | null;
+  audiofile: string | null;
+  tagId: number;
+  osmid: string | null;
+  tagName: string | null;
+  ortho: string | null;
+  orthoText: string | null;
 }
 
 export default {
