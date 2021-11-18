@@ -397,6 +397,14 @@
 						"type": "string",
 						"nullable": true
 					},
+					"ortho": {
+						"type": "string",
+						"nullable": true
+					},
+					"orthoText": {
+						"type": "string",
+						"nullable": true
+					},
 					"tagNum": {
 						"type": "string",
 						"nullable": true
@@ -411,6 +419,8 @@
 					"tagId",
 					"osmid",
 					"tagName",
+					"ortho",
+					"orthoText",
 					"tagNum"
 				],
 				"type": "object",

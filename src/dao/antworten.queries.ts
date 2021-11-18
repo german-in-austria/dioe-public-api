@@ -10,6 +10,8 @@ export interface ISelectAntwortenParams {
 export interface ISelectAntwortenResult {
   startAntwort: string;
   stopAntwort: string;
+  startAufgabe: string;
+  stopAufgabe: string;
   kommentar: string | null;
   dateipfad: string | null;
   audiofile: string | null;
@@ -18,8 +20,6 @@ export interface ISelectAntwortenResult {
   tagName: string | null;
   ortho: string | null;
   orthoText: string | null;
-  startTime: string | null;
-  endTime: string | null;
 }
 
 /** 'SelectAntworten' query type */

@@ -6,8 +6,7 @@ import { ISelectOrtTagsResult } from "src/dao/tag.queries";
 
 import { ISelectAntwortenResult } from "src/dao/antworten.queries";
 
-export interface AntwortenTags {
-  tagNum: string | null;
+export interface Antworten {
   startAntwort: string;
   stopAntwort: string;
   kommentar: string | null;
@@ -20,15 +19,18 @@ export interface AntwortenTags {
   orthoText: string | null;
 }
 
+export interface AntwortenTags extends Antworten {
+  tagNum: string | null;
+}
+
 export default {
   async getAntwortenAudio(
     tagIDs: number[],
     osmId: number
   ): Promise<AntwortenTags[]> {
-    const results = await antwortenDao.selectAntwortenAudio(
-      tagIDs,
-      osmId.toString()
-    );
+    const results: ISelectAntwortenResult[] =
+      await antwortenDao.selectAntwortenAudio(tagIDs, osmId.toString());
+    // Group the different time tags together into a single Array of Objects
     const tagNum = await tagService.getTagOrte(tagIDs);
     // Combine the results and return them to the controller
     return this.mergeTagNum(results, tagNum);
@@ -46,5 +48,11 @@ export default {
         tagNum: num,
       };
     });
+  },
+  groupBy<TItem>(xs: TItem[], key: string): { [key: string]: TItem[] } {
+    return xs.reduce((rv: any, x: any) => {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
   },
 };
