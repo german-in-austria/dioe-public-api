@@ -5,6 +5,8 @@ import {
   ISelectTagsLayersQuery,
   ISelectOrtTagsQuery,
   ISelectOrtTagsParams,
+  ISelectSingleGenQuery,
+  ISelectSingleGenParams,
 } from "./tag.queries";
 
 const tagDao = {
@@ -68,7 +70,20 @@ const tagDao = {
     `;
     return await query(selectTags);
   },
-
+  async getSingleGen(gen: number) {
+    const selectSingleGen = sql<ISelectSingleGenParams & ISelectSingleGenQuery>`
+    select t.id AS tag_id,
+        t. "Tag" AS tag_abbrev,
+        t."Generation" AS tag_gene,
+        t. "Tag_lang" AS tag_name,
+        t. "Kommentar" AS tag_comment,
+        t. "AReihung" AS tag_order,
+        -- phaenomen
+        t. "zu_Phaenomen_id" AS phenomen_id from "KorpusDB_tbl_tags" t 
+        where t."Generation" = $gen
+    `;
+    return await query(selectSingleGen, { gen: gen });
+  },
   async getOrtTag(tagId: number[]) {
     const selectOrtTags = sql<ISelectOrtTagsQuery & ISelectOrtTagsParams>`
       SELECT

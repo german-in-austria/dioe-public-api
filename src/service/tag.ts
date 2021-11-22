@@ -1,4 +1,8 @@
-import { ISelectOrtTagsResult, ISelectTagsResult } from "src/dao/tag.queries";
+import {
+  ISelectOrtTagsResult,
+  ISelectTagsResult,
+  ISelectSingleGenResult,
+} from "src/dao/tag.queries";
 import tagDao from "../dao/tag";
 import _ from "lodash";
 
@@ -17,6 +21,9 @@ export default {
 
   async getTagOrte(tagId: number[]): Promise<ISelectOrtTagsResult[]> {
     return tagDao.getOrtTag(tagId);
+  },
+  async getTagGen(gen: number): Promise<ISelectSingleGenResult[]> {
+    return tagDao.getSingleGen(gen);
   },
   async getTagTree() {
     const list = await this.getTagList();

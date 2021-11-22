@@ -41,6 +41,28 @@ export interface ISelectTagsQuery {
   result: ISelectTagsResult;
 }
 
+/** 'SelectSingleGen' parameters type */
+export interface ISelectSingleGenParams {
+  gen: number | null | void;
+}
+
+/** 'SelectSingleGen' return type */
+export interface ISelectSingleGenResult {
+  tagId: number;
+  tagAbbrev: string;
+  tagGene: number | null;
+  tagName: string | null;
+  tagComment: string | null;
+  tagOrder: number | null;
+  phenomenId: number | null;
+}
+
+/** 'SelectSingleGen' query type */
+export interface ISelectSingleGenQuery {
+  params: ISelectSingleGenParams;
+  result: ISelectSingleGenResult;
+}
+
 /** 'SelectOrtTags' parameters type */
 export interface ISelectOrtTagsParams {
   tagId: Array<number | null | void>;

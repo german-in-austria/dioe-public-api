@@ -1,6 +1,7 @@
 import {
   ISelectOrtTagsResult,
   ISelectTagsLayersResult,
+  ISelectSingleGenResult,
 } from "src/dao/tag.queries";
 
 import { Body, Controller, Get, Path, Post, Query, Route } from "tsoa";
@@ -17,6 +18,13 @@ export class TagController extends Controller {
   public async getTags(): Promise<TagTree[]> {
     return tagService.getTagTree();
   }
+  @Get("/gen")
+  public async getTagGen(
+    @Query("gen") gen: number
+  ): Promise<ISelectSingleGenResult[]> {
+    return tagService.getTagGen(gen);
+  }
+
   @Get("/layers")
   public async getTagLayers(): Promise<ISelectTagsLayersResult[]> {
     return tagService.getTagLayers();

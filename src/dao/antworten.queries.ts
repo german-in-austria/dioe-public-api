@@ -10,8 +10,6 @@ export interface ISelectAntwortenParams {
 export interface ISelectAntwortenResult {
   startAntwort: string;
   stopAntwort: string;
-  startAufgabe: string;
-  stopAufgabe: string;
   kommentar: string | null;
   dateipfad: string | null;
   audiofile: string | null;
