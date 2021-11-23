@@ -10,12 +10,13 @@ const antwortenDao = {
   async selectAntwortenAudio(tagID: number[], osmId: string) {
     const selectAntworten = sql<ISelectAntwortenQuery & ISelectAntwortenParams>`
         select  kdte."start_Aufgabe" as "start_Antwort", 
-            kdte."stop_Aufgabe" as "stop_Antwort",
+          kdte."stop_Aufgabe" as "stop_Antwort",
           kdta."Kommentar", kdti."Dateipfad", kdti."Audiofile",
           kdtt.id as tag_id, 
           odto.osm_id as osmId, 
           kdtt."Tag_lang" as tag_name,
-          t.ortho as "ortho", t.text_in_ortho as "Ortho text"
+          t.ortho as "ortho", t.text_in_ortho as "Ortho text",
+          pdtig.gruppe_bez, pdtt.team_bez 
         from "KorpusDB_tbl_antworten" kdta
           join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Antwort_id" = kdta.id 
           join "KorpusDB_tbl_tags" kdtt on kdtt.id = kdta2."id_Tag_id" 
@@ -25,6 +26,8 @@ const antwortenDao = {
           join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
           join "OrteDB_tbl_orte" odto on kdti."Ort_id" = odto.id
           join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
+          join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
+          join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
           join lateral(
             select * from token t where t.id = kdta.ist_token_id limit 2
           ) t on true
@@ -35,6 +38,7 @@ const antwortenDao = {
           kdta."Kommentar", 
           kdtt.id, 
           kdta."start_Antwort", kdta."stop_Antwort",
+          pdtig.gruppe_bez, pdtt.team_bez, 
           odto.osm_id limit 50
         `;
     return await query(selectAntworten, { tagID: tagID, osmId: osmId });

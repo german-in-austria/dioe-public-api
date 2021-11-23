@@ -18,6 +18,8 @@ export interface ISelectAntwortenResult {
   tagName: string | null;
   ortho: string | null;
   orthoText: string | null;
+  gruppeBez: string | null;
+  teamBez: string | null;
 }
 
 /** 'SelectAntworten' query type */
