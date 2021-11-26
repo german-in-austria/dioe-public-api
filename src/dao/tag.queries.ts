@@ -16,6 +16,28 @@ export interface ISelectTagsLayersQuery {
   result: ISelectTagsLayersResult;
 }
 
+/** 'SelectTagById' parameters type */
+export interface ISelectTagByIdParams {
+  tagId: number | null | void;
+}
+
+/** 'SelectTagById' return type */
+export interface ISelectTagByIdResult {
+  tagId: number;
+  tagAbbrev: string;
+  tagGene: number | null;
+  tagName: string | null;
+  tagComment: string | null;
+  tagOrder: number | null;
+  phenomenId: number | null;
+}
+
+/** 'SelectTagById' query type */
+export interface ISelectTagByIdQuery {
+  params: ISelectTagByIdParams;
+  result: ISelectTagByIdResult;
+}
+
 /** 'SelectTags' parameters type */
 export type ISelectTagsParams = void;
 
@@ -65,7 +87,7 @@ export interface ISelectSingleGenQuery {
 
 /** 'SelectOrtTags' parameters type */
 export interface ISelectOrtTagsParams {
-  tagId: Array<number | null | void>;
+  tagId: readonly (number | null | void)[];
 }
 
 /** 'SelectOrtTags' return type */

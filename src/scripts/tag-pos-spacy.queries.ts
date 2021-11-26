@@ -34,14 +34,14 @@ export interface ISelectTranscriptsQuery {
 
 /** 'WriteTokenPos' parameters type */
 export interface IWriteTokenPosParams {
-  tokens: Array<{
+  tokens: readonly ({
     id: string | null | void,
     spacy_pos: string | null | void,
     spacy_tag: string | null | void,
     spacy_lemma: string | null | void,
     spacy_dep: string | null | void,
     spacy_entity_type: string | null | void
-  }>;
+  })[];
 }
 
 /** 'WriteTokenPos' return type */

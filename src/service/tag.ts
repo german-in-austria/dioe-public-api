@@ -1,8 +1,9 @@
 import {
   ISelectOrtTagsResult,
-  ISelectTagsResult,
   ISelectSingleGenResult,
-} from "src/dao/tag.queries";
+  ISelectTagsResult,
+  ISelectTagByIdResult,
+} from "../dao/tag.queries";
 import tagDao from "../dao/tag";
 import _ from "lodash";
 
@@ -14,8 +15,12 @@ export default {
   async getTagLayers() {
     return tagDao.getTagLayers();
   },
+  async getTagById(id: number): Promise<ISelectTagByIdResult[]> {
+    return tagDao.getSingleTagById(id);
+  },
 
   async getTagList(): Promise<ISelectTagsResult[]> {
+    // console.log(await tagDao.getTagTree());
     return tagDao.getTagTree();
   },
 
@@ -29,6 +34,7 @@ export default {
     const list = await this.getTagList();
     const listById = _.keyBy(list, "tagId");
     const firstLevelTags = list.filter((t) => t.parentIds === null);
+    // console.log(list.filter((el) => el.tagAbbrev === "rot"));
     return this.buildTreeRecursive(firstLevelTags, listById);
   },
 

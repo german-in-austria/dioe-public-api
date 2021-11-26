@@ -97,6 +97,52 @@
 				"type": "array",
 				"description": "Types generated for queries found in \"src/dao/tag.ts\""
 			},
+			"ISelectTagByIdResult": {
+				"description": "'SelectTagById' return type",
+				"properties": {
+					"tagId": {
+						"type": "number",
+						"format": "double"
+					},
+					"tagAbbrev": {
+						"type": "string"
+					},
+					"tagGene": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"tagName": {
+						"type": "string",
+						"nullable": true
+					},
+					"tagComment": {
+						"type": "string",
+						"nullable": true
+					},
+					"tagOrder": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"phenomenId": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					}
+				},
+				"required": [
+					"tagId",
+					"tagAbbrev",
+					"tagGene",
+					"tagName",
+					"tagComment",
+					"tagOrder",
+					"phenomenId"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
 			"ISelectSingleGenResult": {
 				"description": "'SelectSingleGen' return type",
 				"properties": {
@@ -532,6 +578,38 @@
 				},
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/tags/{tagId}": {
+			"get": {
+				"operationId": "GetTagById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectTagByIdResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "tagId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		},
 		"/tags/gen": {

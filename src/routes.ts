@@ -45,6 +45,20 @@ const models: TsoaRoute.Models = {
         "type": {"dataType":"array","array":{"dataType":"double"},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ISelectTagByIdResult": {
+        "dataType": "refObject",
+        "properties": {
+            "tagId": {"dataType":"double","required":true},
+            "tagAbbrev": {"dataType":"string","required":true},
+            "tagGene": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagComment": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagOrder": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
+            "phenomenId": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ISelectSingleGenResult": {
         "dataType": "refObject",
         "properties": {
@@ -214,15 +228,38 @@ export function RegisterRoutes(app: express.Router) {
             let validatedArgs: any[] = [];
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new TagController();
+
+
+              const promise = controller.getTags.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
             }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/api/tags/:tagId',
 
-            const controller = new TagController();
+            function TagController_getTagById(request: any, response: any, next: any) {
+            const args = {
+                    tagId: {"in":"path","name":"tagId","required":true,"dataType":"double"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new TagController();
 
 
-            const promise = controller.getTags.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
+              const promise = controller.getTagById.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/tags/gen',
@@ -237,15 +274,15 @@ export function RegisterRoutes(app: express.Router) {
             let validatedArgs: any[] = [];
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new TagController();
+
+
+              const promise = controller.getTagGen.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
             }
-
-            const controller = new TagController();
-
-
-            const promise = controller.getTagGen.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/tags/layers',
@@ -259,15 +296,15 @@ export function RegisterRoutes(app: express.Router) {
             let validatedArgs: any[] = [];
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new TagController();
+
+
+              const promise = controller.getTagLayers.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
             }
-
-            const controller = new TagController();
-
-
-            const promise = controller.getTagLayers.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/tags/ort/:tagId',
@@ -282,15 +319,15 @@ export function RegisterRoutes(app: express.Router) {
             let validatedArgs: any[] = [];
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new TagController();
+
+
+              const promise = controller.getTagOrte.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
             }
-
-            const controller = new TagController();
-
-
-            const promise = controller.getTagOrte.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/tags/ort',
@@ -305,15 +342,15 @@ export function RegisterRoutes(app: express.Router) {
             let validatedArgs: any[] = [];
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new TagController();
+
+
+              const promise = controller.getTagOrteMultiple.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
             }
-
-            const controller = new TagController();
-
-
-            const promise = controller.getTagOrteMultiple.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/test/:something',
@@ -330,15 +367,15 @@ export function RegisterRoutes(app: express.Router) {
             let validatedArgs: any[] = [];
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new TestController();
+
+
+              const promise = controller.getControllerDemo.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
             }
-
-            const controller = new TestController();
-
-
-            const promise = controller.getControllerDemo.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/phaen/ber',
@@ -352,15 +389,15 @@ export function RegisterRoutes(app: express.Router) {
             let validatedArgs: any[] = [];
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new PhaenController();
+
+
+              const promise = controller.getPhaenBer.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
             }
-
-            const controller = new PhaenController();
-
-
-            const promise = controller.getPhaenBer.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/phaen',
@@ -374,15 +411,15 @@ export function RegisterRoutes(app: express.Router) {
             let validatedArgs: any[] = [];
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new PhaenController();
+
+
+              const promise = controller.getPhaen.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
             }
-
-            const controller = new PhaenController();
-
-
-            const promise = controller.getPhaen.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/phaen/:berId',
@@ -397,15 +434,15 @@ export function RegisterRoutes(app: express.Router) {
             let validatedArgs: any[] = [];
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new PhaenController();
+
+
+              const promise = controller.getSinglePhaen.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
             }
-
-            const controller = new PhaenController();
-
-
-            const promise = controller.getSinglePhaen.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/aufgaben/sets',
@@ -420,15 +457,15 @@ export function RegisterRoutes(app: express.Router) {
             let validatedArgs: any[] = [];
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new AufgabenController();
+
+
+              const promise = controller.getAufgabenSets.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
             }
-
-            const controller = new AufgabenController();
-
-
-            const promise = controller.getAufgabenSets.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/aufgaben',
@@ -443,15 +480,15 @@ export function RegisterRoutes(app: express.Router) {
             let validatedArgs: any[] = [];
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new AufgabenController();
+
+
+              const promise = controller.getAufgabenPhaen.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
             }
-
-            const controller = new AufgabenController();
-
-
-            const promise = controller.getAufgabenPhaen.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/aufgaben/setaufgabe',
@@ -466,15 +503,15 @@ export function RegisterRoutes(app: express.Router) {
             let validatedArgs: any[] = [];
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new AufgabenController();
+
+
+              const promise = controller.getTagOrte.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
             }
-
-            const controller = new AufgabenController();
-
-
-            const promise = controller.getTagOrte.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/antworten/tags',
@@ -489,15 +526,15 @@ export function RegisterRoutes(app: express.Router) {
             let validatedArgs: any[] = [];
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new AntwortenController();
+
+
+              const promise = controller.getAntByTags.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
             }
-
-            const controller = new AntwortenController();
-
-
-            const promise = controller.getAntByTags.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
