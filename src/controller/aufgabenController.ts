@@ -2,7 +2,7 @@ import {
   ISelectAufgabenFromSetResult,
   ISelectAufgabenResult,
   ISelectAufgabenSetResult,
-} from "src/dao/aufgaben.queries";
+} from "../dao/aufgaben.queries";
 
 import {
   Body,

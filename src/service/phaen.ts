@@ -2,7 +2,7 @@ import {
   ISelectPhaenBerResult,
   ISelectPhaenResult,
   ISelectSinglePhaenResult,
-} from "src/dao/phaen.queries";
+} from "../dao/phaen.queries";
 import phaenDao from "../dao/phaen";
 import _ from "lodash";
 

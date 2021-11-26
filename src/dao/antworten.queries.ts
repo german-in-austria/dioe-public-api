@@ -2,7 +2,7 @@
 
 /** 'SelectAntworten' parameters type */
 export interface ISelectAntwortenParams {
-  tagID: Array<number | null | void>;
+  tagID: readonly (number | null | void)[];
   osmId: string | null | void;
 }
 
