@@ -7,6 +7,7 @@ import {
   ISelectAufgabenQuery,
   ISelectAufgabenFromSetParams,
   ISelectAufgabenFromSetQuery,
+  ISelectAllAufgabenQuery,
 } from "./aufgaben.queries";
 
 const aufgabenDao = {
@@ -41,6 +42,21 @@ const aufgabenDao = {
       where kdta2.id IN $$aufgabenSet
       `;
     return await query(selectAufgabenFromSet, { aufgabenSet: aufgabenSet });
+  },
+  async getAllAufgaben() {
+    const selectAllAufgaben = sql<ISelectAllAufgabenQuery>`
+    select kdta.id as "Auf_id",
+    kdta."Beschreibung_Aufgabe" as "Beschreibung",
+    kdta."Aufgabenstellung",
+    kdta."Kontext",
+    kdta3."Bezeichnung" as "Art_Bezeichnung",
+    kdta2."Name_Aset" as "Aset_Name",
+    kdta2."Fokus" as "Aset_Fokus"
+    from "KorpusDB_tbl_aufgaben" kdta 
+    join "KorpusDB_tbl_aufgabensets" kdta2 on kdta2.id = kdta."von_ASet_id" 
+    join "KorpusDB_tbl_aufgabenarten" kdta3 on kdta3.id = kdta."Aufgabenart_id" 
+    `;
+    return await query(selectAllAufgaben);
   },
 };
 

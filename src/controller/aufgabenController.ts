@@ -2,6 +2,7 @@ import {
   ISelectAufgabenFromSetResult,
   ISelectAufgabenResult,
   ISelectAufgabenSetResult,
+  ISelectAllAufgabenResult,
 } from "../dao/aufgaben.queries";
 
 import {
@@ -23,6 +24,10 @@ interface aufgabenDto {
 
 @Route("aufgaben")
 export class AufgabenController extends Controller {
+  @Get()
+  public async getAllAufgaben(): Promise<ISelectAllAufgabenResult[]> {
+    return aufgabenService.getAllAufgaben();
+  }
   @Post("/sets")
   public async getAufgabenSets(
     @Body() aufgabenDto: aufgabenDto

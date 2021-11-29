@@ -63,3 +63,23 @@ export interface ISelectAufgabenFromSetQuery {
   result: ISelectAufgabenFromSetResult;
 }
 
+/** 'SelectAllAufgaben' parameters type */
+export type ISelectAllAufgabenParams = void;
+
+/** 'SelectAllAufgaben' return type */
+export interface ISelectAllAufgabenResult {
+  aufId: number;
+  beschreibung: string | null;
+  aufgabenstellung: string | null;
+  kontext: string | null;
+  artBezeichnung: string;
+  asetName: string | null;
+  asetFokus: string | null;
+}
+
+/** 'SelectAllAufgaben' query type */
+export interface ISelectAllAufgabenQuery {
+  params: ISelectAllAufgabenParams;
+  result: ISelectAllAufgabenResult;
+}
+

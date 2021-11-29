@@ -342,6 +342,49 @@
 				"type": "object",
 				"additionalProperties": true
 			},
+			"ISelectAllAufgabenResult": {
+				"description": "'SelectAllAufgaben' return type",
+				"properties": {
+					"aufId": {
+						"type": "number",
+						"format": "double"
+					},
+					"beschreibung": {
+						"type": "string",
+						"nullable": true
+					},
+					"aufgabenstellung": {
+						"type": "string",
+						"nullable": true
+					},
+					"kontext": {
+						"type": "string",
+						"nullable": true
+					},
+					"artBezeichnung": {
+						"type": "string"
+					},
+					"asetName": {
+						"type": "string",
+						"nullable": true
+					},
+					"asetFokus": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"aufId",
+					"beschreibung",
+					"aufgabenstellung",
+					"kontext",
+					"artBezeichnung",
+					"asetName",
+					"asetFokus"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
 			"ISelectAufgabenSetResult": {
 				"description": "'SelectAufgabenSet' return type",
 				"properties": {
@@ -864,9 +907,9 @@
 				]
 			}
 		},
-		"/aufgaben/sets": {
-			"post": {
-				"operationId": "GetAufgabenSets",
+		"/aufgaben": {
+			"get": {
+				"operationId": "GetAllAufgaben",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -874,7 +917,27 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"$ref": "#/components/schemas/ISelectAufgabenSetResult"
+										"$ref": "#/components/schemas/ISelectAllAufgabenResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "GetAufgabenPhaen",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectAufgabenResult"
 									},
 									"type": "array"
 								}
@@ -896,9 +959,9 @@
 				}
 			}
 		},
-		"/aufgaben": {
+		"/aufgaben/sets": {
 			"post": {
-				"operationId": "GetAufgabenPhaen",
+				"operationId": "GetAufgabenSets",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -906,7 +969,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"$ref": "#/components/schemas/ISelectAufgabenResult"
+										"$ref": "#/components/schemas/ISelectAufgabenSetResult"
 									},
 									"type": "array"
 								}

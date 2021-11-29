@@ -2,6 +2,7 @@ import {
   ISelectAufgabenFromSetResult,
   ISelectAufgabenResult,
   ISelectAufgabenSetResult,
+  ISelectAllAufgabenResult,
 } from "src/dao/aufgaben.queries";
 import aufgabenDao from "../dao/aufgaben";
 import _ from "lodash";
@@ -19,5 +20,8 @@ export default {
     aufgabe: number[]
   ): Promise<ISelectAufgabenFromSetResult[]> {
     return aufgabenDao.getAufgabenWithSet(aufgabe);
+  },
+  async getAllAufgaben(): Promise<ISelectAllAufgabenResult[]> {
+    return aufgabenDao.getAllAufgaben();
   },
 };
