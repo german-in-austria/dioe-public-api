@@ -500,6 +500,113 @@
 				"type": "object",
 				"additionalProperties": true
 			},
+			"Antwort": {
+				"properties": {
+					"startAntwort": {
+						"type": "string"
+					},
+					"stopAntwort": {
+						"type": "string"
+					},
+					"kommentar": {
+						"type": "string",
+						"nullable": true
+					},
+					"tagId": {
+						"type": "number",
+						"format": "double"
+					},
+					"tagName": {
+						"type": "string",
+						"nullable": true
+					},
+					"satzId": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"aufgabeId": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"startAntwort",
+					"stopAntwort",
+					"kommentar",
+					"tagId",
+					"tagName",
+					"satzId",
+					"aufgabeId"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"AntwortTimestamp": {
+				"properties": {
+					"dateipfad": {
+						"type": "string",
+						"nullable": true
+					},
+					"audiofile": {
+						"type": "string",
+						"nullable": true
+					},
+					"gruppeBez": {
+						"type": "string",
+						"nullable": true
+					},
+					"teamBez": {
+						"type": "string",
+						"nullable": true
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/Antwort"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"dateipfad",
+					"audiofile",
+					"gruppeBez",
+					"teamBez",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"AntwortenFromAufgabe": {
+				"properties": {
+					"osmid": {
+						"type": "string",
+						"nullable": true
+					},
+					"lat": {
+						"type": "string",
+						"nullable": true
+					},
+					"lon": {
+						"type": "string",
+						"nullable": true
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/AntwortTimestamp"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"osmid",
+					"lat",
+					"lon",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
 			"AntwortenTags": {
 				"properties": {
 					"startAntwort": {
@@ -1045,6 +1152,47 @@
 						}
 					}
 				}
+			}
+		},
+		"/antworten": {
+			"get": {
+				"operationId": "GetAntbyAufgaben",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/AntwortenFromAufgabe"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "sid",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "aid",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		},
 		"/antworten/tags": {

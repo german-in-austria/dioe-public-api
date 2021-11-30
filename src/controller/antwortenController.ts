@@ -22,7 +22,10 @@ export interface ISelectAntwortenResult {
   tagName: string | null;
 }
 
-import antwortenService, { AntwortenTags } from "../service/antworten";
+import antwortenService, {
+  AntwortenTags,
+  AntwortenFromAufgabe,
+} from "../service/antworten";
 
 interface antwortenDto {
   ids: number[];
@@ -31,6 +34,15 @@ interface antwortenDto {
 
 @Route("antworten")
 export class AntwortenController extends Controller {
+  @Get()
+  public async getAntbyAufgaben(
+    @Query("sid") sid?: number,
+    @Query("aid") aid?: number
+  ): Promise<AntwortenFromAufgabe[]> {
+    // TODO Optimize Request for aufgabe
+    return antwortenService.getAntFromAufgabe(sid, aid);
+  }
+
   @Post("/tags")
   public async getAntByTags(
     @Body() antwortenDto: antwortenDto

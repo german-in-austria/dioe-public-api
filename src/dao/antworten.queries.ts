@@ -46,3 +46,33 @@ export interface ISelectSatzQuery {
   result: ISelectSatzResult;
 }
 
+/** 'SelectAntwortFromAufgabe' parameters type */
+export interface ISelectAntwortFromAufgabeParams {
+  satzid: number | null | void;
+  aufgabeid: number | null | void;
+}
+
+/** 'SelectAntwortFromAufgabe' return type */
+export interface ISelectAntwortFromAufgabeResult {
+  startAntwort: string;
+  stopAntwort: string;
+  kommentar: string | null;
+  dateipfad: string | null;
+  audiofile: string | null;
+  tagId: number;
+  osmid: string | null;
+  lat: string | null;
+  lon: string | null;
+  tagName: string | null;
+  gruppeBez: string | null;
+  teamBez: string | null;
+  satzId: number | null;
+  aufgabeId: number;
+}
+
+/** 'SelectAntwortFromAufgabe' query type */
+export interface ISelectAntwortFromAufgabeQuery {
+  params: ISelectAntwortFromAufgabeParams;
+  result: ISelectAntwortFromAufgabeResult;
+}
+

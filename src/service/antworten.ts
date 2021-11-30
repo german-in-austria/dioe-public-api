@@ -7,6 +7,7 @@ import { ISelectOrtTagsResult } from "src/dao/tag.queries";
 import {
   ISelectAntwortenResult,
   ISelectSatzResult,
+  ISelectAntwortFromAufgabeResult,
 } from "../dao/antworten.queries";
 
 export interface Antworten {
@@ -26,6 +27,31 @@ export interface AntwortenTags extends Antworten {
   tagNum: string | null;
 }
 
+export interface AntwortTimestamp {
+  dateipfad: string | null;
+  audiofile: string | null;
+  gruppeBez: string | null;
+  teamBez: string | null;
+  data: Antwort[];
+}
+
+export interface Antwort {
+  startAntwort: string;
+  stopAntwort: string;
+  kommentar: string | null;
+  tagId: number;
+  tagName: string | null;
+  satzId: number | null;
+  aufgabeId: number;
+}
+
+export interface AntwortenFromAufgabe {
+  osmid: string | null;
+  lat: string | null;
+  lon: string | null;
+  data: AntwortTimestamp[];
+}
+
 export default {
   async getAntwortenAudio(
     tagIDs: number[],
@@ -40,6 +66,58 @@ export default {
   },
   async getAntSatz(str: string): Promise<ISelectSatzResult[]> {
     return antwortenDao.selectMatchingSatz(str);
+  },
+  async getAntFromAufgabe(
+    satzid: number | undefined | null,
+    aufgabeid: number | undefined | null
+  ): Promise<AntwortenFromAufgabe[]> {
+    let sid = -1;
+    let aid = -1;
+    if (satzid && satzid >= 0) sid = satzid;
+    if (aufgabeid && aufgabeid >= 0) aid = aufgabeid;
+    const res: ISelectAntwortFromAufgabeResult[] =
+      await antwortenDao.selectAntwortenFromAufgaben(sid, aid);
+
+    let antworten: AntwortenFromAufgabe[] = [];
+    res.forEach((el) => {
+      const newAntwort: Antwort = {
+        startAntwort: el.startAntwort,
+        stopAntwort: el.stopAntwort,
+        kommentar: el.kommentar,
+        tagId: el.tagId,
+        tagName: el.tagName,
+        satzId: el.satzId,
+        aufgabeId: el.aufgabeId,
+      };
+      const newTimestamp: AntwortTimestamp = {
+        dateipfad: el.dateipfad,
+        audiofile: el.audiofile,
+        gruppeBez: el.gruppeBez,
+        teamBez: el.teamBez,
+        data: [newAntwort],
+      };
+      const idx = antworten.findIndex(
+        (a: AntwortenFromAufgabe) => a.osmid === el.osmid
+      );
+      if (idx >= 0) {
+        // Element exists
+        const dataIdx = antworten[idx].data.findIndex(
+          (a: AntwortTimestamp) =>
+            a.dateipfad === el.dateipfad && a.audiofile === el.audiofile
+        );
+        dataIdx >= 0
+          ? antworten[idx].data[dataIdx].data.push(newAntwort)
+          : antworten[idx].data.push(newTimestamp);
+      } else {
+        antworten.push({
+          lat: el.lat,
+          lon: el.lon,
+          osmid: el.osmid,
+          data: [newTimestamp],
+        });
+      }
+    });
+    return antworten;
   },
   mergeTagNum(
     antworten: ISelectAntwortenResult[],
