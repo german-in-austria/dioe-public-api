@@ -4,6 +4,8 @@ import query from "./connect/pg";
 import {
   ISelectAntwortenParams,
   ISelectAntwortenQuery,
+  ISelectSatzQuery,
+  ISelectSatzParams,
 } from "src/dao/antworten.queries";
 
 const antwortenDao = {
@@ -42,6 +44,13 @@ const antwortenDao = {
           odto.osm_id limit 50
         `;
     return await query(selectAntworten, { tagID: tagID, osmId: osmId });
+  },
+  async selectMatchingSatz(str: string) {
+    const selectSatz = sql<ISelectSatzQuery & ISelectSatzParams>`
+    select kdts.id, kdts."Transkript", kdts.ipa 
+    from "KorpusDB_tbl_saetze" kdts 
+    where kdts."Transkript" like $str`;
+    return await query(selectSatz, { str: str });
   },
 };
 

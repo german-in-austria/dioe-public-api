@@ -9,6 +9,8 @@ import {
   BodyProp,
 } from "tsoa";
 
+import { ISelectSatzResult } from "../dao/antworten.queries";
+
 export interface ISelectAntwortenResult {
   startAntwort: string;
   stopAntwort: string;
@@ -37,5 +39,10 @@ export class AntwortenController extends Controller {
       antwortenDto.ids,
       antwortenDto.osmId
     );
+  }
+
+  @Get("/saetze")
+  public async getSatz(@Query("q") query: string) {
+    return antwortenService.getAntSatz(`%${query}%`);
   }
 }

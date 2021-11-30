@@ -4,7 +4,10 @@ import _ from "lodash";
 
 import { ISelectOrtTagsResult } from "src/dao/tag.queries";
 
-import { ISelectAntwortenResult } from "src/dao/antworten.queries";
+import {
+  ISelectAntwortenResult,
+  ISelectSatzResult,
+} from "../dao/antworten.queries";
 
 export interface Antworten {
   startAntwort: string;
@@ -34,6 +37,9 @@ export default {
     const tagNum = await tagService.getTagOrte(tagIDs);
     // Combine the results and return them to the controller
     return this.mergeTagNum(results, tagNum);
+  },
+  async getAntSatz(str: string): Promise<ISelectSatzResult[]> {
+    return antwortenDao.selectMatchingSatz(str);
   },
   mergeTagNum(
     antworten: ISelectAntwortenResult[],

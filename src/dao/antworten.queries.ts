@@ -28,3 +28,21 @@ export interface ISelectAntwortenQuery {
   result: ISelectAntwortenResult;
 }
 
+/** 'SelectSatz' parameters type */
+export interface ISelectSatzParams {
+  str: string | null | void;
+}
+
+/** 'SelectSatz' return type */
+export interface ISelectSatzResult {
+  id: number;
+  transkript: string | null;
+  ipa: string | null;
+}
+
+/** 'SelectSatz' query type */
+export interface ISelectSatzQuery {
+  params: ISelectSatzParams;
+  result: ISelectSatzResult;
+}
+
