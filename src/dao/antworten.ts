@@ -15,7 +15,7 @@ const antwortenDao = {
     const selectAntworten = sql<ISelectAntwortenQuery & ISelectAntwortenParams>`
         select  kdte."start_Aufgabe" as "start_Antwort", 
           kdte."stop_Aufgabe" as "stop_Antwort",
-          kdta."Kommentar", kdti."Dateipfad", kdti."Audiofile",
+          kdta."Kommentar", kdti."Dateipfad" as "dateipfad", kdti."Audiofile" as "audiofile",
           kdtt.id as tag_id, 
           odto.osm_id as osmId, 
           kdtt."Tag_lang" as tag_name,

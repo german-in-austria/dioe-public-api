@@ -607,7 +607,7 @@
 				"type": "object",
 				"additionalProperties": true
 			},
-			"AntwortenTags": {
+			"AntwortToken": {
 				"properties": {
 					"startAntwort": {
 						"type": "string"
@@ -619,21 +619,9 @@
 						"type": "string",
 						"nullable": true
 					},
-					"dateipfad": {
-						"type": "string",
-						"nullable": true
-					},
-					"audiofile": {
-						"type": "string",
-						"nullable": true
-					},
 					"tagId": {
 						"type": "number",
 						"format": "double"
-					},
-					"osmid": {
-						"type": "string",
-						"nullable": true
 					},
 					"tagName": {
 						"type": "string",
@@ -656,14 +644,46 @@
 					"startAntwort",
 					"stopAntwort",
 					"kommentar",
-					"dateipfad",
-					"audiofile",
 					"tagId",
-					"osmid",
 					"tagName",
 					"ortho",
 					"orthoText",
 					"tagNum"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"AntwortTokenStamp": {
+				"properties": {
+					"dateipfad": {
+						"type": "string",
+						"nullable": true
+					},
+					"audiofile": {
+						"type": "string",
+						"nullable": true
+					},
+					"gruppeBez": {
+						"type": "string",
+						"nullable": true
+					},
+					"teamBez": {
+						"type": "string",
+						"nullable": true
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/AntwortToken"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"dateipfad",
+					"audiofile",
+					"gruppeBez",
+					"teamBez",
+					"data"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -1205,7 +1225,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"$ref": "#/components/schemas/AntwortenTags"
+										"$ref": "#/components/schemas/AntwortTokenStamp"
 									},
 									"type": "array"
 								}

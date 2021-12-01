@@ -21,18 +21,12 @@ export interface Antworten {
   tagName: string | null;
   ortho: string | null;
   orthoText: string | null;
+  gruppeBez: string | null;
+  teamBez: string | null;
 }
 
 export interface AntwortenTags extends Antworten {
   tagNum: string | null;
-}
-
-export interface AntwortTimestamp {
-  dateipfad: string | null;
-  audiofile: string | null;
-  gruppeBez: string | null;
-  teamBez: string | null;
-  data: Antwort[];
 }
 
 export interface Antwort {
@@ -43,6 +37,33 @@ export interface Antwort {
   tagName: string | null;
   satzId: number | null;
   aufgabeId: number;
+}
+
+export interface AntwortToken {
+  startAntwort: string;
+  stopAntwort: string;
+  kommentar: string | null;
+  tagId: number;
+  tagName: string | null;
+  ortho: string | null;
+  orthoText: string | null;
+  tagNum: string | null;
+}
+
+export interface AntwortTokenStamp {
+  dateipfad: string | null;
+  audiofile: string | null;
+  gruppeBez: string | null;
+  teamBez: string | null;
+  data: AntwortToken[];
+}
+
+export interface AntwortTimestamp {
+  dateipfad: string | null;
+  audiofile: string | null;
+  gruppeBez: string | null;
+  teamBez: string | null;
+  data: Antwort[];
 }
 
 export interface AntwortenFromAufgabe {
@@ -56,13 +77,43 @@ export default {
   async getAntwortenAudio(
     tagIDs: number[],
     osmId: number
-  ): Promise<AntwortenTags[]> {
+  ): Promise<AntwortTokenStamp[]> {
     const results: ISelectAntwortenResult[] =
       await antwortenDao.selectAntwortenAudio(tagIDs, osmId.toString());
     // Group the different time tags together into a single Array of Objects
     const tagNum = await tagService.getTagOrte(tagIDs);
     // Combine the results and return them to the controller
-    return this.mergeTagNum(results, tagNum);
+    const merged = this.mergeTagNum(results, tagNum);
+    let antworten: AntwortTokenStamp[] = [];
+    merged.forEach((el) => {
+      const newAntwort: AntwortToken = {
+        startAntwort: el.startAntwort,
+        stopAntwort: el.stopAntwort,
+        kommentar: el.kommentar,
+        tagId: el.tagId,
+        tagName: el.tagName,
+        tagNum: el.tagNum,
+        ortho: el.ortho,
+        orthoText: el.orthoText,
+      };
+      const newTimestamp: AntwortTokenStamp = {
+        dateipfad: el.dateipfad,
+        audiofile: el.audiofile,
+        gruppeBez: el.gruppeBez,
+        teamBez: el.teamBez,
+        data: [newAntwort],
+      };
+      const dataIdx = antworten.findIndex(
+        (a: AntwortTokenStamp) =>
+          a.dateipfad === el.dateipfad && a.audiofile === el.audiofile
+      );
+      if (dataIdx >= 0) {
+        antworten[dataIdx].data.push(newAntwort);
+      } else {
+        antworten.push(newTimestamp);
+      }
+    });
+    return antworten;
   },
   async getAntSatz(str: string): Promise<ISelectSatzResult[]> {
     return antwortenDao.selectMatchingSatz(str);

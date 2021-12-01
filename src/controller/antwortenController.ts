@@ -25,6 +25,7 @@ export interface ISelectAntwortenResult {
 import antwortenService, {
   AntwortenTags,
   AntwortenFromAufgabe,
+  AntwortTokenStamp,
 } from "../service/antworten";
 
 interface antwortenDto {
@@ -46,7 +47,7 @@ export class AntwortenController extends Controller {
   @Post("/tags")
   public async getAntByTags(
     @Body() antwortenDto: antwortenDto
-  ): Promise<AntwortenTags[]> {
+  ): Promise<AntwortTokenStamp[]> {
     return antwortenService.getAntwortenAudio(
       antwortenDto.ids,
       antwortenDto.osmId
