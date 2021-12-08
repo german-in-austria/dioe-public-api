@@ -10,14 +10,11 @@ export interface ISelectAntwortenParams {
 export interface ISelectAntwortenResult {
   startAntwort: string;
   stopAntwort: string;
-  kommentar: string | null;
   dateipfad: string | null;
   audiofile: string | null;
   tagId: number;
   osmid: string | null;
   tagName: string | null;
-  ortho: string | null;
-  orthoText: string | null;
   gruppeBez: string | null;
   teamBez: string | null;
 }
@@ -44,6 +41,49 @@ export interface ISelectSatzResult {
 export interface ISelectSatzQuery {
   params: ISelectSatzParams;
   result: ISelectSatzResult;
+}
+
+/** 'CheckIfTrans' parameters type */
+export interface ICheckIfTransParams {
+  tagId: readonly (number | null | void)[];
+}
+
+/** 'CheckIfTrans' return type */
+export interface ICheckIfTransResult {
+  id: number;
+}
+
+/** 'CheckIfTrans' query type */
+export interface ICheckIfTransQuery {
+  params: ICheckIfTransParams;
+  result: ICheckIfTransResult;
+}
+
+/** 'SelectAntwortenTrans' parameters type */
+export interface ISelectAntwortenTransParams {
+  tagID: readonly (number | null | void)[];
+  osmId: string | null | void;
+}
+
+/** 'SelectAntwortenTrans' return type */
+export interface ISelectAntwortenTransResult {
+  startAntwort: string | null;
+  stopAntwort: string | null;
+  dateipfad: string | null;
+  audiofile: string | null;
+  tagId: number;
+  osmid: string | null;
+  tagName: string | null;
+  ortho: string | null;
+  orthoText: string | null;
+  gruppeBez: string | null;
+  teamBez: string | null;
+}
+
+/** 'SelectAntwortenTrans' query type */
+export interface ISelectAntwortenTransQuery {
+  params: ISelectAntwortenTransParams;
+  result: ISelectAntwortenTransResult;
 }
 
 /** 'SelectAntwortFromAufgabe' parameters type */

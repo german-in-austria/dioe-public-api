@@ -23,7 +23,6 @@ export interface ISelectAntwortenResult {
 }
 
 import antwortenService, {
-  AntwortenTags,
   AntwortenFromAufgabe,
   AntwortTokenStamp,
 } from "../service/antworten";

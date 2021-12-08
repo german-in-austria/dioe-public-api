@@ -8,46 +8,25 @@ import {
   ISelectAntwortenResult,
   ISelectSatzResult,
   ISelectAntwortFromAufgabeResult,
+  ICheckIfTransResult,
+  ISelectAntwortenTransResult,
 } from "../dao/antworten.queries";
-
-export interface Antworten {
-  startAntwort: string;
-  stopAntwort: string;
-  kommentar: string | null;
-  dateipfad: string | null;
-  audiofile: string | null;
-  tagId: number;
-  osmid: string | null;
-  tagName: string | null;
-  ortho: string | null;
-  orthoText: string | null;
-  gruppeBez: string | null;
-  teamBez: string | null;
-}
-
-export interface AntwortenTags extends Antworten {
-  tagNum: string | null;
-}
 
 export interface Antwort {
   startAntwort: string;
   stopAntwort: string;
-  kommentar: string | null;
   tagId: number;
   tagName: string | null;
+}
+
+export interface AntwortAufgabe extends Antwort {
   satzId: number | null;
   aufgabeId: number;
 }
 
-export interface AntwortToken {
-  startAntwort: string;
-  stopAntwort: string;
-  kommentar: string | null;
-  tagId: number;
-  tagName: string | null;
+export interface AntwortToken extends Antwort {
   ortho: string | null;
   orthoText: string | null;
-  tagNum: string | null;
 }
 
 export interface AntwortTokenStamp {
@@ -55,7 +34,7 @@ export interface AntwortTokenStamp {
   audiofile: string | null;
   gruppeBez: string | null;
   teamBez: string | null;
-  data: AntwortToken[];
+  data: (Antwort | AntwortToken)[];
 }
 
 export interface AntwortTimestamp {
@@ -78,37 +57,81 @@ export default {
     tagIDs: number[],
     osmId: number
   ): Promise<AntwortTokenStamp[]> {
-    const results: ISelectAntwortenResult[] =
-      await antwortenDao.selectAntwortenAudio(tagIDs, osmId.toString());
+    const transCheck: ICheckIfTransResult[] = await antwortenDao.checkIfTrans(
+      tagIDs
+    );
+    let antIDs = [] as number[];
+    let transIDs = [] as number[];
+    transCheck.forEach((el) => {
+      if (tagIDs.some((tag) => tag === el.id)) {
+        transIDs.push(el.id);
+      } else {
+        antIDs.push(el.id);
+      }
+    });
+    let resTrans: ISelectAntwortenTransResult[] = [];
+    let resAnt: ISelectAntwortenResult[] = [];
+    if (transIDs.length > 0) {
+      resTrans = await antwortenDao.selectAntwortenTrans(
+        transIDs,
+        osmId.toString()
+      );
+    }
+    if (antIDs.length > 0) {
+      resAnt = await antwortenDao.selectAntwortenAudio(
+        antIDs,
+        osmId.toString()
+      );
+    }
     // Group the different time tags together into a single Array of Objects
-    const tagNum = await tagService.getTagOrte(tagIDs);
-    // Combine the results and return them to the controller
-    const merged = this.mergeTagNum(results, tagNum);
+    // const tagNum = await tagService.getTagOrte(tagIDs);
+
+    // let mergeArr: Array<{ tagId: number; osmid: string }> = resTrans;
+    let mergeArr: any = resTrans;
+    mergeArr = mergeArr.concat(resAnt);
+    /*
+    mergeArr = [
+      ...new Map(
+        data.map((v) => [JSON.stringify([v["tagId"], v["osmid"]]), v])
+      ).values(),
+    ];
+    // Merge the results and add tagNum to the result
+    const merged = this.mergeTagNum(mergeArr, tagNum);
+    */
     let antworten: AntwortTokenStamp[] = [];
-    merged.forEach((el) => {
-      const newAntwort: AntwortToken = {
-        startAntwort: el.startAntwort,
-        stopAntwort: el.stopAntwort,
-        kommentar: el.kommentar,
-        tagId: el.tagId,
-        tagName: el.tagName,
-        tagNum: el.tagNum,
-        ortho: el.ortho,
-        orthoText: el.orthoText,
-      };
+    mergeArr.forEach((el: any) => {
+      // const cont = el.content;
+      let ant: Antwort | AntwortToken = {} as Antwort;
+      if (el.ortho) {
+        ant = {
+          startAntwort: el.startAntwort,
+          stopAntwort: el.stopAntwort,
+          tagId: el.tagId,
+          tagName: el.tagName,
+          ortho: el.ortho,
+          orthoText: el.orthoText,
+        } as AntwortToken;
+      } else {
+        ant = {
+          startAntwort: el.startAntwort,
+          stopAntwort: el.stopAntwort,
+          tagId: el.tagId,
+          tagName: el.tagName,
+        } as Antwort;
+      }
       const newTimestamp: AntwortTokenStamp = {
         dateipfad: el.dateipfad,
         audiofile: el.audiofile,
         gruppeBez: el.gruppeBez,
         teamBez: el.teamBez,
-        data: [newAntwort],
+        data: [ant],
       };
       const dataIdx = antworten.findIndex(
         (a: AntwortTokenStamp) =>
           a.dateipfad === el.dateipfad && a.audiofile === el.audiofile
       );
       if (dataIdx >= 0) {
-        antworten[dataIdx].data.push(newAntwort);
+        antworten[dataIdx].data.push(ant);
       } else {
         antworten.push(newTimestamp);
       }
@@ -131,10 +154,9 @@ export default {
 
     let antworten: AntwortenFromAufgabe[] = [];
     res.forEach((el) => {
-      const newAntwort: Antwort = {
+      const newAntwort: AntwortAufgabe = {
         startAntwort: el.startAntwort,
         stopAntwort: el.stopAntwort,
-        kommentar: el.kommentar,
         tagId: el.tagId,
         tagName: el.tagName,
         satzId: el.satzId,
@@ -171,9 +193,13 @@ export default {
     return antworten;
   },
   mergeTagNum(
-    antworten: ISelectAntwortenResult[],
+    antworten: Array<{ tagId: number; osmid: string }>,
     tagNum: ISelectOrtTagsResult[]
-  ): AntwortenTags[] {
+  ): Array<{
+    tagId: number;
+    osmid: string;
+    tagNum: string | null;
+  }> {
     return antworten.map((a) => {
       const num = tagNum.filter(
         (e) => e.tagId === a.tagId && e.osmId === a.osmid

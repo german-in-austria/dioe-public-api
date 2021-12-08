@@ -508,10 +508,6 @@
 					"stopAntwort": {
 						"type": "string"
 					},
-					"kommentar": {
-						"type": "string",
-						"nullable": true
-					},
 					"tagId": {
 						"type": "number",
 						"format": "double"
@@ -519,25 +515,13 @@
 					"tagName": {
 						"type": "string",
 						"nullable": true
-					},
-					"satzId": {
-						"type": "number",
-						"format": "double",
-						"nullable": true
-					},
-					"aufgabeId": {
-						"type": "number",
-						"format": "double"
 					}
 				},
 				"required": [
 					"startAntwort",
 					"stopAntwort",
-					"kommentar",
 					"tagId",
-					"tagName",
-					"satzId",
-					"aufgabeId"
+					"tagName"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -615,10 +599,6 @@
 					"stopAntwort": {
 						"type": "string"
 					},
-					"kommentar": {
-						"type": "string",
-						"nullable": true
-					},
 					"tagId": {
 						"type": "number",
 						"format": "double"
@@ -634,21 +614,15 @@
 					"orthoText": {
 						"type": "string",
 						"nullable": true
-					},
-					"tagNum": {
-						"type": "string",
-						"nullable": true
 					}
 				},
 				"required": [
 					"startAntwort",
 					"stopAntwort",
-					"kommentar",
 					"tagId",
 					"tagName",
 					"ortho",
-					"orthoText",
-					"tagNum"
+					"orthoText"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -673,7 +647,14 @@
 					},
 					"data": {
 						"items": {
-							"$ref": "#/components/schemas/AntwortToken"
+							"anyOf": [
+								{
+									"$ref": "#/components/schemas/Antwort"
+								},
+								{
+									"$ref": "#/components/schemas/AntwortToken"
+								}
+							]
 						},
 						"type": "array"
 					}
