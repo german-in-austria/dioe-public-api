@@ -62,11 +62,11 @@ export default {
     );
     let antIDs = [] as number[];
     let transIDs = [] as number[];
-    transCheck.forEach((el) => {
-      if (tagIDs.some((tag) => tag === el.id)) {
-        transIDs.push(el.id);
+    tagIDs.forEach((el) => {
+      if (transCheck.some((tag) => tag.id === el)) {
+        transIDs.push(el);
       } else {
-        antIDs.push(el.id);
+        antIDs.push(el);
       }
     });
     let resTrans: ISelectAntwortenTransResult[] = [];
