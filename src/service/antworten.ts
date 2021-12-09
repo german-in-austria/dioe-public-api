@@ -213,7 +213,17 @@ export default {
     } else {
       lemma = "";
     }
-    return antwortenDao.selectMatchingTokens(ortho, phon, lemma);
+    let results = await antwortenDao.selectMatchingTokens(ortho, phon, lemma);
+    // Extract unique results from results
+    results = [
+      ...new Map(
+        results.map((v) => [
+          JSON.stringify([v["ortho"], v["textInOrtho"], v["splemma"]]),
+          v,
+        ])
+      ).values(),
+    ];
+    return results;
   },
   mergeTagNum(
     antworten: Array<{ tagId: number; osmid: string }>,
