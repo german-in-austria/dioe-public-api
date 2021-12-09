@@ -116,3 +116,24 @@ export interface ISelectAntwortFromAufgabeQuery {
   result: ISelectAntwortFromAufgabeResult;
 }
 
+/** 'SelectMatchingTokens' parameters type */
+export interface ISelectMatchingTokensParams {
+  ortho: string | null | void;
+  phon: string | null | void;
+  lemma: string | null | void;
+}
+
+/** 'SelectMatchingTokens' return type */
+export interface ISelectMatchingTokensResult {
+  id: number;
+  ortho: string | null;
+  textInOrtho: string | null;
+  splemma: string | null;
+}
+
+/** 'SelectMatchingTokens' query type */
+export interface ISelectMatchingTokensQuery {
+  params: ISelectMatchingTokensParams;
+  result: ISelectMatchingTokensResult;
+}
+

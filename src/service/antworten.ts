@@ -10,6 +10,7 @@ import {
   ISelectAntwortFromAufgabeResult,
   ICheckIfTransResult,
   ISelectAntwortenTransResult,
+  ISelectMatchingTokensResult,
 } from "../dao/antworten.queries";
 
 export interface Antwort {
@@ -191,6 +192,28 @@ export default {
       }
     });
     return antworten;
+  },
+  async getMatchingTokens(
+    ortho: string | undefined | null,
+    phon: string | undefined | null,
+    lemma: string | undefined | null
+  ): Promise<ISelectMatchingTokensResult[]> {
+    if (ortho && ortho.length > 0) {
+      ortho = `%${ortho}%`;
+    } else {
+      ortho = "";
+    }
+    if (phon && phon.length > 0) {
+      phon = `%${phon}%`;
+    } else {
+      phon = "";
+    }
+    if (lemma && lemma.length > 0) {
+      lemma = `%${lemma}%`;
+    } else {
+      lemma = "";
+    }
+    return antwortenDao.selectMatchingTokens(ortho, phon, lemma);
   },
   mergeTagNum(
     antworten: Array<{ tagId: number; osmid: string }>,

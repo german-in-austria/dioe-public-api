@@ -713,6 +713,35 @@
 				],
 				"type": "object",
 				"additionalProperties": true
+			},
+			"ISelectMatchingTokensResult": {
+				"description": "'SelectMatchingTokens' return type",
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"ortho": {
+						"type": "string",
+						"nullable": true
+					},
+					"textInOrtho": {
+						"type": "string",
+						"nullable": true
+					},
+					"splemma": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"ortho",
+					"textInOrtho",
+					"splemma"
+				],
+				"type": "object",
+				"additionalProperties": true
 			}
 		},
 		"securitySchemes": {
@@ -1252,6 +1281,53 @@
 						"in": "query",
 						"name": "q",
 						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/antworten/token": {
+			"get": {
+				"operationId": "GetMatchingTokens",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectMatchingTokensResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "o",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "p",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "l",
+						"required": false,
 						"schema": {
 							"type": "string"
 						}

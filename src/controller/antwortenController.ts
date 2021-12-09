@@ -9,7 +9,10 @@ import {
   BodyProp,
 } from "tsoa";
 
-import { ISelectSatzResult } from "../dao/antworten.queries";
+import {
+  ISelectSatzResult,
+  ISelectMatchingTokensResult,
+} from "../dao/antworten.queries";
 
 export interface ISelectAntwortenResult {
   startAntwort: string;
@@ -54,7 +57,18 @@ export class AntwortenController extends Controller {
   }
 
   @Get("/saetze")
-  public async getSatz(@Query("q") query: string) {
+  public async getSatz(
+    @Query("q") query: string
+  ): Promise<ISelectSatzResult[]> {
     return antwortenService.getAntSatz(`%${query}%`);
+  }
+
+  @Get("/token")
+  public async getMatchingTokens(
+    @Query("o") ortho?: string,
+    @Query("p") phon?: string,
+    @Query("l") lemma?: string
+  ): Promise<ISelectMatchingTokensResult[]> {
+    return antwortenService.getMatchingTokens(ortho, phon, lemma);
   }
 }

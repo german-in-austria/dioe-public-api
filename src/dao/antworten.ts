@@ -12,6 +12,8 @@ import {
   ICheckIfTransParams,
   ISelectAntwortenTransQuery,
   ISelectAntwortenTransParams,
+  ISelectMatchingTokensParams,
+  ISelectMatchingTokensQuery,
 } from "src/dao/antworten.queries";
 
 const antwortenDao = {
@@ -158,6 +160,21 @@ const antwortenDao = {
     return await query(selectAntwortFromAufgabe, {
       satzid: satzid,
       aufgabeid: aufgabeid,
+    });
+  },
+  async selectMatchingTokens(ortho: string, phon: string, lemma: string) {
+    const selectMatchingTokens = sql<
+      ISelectMatchingTokensQuery & ISelectMatchingTokensParams
+    >`
+    select t.id, t.ortho, t.text_in_ortho, t.splemma from "token" t 
+      where ($ortho = '' or t.ortho like $ortho) and 
+      ($phon = '' or t.text_in_ortho like $phon) and
+      ($lemma = '' or t.splemma like $lemma);
+    `;
+    return await query(selectMatchingTokens, {
+      ortho: ortho,
+      phon: phon,
+      lemma: lemma,
     });
   },
 };
