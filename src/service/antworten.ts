@@ -11,6 +11,9 @@ import {
   ICheckIfTransResult,
   ISelectAntwortenTransResult,
   ISelectMatchingTokensResult,
+  ICheckIfAufgabeResult,
+  IGetStampsFromAntwortResult,
+  ICheckIfRepResult,
 } from "../dao/antworten.queries";
 
 export interface Antwort {
@@ -58,20 +61,31 @@ export default {
     tagIDs: number[],
     osmId: number
   ): Promise<AntwortTokenStamp[]> {
-    const transCheck: ICheckIfTransResult[] = await antwortenDao.checkIfTrans(
-      tagIDs
-    );
+    const aufgabeCheck: ICheckIfAufgabeResult[] =
+      await antwortenDao.checkIfAufgabe(tagIDs);
+    let repCheck: ICheckIfRepResult[] = [];
+    if (aufgabeCheck.length !== tagIDs.length) {
+      repCheck = await antwortenDao.checkIfRep(tagIDs);
+    }
+    let aufgIDs = [] as number[];
     let antIDs = [] as number[];
     let transIDs = [] as number[];
+
     tagIDs.forEach((el) => {
-      if (transCheck.some((tag) => tag.id === el)) {
-        transIDs.push(el);
-      } else {
+      if (repCheck.length > 0 && repCheck.some((tag) => tag.id === el)) {
         antIDs.push(el);
+      } else if (
+        aufgabeCheck.length > 0 &&
+        aufgabeCheck.some((tag) => tag.id === el)
+      ) {
+        aufgIDs.push(el);
+      } else {
+        transIDs.push(el);
       }
     });
     let resTrans: ISelectAntwortenTransResult[] = [];
     let resAnt: ISelectAntwortenResult[] = [];
+    let resAuf: IGetStampsFromAntwortResult[] = [];
     if (transIDs.length > 0) {
       resTrans = await antwortenDao.selectAntwortenTrans(
         transIDs,
@@ -84,12 +98,18 @@ export default {
         osmId.toString()
       );
     }
+    if (aufgIDs.length > 0) {
+      resAuf = await antwortenDao.getStampsFromAntwort(
+        aufgIDs,
+        osmId.toString()
+      );
+    }
     // Group the different time tags together into a single Array of Objects
     // const tagNum = await tagService.getTagOrte(tagIDs);
 
     // let mergeArr: Array<{ tagId: number; osmid: string }> = resTrans;
     let mergeArr: any = resTrans;
-    mergeArr = mergeArr.concat(resAnt);
+    mergeArr = mergeArr.concat(resAnt).concat(resAuf);
     /*
     mergeArr = [
       ...new Map(

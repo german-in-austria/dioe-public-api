@@ -59,6 +59,63 @@ export interface ICheckIfTransQuery {
   result: ICheckIfTransResult;
 }
 
+/** 'CheckIfRep' parameters type */
+export interface ICheckIfRepParams {
+  tagId: readonly (number | null | void)[];
+}
+
+/** 'CheckIfRep' return type */
+export interface ICheckIfRepResult {
+  id: number;
+}
+
+/** 'CheckIfRep' query type */
+export interface ICheckIfRepQuery {
+  params: ICheckIfRepParams;
+  result: ICheckIfRepResult;
+}
+
+/** 'CheckIfAufgabe' parameters type */
+export interface ICheckIfAufgabeParams {
+  tagId: readonly (number | null | void)[];
+}
+
+/** 'CheckIfAufgabe' return type */
+export interface ICheckIfAufgabeResult {
+  id: number;
+}
+
+/** 'CheckIfAufgabe' query type */
+export interface ICheckIfAufgabeQuery {
+  params: ICheckIfAufgabeParams;
+  result: ICheckIfAufgabeResult;
+}
+
+/** 'GetStampsFromAntwort' parameters type */
+export interface IGetStampsFromAntwortParams {
+  tagId: readonly (number | null | void)[];
+  osmId: string | null | void;
+}
+
+/** 'GetStampsFromAntwort' return type */
+export interface IGetStampsFromAntwortResult {
+  startAntwort: string;
+  stopAntwort: string;
+  dateipfad: string | null;
+  audiofile: string | null;
+  tagId: number;
+  osmid: string | null;
+  tagName: string | null;
+  gruppeBez: string | null;
+  teamBez: string | null;
+}
+
+/** 'GetStampsFromAntwort' query type */
+export interface IGetStampsFromAntwortQuery {
+  params: IGetStampsFromAntwortParams;
+  result: IGetStampsFromAntwortResult;
+}
+
 /** 'SelectAntwortenTrans' parameters type */
 export interface ISelectAntwortenTransParams {
   tagID: readonly (number | null | void)[];
@@ -69,12 +126,10 @@ export interface ISelectAntwortenTransParams {
 export interface ISelectAntwortenTransResult {
   startAntwort: string | null;
   stopAntwort: string | null;
-  dateipfad: string | null;
-  audiofile: string | null;
-  tagId: number;
-  osmid: string | null;
   tagName: string | null;
   ortho: string | null;
+  dateipfad: string | null;
+  audiofile: string | null;
   orthoText: string | null;
   gruppeBez: string | null;
   teamBez: string | null;
