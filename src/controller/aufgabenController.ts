@@ -3,6 +3,7 @@ import {
   ISelectAufgabenResult,
   ISelectAufgabenSetResult,
   ISelectAllAufgabenResult,
+  ISelectOrtAufgabeResult,
 } from "../dao/aufgaben.queries";
 
 import {
@@ -28,6 +29,14 @@ export class AufgabenController extends Controller {
   public async getAllAufgaben(): Promise<ISelectAllAufgabenResult[]> {
     return aufgabenService.getAllAufgaben();
   }
+
+  @Post("/orte")
+  public async getAufgabenOrte(
+    @Body() aufgabenDto: aufgabenDto
+  ): Promise<ISelectOrtAufgabeResult[]> {
+    return aufgabenService.getOrtAufgabe(aufgabenDto.ids);
+  }
+
   @Post("/sets")
   public async getAufgabenSets(
     @Body() aufgabenDto: aufgabenDto

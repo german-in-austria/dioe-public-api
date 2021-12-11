@@ -385,6 +385,65 @@
 				"type": "object",
 				"additionalProperties": true
 			},
+			"ISelectOrtAufgabeResult": {
+				"description": "'SelectOrtAufgabe' return type",
+				"properties": {
+					"numAufg": {
+						"type": "string",
+						"nullable": true
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"aufgabenstellung": {
+						"type": "string",
+						"nullable": true
+					},
+					"ortNamelang": {
+						"type": "string"
+					},
+					"lat": {
+						"type": "string",
+						"nullable": true
+					},
+					"lon": {
+						"type": "string",
+						"nullable": true
+					},
+					"osmId": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"numAufg",
+					"id",
+					"aufgabenstellung",
+					"ortNamelang",
+					"lat",
+					"lon",
+					"osmId"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"aufgabenDto": {
+				"properties": {
+					"ids": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"ids"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
 			"ISelectAufgabenSetResult": {
 				"description": "'SelectAufgabenSet' return type",
 				"properties": {
@@ -414,22 +473,6 @@
 					"nameAset",
 					"fokus",
 					"kommentar"
-				],
-				"type": "object",
-				"additionalProperties": true
-			},
-			"aufgabenDto": {
-				"properties": {
-					"ids": {
-						"items": {
-							"type": "number",
-							"format": "double"
-						},
-						"type": "array"
-					}
-				},
-				"required": [
-					"ids"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -1099,6 +1142,38 @@
 								"schema": {
 									"items": {
 										"$ref": "#/components/schemas/ISelectAufgabenResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/aufgabenDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/aufgaben/orte": {
+			"post": {
+				"operationId": "GetAufgabenOrte",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectOrtAufgabeResult"
 									},
 									"type": "array"
 								}

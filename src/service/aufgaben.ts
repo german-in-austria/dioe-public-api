@@ -3,6 +3,7 @@ import {
   ISelectAufgabenResult,
   ISelectAufgabenSetResult,
   ISelectAllAufgabenResult,
+  ISelectOrtAufgabeResult,
 } from "src/dao/aufgaben.queries";
 import aufgabenDao from "../dao/aufgaben";
 import _ from "lodash";
@@ -23,5 +24,8 @@ export default {
   },
   async getAllAufgaben(): Promise<ISelectAllAufgabenResult[]> {
     return aufgabenDao.getAllAufgaben();
+  },
+  async getOrtAufgabe(ids: number[]): Promise<ISelectOrtAufgabeResult[]> {
+    return aufgabenDao.getOrtAufgabe(ids);
   },
 };

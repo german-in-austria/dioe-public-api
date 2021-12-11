@@ -8,6 +8,7 @@ import {
   ISelectAufgabenFromSetParams,
   ISelectAufgabenFromSetQuery,
   ISelectAllAufgabenQuery,
+  ISelectOrtAufgabeQuery,
 } from "./aufgaben.queries";
 
 const aufgabenDao = {
@@ -57,6 +58,28 @@ const aufgabenDao = {
     join "KorpusDB_tbl_aufgabenarten" kdta3 on kdta3.id = kdta."Aufgabenart_id" 
     `;
     return await query(selectAllAufgaben);
+  },
+  async getOrtAufgabe(aufgID: number[]) {
+    const selectOrtAufgabe = sql<ISelectOrtAufgabeQuery>`
+    select count(*) as num_aufg, 
+    kdta.id,
+    kdta."Aufgabenstellung", 
+    odto.ort_namelang, odto.lat, odto.lon, odto.osm_id 
+    from "KorpusDB_tbl_aufgaben" kdta
+      join "KorpusDB_tbl_antworten" kdta2 on kdta2."zu_Aufgabe_id" = kdta.id
+      join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_Aufgabe_id" = kdta.id
+      join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdte."id_InfErh_id" 
+      join "OrteDB_tbl_orte" odto on odto.id = kdti."Ort_id" 
+      where kdta.id IN $$aufgID
+      group by 
+      odto.osm_id,
+       odto.ort_namelang,
+       odto.lat,
+        odto.lon,
+        kdta.id,
+        kdta."Aufgabenstellung" 
+    `;
+    return await query(selectOrtAufgabe, { aufgID: aufgID });
   },
 };
 

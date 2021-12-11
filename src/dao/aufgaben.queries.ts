@@ -83,3 +83,25 @@ export interface ISelectAllAufgabenQuery {
   result: ISelectAllAufgabenResult;
 }
 
+/** 'SelectOrtAufgabe' parameters type */
+export interface ISelectOrtAufgabeParams {
+  aufgID: readonly (number | null | void)[];
+}
+
+/** 'SelectOrtAufgabe' return type */
+export interface ISelectOrtAufgabeResult {
+  numAufg: string | null;
+  id: number;
+  aufgabenstellung: string | null;
+  ortNamelang: string;
+  lat: string | null;
+  lon: string | null;
+  osmId: string | null;
+}
+
+/** 'SelectOrtAufgabe' query type */
+export interface ISelectOrtAufgabeQuery {
+  params: ISelectOrtAufgabeParams;
+  result: ISelectOrtAufgabeResult;
+}
+
