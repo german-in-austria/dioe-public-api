@@ -10,6 +10,7 @@ import {
   ISelectAllAufgabenQuery,
   ISelectOrtAufgabeQuery,
   ISelectAllTeamsQuery,
+  ISelectAufgabeAudioByOrtQuery,
 } from "./aufgaben.queries";
 
 const aufgabenDao = {
@@ -91,6 +92,33 @@ const aufgabenDao = {
     from "PersonenDB_tbl_teams" pdtt 
     `;
     return await query(selectAllTeams);
+  },
+  async getAufgabeOrtAudio(aufIDs: number[], osmId: string) {
+    const selectAufgabeAudioByOrt = sql<ISelectAufgabeAudioByOrtQuery>`
+    select kdta.id,
+    kdta."Aufgabenstellung" as "aufgabe", 
+    kdti."Dateipfad" as "dateipfad",
+    kdti."Audiofile" as "audiofile",
+    kdte."start_Aufgabe" ,
+    kdte."stop_Aufgabe",
+    pdtig.gruppe_bez, pdtt.team_bez
+    from "KorpusDB_tbl_aufgaben" kdta
+      join "KorpusDB_tbl_antworten" kdta2 on kdta2."zu_Aufgabe_id" = kdta.id
+      join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_Aufgabe_id" = kdta.id
+      join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdte."id_InfErh_id" 
+      join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize.id_inferhebung_id = kdti.id
+      join "PersonenDB_tbl_informanten" pdti on pdti.id = kdtize."ID_Inf_id" 
+      join "OrteDB_tbl_orte" odto on odto.id = kdti."Ort_id" 
+      join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
+      join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
+    where
+      kdta2."von_Inf_id" = pdti.id and kdta.id IN $$aufIDs 
+      and odto.osm_id = $osmId
+    `;
+    return await query(selectAufgabeAudioByOrt, {
+      aufIDs: aufIDs,
+      osmId: osmId,
+    });
   },
 };
 

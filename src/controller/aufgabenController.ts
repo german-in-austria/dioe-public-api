@@ -5,6 +5,7 @@ import {
   ISelectAllAufgabenResult,
   ISelectOrtAufgabeResult,
   ISelectAllTeamsResult,
+  ISelectAufgabeAudioByOrtResult,
 } from "../dao/aufgaben.queries";
 
 import {
@@ -18,7 +19,9 @@ import {
   BodyProp,
 } from "tsoa";
 
-import aufgabenService from "../service/aufgaben";
+import aufgabenService, { AufgabeStamp } from "../service/aufgaben";
+
+import { antwortenDto } from "../controller/antwortenController";
 
 interface aufgabenDto {
   ids: number[];
@@ -61,5 +64,15 @@ export class AufgabenController extends Controller {
     @Body() aufgabenDto: aufgabenDto
   ): Promise<ISelectAufgabenFromSetResult[]> {
     return aufgabenService.getAufgabenWithSet(aufgabenDto.ids);
+  }
+
+  @Post("/audio")
+  public async getAntByTags(
+    @Body() antwortenDto: antwortenDto
+  ): Promise<AufgabeStamp[]> {
+    return aufgabenService.getAufgabeAudioByOrt(
+      antwortenDto.ids,
+      antwortenDto.osmId
+    );
   }
 }

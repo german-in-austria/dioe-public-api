@@ -342,226 +342,6 @@
 				"type": "object",
 				"additionalProperties": true
 			},
-			"ISelectAllAufgabenResult": {
-				"description": "'SelectAllAufgaben' return type",
-				"properties": {
-					"aufId": {
-						"type": "number",
-						"format": "double"
-					},
-					"beschreibung": {
-						"type": "string",
-						"nullable": true
-					},
-					"aufgabenstellung": {
-						"type": "string",
-						"nullable": true
-					},
-					"kontext": {
-						"type": "string",
-						"nullable": true
-					},
-					"artBezeichnung": {
-						"type": "string"
-					},
-					"asetName": {
-						"type": "string",
-						"nullable": true
-					},
-					"asetFokus": {
-						"type": "string",
-						"nullable": true
-					}
-				},
-				"required": [
-					"aufId",
-					"beschreibung",
-					"aufgabenstellung",
-					"kontext",
-					"artBezeichnung",
-					"asetName",
-					"asetFokus"
-				],
-				"type": "object",
-				"additionalProperties": true
-			},
-			"ISelectAllTeamsResult": {
-				"description": "'SelectAllTeams' return type",
-				"properties": {
-					"teamId": {
-						"type": "number",
-						"format": "double"
-					},
-					"team": {
-						"type": "string",
-						"nullable": true
-					}
-				},
-				"required": [
-					"teamId",
-					"team"
-				],
-				"type": "object",
-				"additionalProperties": true
-			},
-			"ISelectOrtAufgabeResult": {
-				"description": "'SelectOrtAufgabe' return type",
-				"properties": {
-					"numAufg": {
-						"type": "string",
-						"nullable": true
-					},
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"aufgabenstellung": {
-						"type": "string",
-						"nullable": true
-					},
-					"ortNamelang": {
-						"type": "string"
-					},
-					"lat": {
-						"type": "string",
-						"nullable": true
-					},
-					"lon": {
-						"type": "string",
-						"nullable": true
-					},
-					"osmId": {
-						"type": "string",
-						"nullable": true
-					}
-				},
-				"required": [
-					"numAufg",
-					"id",
-					"aufgabenstellung",
-					"ortNamelang",
-					"lat",
-					"lon",
-					"osmId"
-				],
-				"type": "object",
-				"additionalProperties": true
-			},
-			"aufgabenDto": {
-				"properties": {
-					"ids": {
-						"items": {
-							"type": "number",
-							"format": "double"
-						},
-						"type": "array"
-					}
-				},
-				"required": [
-					"ids"
-				],
-				"type": "object",
-				"additionalProperties": true
-			},
-			"ISelectAufgabenSetResult": {
-				"description": "'SelectAufgabenSet' return type",
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"kuerzel": {
-						"type": "string"
-					},
-					"nameAset": {
-						"type": "string",
-						"nullable": true
-					},
-					"fokus": {
-						"type": "string",
-						"nullable": true
-					},
-					"kommentar": {
-						"type": "string",
-						"nullable": true
-					}
-				},
-				"required": [
-					"id",
-					"kuerzel",
-					"nameAset",
-					"fokus",
-					"kommentar"
-				],
-				"type": "object",
-				"additionalProperties": true
-			},
-			"ISelectAufgabenResult": {
-				"description": "'SelectAufgaben' return type",
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"beschreibungAufgabe": {
-						"type": "string",
-						"nullable": true
-					},
-					"aufgabenstellung": {
-						"type": "string",
-						"nullable": true
-					}
-				},
-				"required": [
-					"id",
-					"beschreibungAufgabe",
-					"aufgabenstellung"
-				],
-				"type": "object",
-				"additionalProperties": true
-			},
-			"ISelectAufgabenFromSetResult": {
-				"description": "'SelectAufgabenFromSet' return type",
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"variante": {
-						"type": "number",
-						"format": "double"
-					},
-					"beschreibungAufgabe": {
-						"type": "string",
-						"nullable": true
-					},
-					"aufgabenstellung": {
-						"type": "string",
-						"nullable": true
-					},
-					"kuerzel": {
-						"type": "string"
-					},
-					"nameAset": {
-						"type": "string",
-						"nullable": true
-					},
-					"bezPhaenomen": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"id",
-					"variante",
-					"beschreibungAufgabe",
-					"aufgabenstellung",
-					"kuerzel",
-					"nameAset",
-					"bezPhaenomen"
-				],
-				"type": "object",
-				"additionalProperties": true
-			},
 			"Antwort": {
 				"properties": {
 					"startAntwort": {
@@ -801,6 +581,286 @@
 					"ortho",
 					"textInOrtho",
 					"splemma"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ISelectAllAufgabenResult": {
+				"description": "'SelectAllAufgaben' return type",
+				"properties": {
+					"aufId": {
+						"type": "number",
+						"format": "double"
+					},
+					"beschreibung": {
+						"type": "string",
+						"nullable": true
+					},
+					"aufgabenstellung": {
+						"type": "string",
+						"nullable": true
+					},
+					"kontext": {
+						"type": "string",
+						"nullable": true
+					},
+					"artBezeichnung": {
+						"type": "string"
+					},
+					"asetName": {
+						"type": "string",
+						"nullable": true
+					},
+					"asetFokus": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"aufId",
+					"beschreibung",
+					"aufgabenstellung",
+					"kontext",
+					"artBezeichnung",
+					"asetName",
+					"asetFokus"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ISelectAllTeamsResult": {
+				"description": "'SelectAllTeams' return type",
+				"properties": {
+					"teamId": {
+						"type": "number",
+						"format": "double"
+					},
+					"team": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"teamId",
+					"team"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ISelectOrtAufgabeResult": {
+				"description": "'SelectOrtAufgabe' return type",
+				"properties": {
+					"numAufg": {
+						"type": "string",
+						"nullable": true
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"aufgabenstellung": {
+						"type": "string",
+						"nullable": true
+					},
+					"ortNamelang": {
+						"type": "string"
+					},
+					"lat": {
+						"type": "string",
+						"nullable": true
+					},
+					"lon": {
+						"type": "string",
+						"nullable": true
+					},
+					"osmId": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"numAufg",
+					"id",
+					"aufgabenstellung",
+					"ortNamelang",
+					"lat",
+					"lon",
+					"osmId"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"aufgabenDto": {
+				"properties": {
+					"ids": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"ids"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ISelectAufgabenSetResult": {
+				"description": "'SelectAufgabenSet' return type",
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"kuerzel": {
+						"type": "string"
+					},
+					"nameAset": {
+						"type": "string",
+						"nullable": true
+					},
+					"fokus": {
+						"type": "string",
+						"nullable": true
+					},
+					"kommentar": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"kuerzel",
+					"nameAset",
+					"fokus",
+					"kommentar"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ISelectAufgabenResult": {
+				"description": "'SelectAufgaben' return type",
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"beschreibungAufgabe": {
+						"type": "string",
+						"nullable": true
+					},
+					"aufgabenstellung": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"beschreibungAufgabe",
+					"aufgabenstellung"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"ISelectAufgabenFromSetResult": {
+				"description": "'SelectAufgabenFromSet' return type",
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"variante": {
+						"type": "number",
+						"format": "double"
+					},
+					"beschreibungAufgabe": {
+						"type": "string",
+						"nullable": true
+					},
+					"aufgabenstellung": {
+						"type": "string",
+						"nullable": true
+					},
+					"kuerzel": {
+						"type": "string"
+					},
+					"nameAset": {
+						"type": "string",
+						"nullable": true
+					},
+					"bezPhaenomen": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"variante",
+					"beschreibungAufgabe",
+					"aufgabenstellung",
+					"kuerzel",
+					"nameAset",
+					"bezPhaenomen"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"Aufgabe": {
+				"properties": {
+					"startAufgabe": {
+						"type": "string"
+					},
+					"stopAufgabe": {
+						"type": "string"
+					},
+					"aufgabe": {
+						"type": "string"
+					},
+					"aufgabeId": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"startAufgabe",
+					"stopAufgabe",
+					"aufgabe",
+					"aufgabeId"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"AufgabeStamp": {
+				"properties": {
+					"dateipfad": {
+						"type": "string",
+						"nullable": true
+					},
+					"audiofile": {
+						"type": "string",
+						"nullable": true
+					},
+					"gruppeBez": {
+						"type": "string",
+						"nullable": true
+					},
+					"teamBez": {
+						"type": "string",
+						"nullable": true
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/Aufgabe"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"dateipfad",
+					"audiofile",
+					"gruppeBez",
+					"teamBez",
+					"data"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -1130,6 +1190,157 @@
 				]
 			}
 		},
+		"/antworten": {
+			"get": {
+				"operationId": "GetAntbyAufgaben",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/AntwortenFromAufgabe"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "sid",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "aid",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/antworten/tags": {
+			"post": {
+				"operationId": "GetAntByTags",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/AntwortTokenStamp"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/antwortenDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/antworten/saetze": {
+			"get": {
+				"operationId": "GetSatz",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectSatzResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "q",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/antworten/token": {
+			"get": {
+				"operationId": "GetMatchingTokens",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectMatchingTokensResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "o",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "p",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "l",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
 		"/aufgaben": {
 			"get": {
 				"operationId": "GetAllAufgaben",
@@ -1300,48 +1511,7 @@
 				}
 			}
 		},
-		"/antworten": {
-			"get": {
-				"operationId": "GetAntbyAufgaben",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"items": {
-										"$ref": "#/components/schemas/AntwortenFromAufgabe"
-									},
-									"type": "array"
-								}
-							}
-						}
-					}
-				},
-				"security": [],
-				"parameters": [
-					{
-						"in": "query",
-						"name": "sid",
-						"required": false,
-						"schema": {
-							"format": "double",
-							"type": "number"
-						}
-					},
-					{
-						"in": "query",
-						"name": "aid",
-						"required": false,
-						"schema": {
-							"format": "double",
-							"type": "number"
-						}
-					}
-				]
-			}
-		},
-		"/antworten/tags": {
+		"/aufgaben/audio": {
 			"post": {
 				"operationId": "GetAntByTags",
 				"responses": {
@@ -1351,7 +1521,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"$ref": "#/components/schemas/AntwortTokenStamp"
+										"$ref": "#/components/schemas/AufgabeStamp"
 									},
 									"type": "array"
 								}
@@ -1371,84 +1541,6 @@
 						}
 					}
 				}
-			}
-		},
-		"/antworten/saetze": {
-			"get": {
-				"operationId": "GetSatz",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"items": {
-										"$ref": "#/components/schemas/ISelectSatzResult"
-									},
-									"type": "array"
-								}
-							}
-						}
-					}
-				},
-				"security": [],
-				"parameters": [
-					{
-						"in": "query",
-						"name": "q",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			}
-		},
-		"/antworten/token": {
-			"get": {
-				"operationId": "GetMatchingTokens",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"items": {
-										"$ref": "#/components/schemas/ISelectMatchingTokensResult"
-									},
-									"type": "array"
-								}
-							}
-						}
-					}
-				},
-				"security": [],
-				"parameters": [
-					{
-						"in": "query",
-						"name": "o",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "query",
-						"name": "p",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "query",
-						"name": "l",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
 			}
 		}
 	},

@@ -30,7 +30,7 @@ import antwortenService, {
   AntwortTokenStamp,
 } from "../service/antworten";
 
-interface antwortenDto {
+export interface antwortenDto {
   ids: number[];
   osmId: number;
 }

@@ -9,9 +9,9 @@ import { TestController } from './controller/tagController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { PhaenController } from './controller/phaenController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { AufgabenController } from './controller/aufgabenController';
-// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AntwortenController } from './controller/antwortenController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { AufgabenController } from './controller/aufgabenController';
 import { expressAuthentication } from './authentication';
 // @ts-ignore - no great way to install types from subpackage
 const promiseAny = require('promise.any');
@@ -136,87 +136,6 @@ const models: TsoaRoute.Models = {
         "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ISelectAllAufgabenResult": {
-        "dataType": "refObject",
-        "properties": {
-            "aufId": {"dataType":"double","required":true},
-            "beschreibung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "aufgabenstellung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "kontext": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "artBezeichnung": {"dataType":"string","required":true},
-            "asetName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "asetFokus": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-        },
-        "additionalProperties": true,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ISelectAllTeamsResult": {
-        "dataType": "refObject",
-        "properties": {
-            "teamId": {"dataType":"double","required":true},
-            "team": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-        },
-        "additionalProperties": true,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ISelectOrtAufgabeResult": {
-        "dataType": "refObject",
-        "properties": {
-            "numAufg": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "id": {"dataType":"double","required":true},
-            "aufgabenstellung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "ortNamelang": {"dataType":"string","required":true},
-            "lat": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "lon": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "osmId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-        },
-        "additionalProperties": true,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "aufgabenDto": {
-        "dataType": "refObject",
-        "properties": {
-            "ids": {"dataType":"array","array":{"dataType":"double"},"required":true},
-        },
-        "additionalProperties": true,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ISelectAufgabenSetResult": {
-        "dataType": "refObject",
-        "properties": {
-            "id": {"dataType":"double","required":true},
-            "kuerzel": {"dataType":"string","required":true},
-            "nameAset": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "fokus": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "kommentar": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-        },
-        "additionalProperties": true,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ISelectAufgabenResult": {
-        "dataType": "refObject",
-        "properties": {
-            "id": {"dataType":"double","required":true},
-            "beschreibungAufgabe": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "aufgabenstellung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-        },
-        "additionalProperties": true,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ISelectAufgabenFromSetResult": {
-        "dataType": "refObject",
-        "properties": {
-            "id": {"dataType":"double","required":true},
-            "variante": {"dataType":"double","required":true},
-            "beschreibungAufgabe": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "aufgabenstellung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "kuerzel": {"dataType":"string","required":true},
-            "nameAset": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "bezPhaenomen": {"dataType":"string","required":true},
-        },
-        "additionalProperties": true,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Antwort": {
         "dataType": "refObject",
         "properties": {
@@ -302,6 +221,110 @@ const models: TsoaRoute.Models = {
             "ortho": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "textInOrtho": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "splemma": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ISelectAllAufgabenResult": {
+        "dataType": "refObject",
+        "properties": {
+            "aufId": {"dataType":"double","required":true},
+            "beschreibung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "aufgabenstellung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "kontext": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "artBezeichnung": {"dataType":"string","required":true},
+            "asetName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "asetFokus": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ISelectAllTeamsResult": {
+        "dataType": "refObject",
+        "properties": {
+            "teamId": {"dataType":"double","required":true},
+            "team": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ISelectOrtAufgabeResult": {
+        "dataType": "refObject",
+        "properties": {
+            "numAufg": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "id": {"dataType":"double","required":true},
+            "aufgabenstellung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "ortNamelang": {"dataType":"string","required":true},
+            "lat": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "lon": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "osmId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "aufgabenDto": {
+        "dataType": "refObject",
+        "properties": {
+            "ids": {"dataType":"array","array":{"dataType":"double"},"required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ISelectAufgabenSetResult": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"double","required":true},
+            "kuerzel": {"dataType":"string","required":true},
+            "nameAset": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "fokus": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "kommentar": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ISelectAufgabenResult": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"double","required":true},
+            "beschreibungAufgabe": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "aufgabenstellung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ISelectAufgabenFromSetResult": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"double","required":true},
+            "variante": {"dataType":"double","required":true},
+            "beschreibungAufgabe": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "aufgabenstellung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "kuerzel": {"dataType":"string","required":true},
+            "nameAset": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "bezPhaenomen": {"dataType":"string","required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Aufgabe": {
+        "dataType": "refObject",
+        "properties": {
+            "startAufgabe": {"dataType":"string","required":true},
+            "stopAufgabe": {"dataType":"string","required":true},
+            "aufgabe": {"dataType":"string","required":true},
+            "aufgabeId": {"dataType":"double","required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AufgabeStamp": {
+        "dataType": "refObject",
+        "properties": {
+            "dateipfad": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "audiofile": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "gruppeBez": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "teamBez": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "data": {"dataType":"array","array":{"dataType":"refObject","ref":"Aufgabe"},"required":true},
         },
         "additionalProperties": true,
     },
@@ -544,6 +567,101 @@ export function RegisterRoutes(app: express.Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/api/antworten',
+
+            function AntwortenController_getAntbyAufgaben(request: any, response: any, next: any) {
+            const args = {
+                    sid: {"in":"query","name":"sid","dataType":"double"},
+                    aid: {"in":"query","name":"aid","dataType":"double"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new AntwortenController();
+
+
+              const promise = controller.getAntbyAufgaben.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/api/antworten/tags',
+
+            function AntwortenController_getAntByTags(request: any, response: any, next: any) {
+            const args = {
+                    antwortenDto: {"in":"body","name":"antwortenDto","required":true,"ref":"antwortenDto"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new AntwortenController();
+
+
+              const promise = controller.getAntByTags.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/api/antworten/saetze',
+
+            function AntwortenController_getSatz(request: any, response: any, next: any) {
+            const args = {
+                    query: {"in":"query","name":"q","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new AntwortenController();
+
+
+              const promise = controller.getSatz.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/api/antworten/token',
+
+            function AntwortenController_getMatchingTokens(request: any, response: any, next: any) {
+            const args = {
+                    ortho: {"in":"query","name":"o","dataType":"string"},
+                    phon: {"in":"query","name":"p","dataType":"string"},
+                    lemma: {"in":"query","name":"l","dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new AntwortenController();
+
+
+              const promise = controller.getMatchingTokens.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/aufgaben',
 
             function AufgabenController_getAllAufgaben(request: any, response: any, next: any) {
@@ -680,33 +798,9 @@ export function RegisterRoutes(app: express.Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/antworten',
+        app.post('/api/aufgaben/audio',
 
-            function AntwortenController_getAntbyAufgaben(request: any, response: any, next: any) {
-            const args = {
-                    sid: {"in":"query","name":"sid","dataType":"double"},
-                    aid: {"in":"query","name":"aid","dataType":"double"},
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request, response);
-
-                const controller = new AntwortenController();
-
-
-              const promise = controller.getAntbyAufgaben.apply(controller, validatedArgs as any);
-              promiseHandler(controller, promise, response, undefined, next);
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/api/antworten/tags',
-
-            function AntwortenController_getAntByTags(request: any, response: any, next: any) {
+            function AufgabenController_getAntByTags(request: any, response: any, next: any) {
             const args = {
                     antwortenDto: {"in":"body","name":"antwortenDto","required":true,"ref":"antwortenDto"},
             };
@@ -717,58 +811,10 @@ export function RegisterRoutes(app: express.Router) {
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
 
-                const controller = new AntwortenController();
+                const controller = new AufgabenController();
 
 
               const promise = controller.getAntByTags.apply(controller, validatedArgs as any);
-              promiseHandler(controller, promise, response, undefined, next);
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/antworten/saetze',
-
-            function AntwortenController_getSatz(request: any, response: any, next: any) {
-            const args = {
-                    query: {"in":"query","name":"q","required":true,"dataType":"string"},
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request, response);
-
-                const controller = new AntwortenController();
-
-
-              const promise = controller.getSatz.apply(controller, validatedArgs as any);
-              promiseHandler(controller, promise, response, undefined, next);
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/antworten/token',
-
-            function AntwortenController_getMatchingTokens(request: any, response: any, next: any) {
-            const args = {
-                    ortho: {"in":"query","name":"o","dataType":"string"},
-                    phon: {"in":"query","name":"p","dataType":"string"},
-                    lemma: {"in":"query","name":"l","dataType":"string"},
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request, response);
-
-                const controller = new AntwortenController();
-
-
-              const promise = controller.getMatchingTokens.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

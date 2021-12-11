@@ -120,3 +120,27 @@ export interface ISelectAllTeamsQuery {
   result: ISelectAllTeamsResult;
 }
 
+/** 'SelectAufgabeAudioByOrt' parameters type */
+export interface ISelectAufgabeAudioByOrtParams {
+  aufIDs: readonly (number | null | void)[];
+  osmId: string | null | void;
+}
+
+/** 'SelectAufgabeAudioByOrt' return type */
+export interface ISelectAufgabeAudioByOrtResult {
+  id: number;
+  aufgabe: string | null;
+  dateipfad: string | null;
+  audiofile: string | null;
+  startAufgabe: string;
+  stopAufgabe: string;
+  gruppeBez: string | null;
+  teamBez: string | null;
+}
+
+/** 'SelectAufgabeAudioByOrt' query type */
+export interface ISelectAufgabeAudioByOrtQuery {
+  params: ISelectAufgabeAudioByOrtParams;
+  result: ISelectAufgabeAudioByOrtResult;
+}
+

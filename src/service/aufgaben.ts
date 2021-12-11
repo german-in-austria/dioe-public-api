@@ -5,9 +5,25 @@ import {
   ISelectAllAufgabenResult,
   ISelectOrtAufgabeResult,
   ISelectAllTeamsResult,
+  ISelectAufgabeAudioByOrtResult,
 } from "src/dao/aufgaben.queries";
 import aufgabenDao from "../dao/aufgaben";
 import _ from "lodash";
+
+interface Aufgabe {
+  startAufgabe: string;
+  stopAufgabe: string;
+  aufgabe: string;
+  aufgabeId: number;
+}
+
+export interface AufgabeStamp {
+  dateipfad: string | null;
+  audiofile: string | null;
+  gruppeBez: string | null;
+  teamBez: string | null;
+  data: Aufgabe[];
+}
 
 export default {
   async getAufgabenSetPhaen(
@@ -31,5 +47,38 @@ export default {
   },
   async getOrtAufgabe(ids: number[]): Promise<ISelectOrtAufgabeResult[]> {
     return aufgabenDao.getOrtAufgabe(ids);
+  },
+  async getAufgabeAudioByOrt(
+    aufIDs: number[],
+    osmId: number
+  ): Promise<AufgabeStamp[]> {
+    const res = await aufgabenDao.getAufgabeOrtAudio(aufIDs, osmId.toString());
+    let aufgaben: AufgabeStamp[] = [];
+    res.forEach((el: ISelectAufgabeAudioByOrtResult) => {
+      const a = {
+        startAufgabe: el.startAufgabe,
+        stopAufgabe: el.stopAufgabe,
+        aufgabeId: el.id,
+        aufgabe: el.aufgabe,
+      } as Aufgabe;
+      const stamp = {
+        dateipfad: el.dateipfad,
+        audiofile: el.audiofile,
+        gruppeBez: el.gruppeBez,
+        teamBez: el.teamBez,
+        data: [a],
+      } as AufgabeStamp;
+
+      const dataIdx = aufgaben.findIndex(
+        (a: AufgabeStamp) =>
+          a.dateipfad === el.dateipfad && a.audiofile === el.audiofile
+      );
+      if (dataIdx >= 0) {
+        aufgaben[dataIdx].data.push(a);
+      } else {
+        aufgaben.push(stamp);
+      }
+    });
+    return aufgaben;
   },
 };
