@@ -108,3 +108,40 @@ export interface ISelectOrtTagsQuery {
   result: ISelectOrtTagsResult;
 }
 
+/** 'GetPresetTags' parameters type */
+export type IGetPresetTagsParams = void;
+
+/** 'GetPresetTags' return type */
+export interface IGetPresetTagsResult {
+  id: number;
+  bezeichnung: string;
+  kommentar: string | null;
+}
+
+/** 'GetPresetTags' query type */
+export interface IGetPresetTagsQuery {
+  params: IGetPresetTagsParams;
+  result: IGetPresetTagsResult;
+}
+
+/** 'GetTagsByPreset' parameters type */
+export interface IGetTagsByPresetParams {
+  tagIDs: readonly (number | null | void)[];
+}
+
+/** 'GetTagsByPreset' return type */
+export interface IGetTagsByPresetResult {
+  id: number;
+  bezeichnung: string;
+  id: number;
+  tag: string;
+  tagLang: string | null;
+  generation: number | null;
+}
+
+/** 'GetTagsByPreset' query type */
+export interface IGetTagsByPresetQuery {
+  params: IGetTagsByPresetParams;
+  result: IGetTagsByPresetResult;
+}
+

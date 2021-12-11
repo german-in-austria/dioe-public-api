@@ -9,6 +9,8 @@ import {
   ISelectSingleGenParams,
   ISelectTagByIdQuery,
   ISelectTagByIdParams,
+  IGetPresetTagsQuery,
+  IGetTagsByPresetQuery,
 } from "./tag.queries";
 
 const tagDao = {
@@ -119,6 +121,28 @@ const tagDao = {
       
     `;
     return await query(selectOrtTags, { tagId: tagId });
+  },
+  async getPresetTags() {
+    const getPresetTags = sql<IGetPresetTagsQuery>`
+    select kdsp.id, 
+    kdsp."Bezeichnung", 
+    kdsp."Kommentar" 
+    from "KorpusDB_sys_presettags" kdsp 
+    `;
+    return await query(getPresetTags);
+  },
+  async getTagsByPreset(tagIDs: number[]) {
+    const getTagsByPreset = sql<IGetTagsByPresetQuery>`
+    select kdsp.id, kdsp."Bezeichnung", 
+    kdtt.id, kdtt."Tag", kdtt."Tag_lang", 
+    kdtt."Generation" 
+    from "KorpusDB_sys_presettags" kdsp 
+    join "KorpusDB_sys_tagszupresettags" kdst on kdsp.id = kdst."id_PresetTags_id" 
+    join "KorpusDB_tbl_tags" kdtt on kdtt.id = kdst."id_Tag_id" 
+    where 
+      kdsp.id IN $$tagIDs
+    `;
+    return await query(getTagsByPreset, { tagIDs: tagIDs });
   },
 };
 
