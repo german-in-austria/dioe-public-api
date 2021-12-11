@@ -72,12 +72,14 @@ const aufgabenDao = {
       join "OrteDB_tbl_orte" odto on odto.id = kdti."Ort_id" 
       where kdta.id IN $$aufgID
       group by 
-      odto.osm_id,
-       odto.ort_namelang,
-       odto.lat,
-        odto.lon,
+        odto.osm_id,
+        odto.ort_namelang,
         kdta.id,
-        kdta."Aufgabenstellung" 
+        kdta."Aufgabenstellung",
+        odto.lat,
+        odto.lon
+      order by
+        odto.osm_id
     `;
     return await query(selectOrtAufgabe, { aufgID: aufgID });
   },
