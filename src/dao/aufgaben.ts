@@ -9,6 +9,7 @@ import {
   ISelectAufgabenFromSetQuery,
   ISelectAllAufgabenQuery,
   ISelectOrtAufgabeQuery,
+  ISelectAllTeamsQuery,
 } from "./aufgaben.queries";
 
 const aufgabenDao = {
@@ -82,6 +83,14 @@ const aufgabenDao = {
         odto.osm_id
     `;
     return await query(selectOrtAufgabe, { aufgID: aufgID });
+  },
+  async getTeams() {
+    const selectAllTeams = sql<ISelectAllTeamsQuery>`
+    select pdtt.id as "team_id", 
+    pdtt.team_bez as "team" 
+    from "PersonenDB_tbl_teams" pdtt 
+    `;
+    return await query(selectAllTeams);
   },
 };
 

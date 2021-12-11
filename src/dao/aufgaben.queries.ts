@@ -105,3 +105,18 @@ export interface ISelectOrtAufgabeQuery {
   result: ISelectOrtAufgabeResult;
 }
 
+/** 'SelectAllTeams' parameters type */
+export type ISelectAllTeamsParams = void;
+
+/** 'SelectAllTeams' return type */
+export interface ISelectAllTeamsResult {
+  teamId: number;
+  team: string | null;
+}
+
+/** 'SelectAllTeams' query type */
+export interface ISelectAllTeamsQuery {
+  params: ISelectAllTeamsParams;
+  result: ISelectAllTeamsResult;
+}
+

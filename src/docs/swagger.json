@@ -385,6 +385,25 @@
 				"type": "object",
 				"additionalProperties": true
 			},
+			"ISelectAllTeamsResult": {
+				"description": "'SelectAllTeams' return type",
+				"properties": {
+					"teamId": {
+						"type": "number",
+						"format": "double"
+					},
+					"team": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"teamId",
+					"team"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
 			"ISelectOrtAufgabeResult": {
 				"description": "'SelectOrtAufgabe' return type",
 				"properties": {
@@ -1161,6 +1180,28 @@
 						}
 					}
 				}
+			}
+		},
+		"/aufgaben/teams": {
+			"get": {
+				"operationId": "GetAllTeams",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectAllTeamsResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
 			}
 		},
 		"/aufgaben/orte": {
