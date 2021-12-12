@@ -17,8 +17,8 @@ import {
 } from "../dao/antworten.queries";
 
 export interface Antwort {
-  startAntwort: string;
-  stopAntwort: string;
+  start: string;
+  stop: string;
   tagId: number;
   tagName: string | null;
 }
@@ -125,8 +125,8 @@ export default {
       let ant: Antwort | AntwortToken = {} as Antwort;
       if (el.ortho) {
         ant = {
-          startAntwort: el.startAntwort,
-          stopAntwort: el.stopAntwort,
+          start: el.startAntwort,
+          stop: el.stopAntwort,
           tagId: el.tagId,
           tagName: el.tagName,
           ortho: el.ortho,
@@ -134,8 +134,8 @@ export default {
         } as AntwortToken;
       } else {
         ant = {
-          startAntwort: el.startAntwort,
-          stopAntwort: el.stopAntwort,
+          start: el.startAntwort,
+          stop: el.stopAntwort,
           tagId: el.tagId,
           tagName: el.tagName,
         } as Antwort;
@@ -176,8 +176,8 @@ export default {
     let antworten: AntwortenFromAufgabe[] = [];
     res.forEach((el) => {
       const newAntwort: AntwortAufgabe = {
-        startAntwort: el.startAntwort,
-        stopAntwort: el.stopAntwort,
+        start: el.startAntwort,
+        stop: el.stopAntwort,
         tagId: el.tagId,
         tagName: el.tagName,
         satzId: el.satzId,

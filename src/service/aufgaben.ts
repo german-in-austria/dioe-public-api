@@ -11,8 +11,8 @@ import aufgabenDao from "../dao/aufgaben";
 import _ from "lodash";
 
 interface Aufgabe {
-  startAufgabe: string;
-  stopAufgabe: string;
+  start: string;
+  stop: string;
   aufgabe: string;
   aufgabeId: number;
 }
@@ -56,8 +56,8 @@ export default {
     let aufgaben: AufgabeStamp[] = [];
     res.forEach((el: ISelectAufgabeAudioByOrtResult) => {
       const a = {
-        startAufgabe: el.startAufgabe,
-        stopAufgabe: el.stopAufgabe,
+        start: el.startAufgabe,
+        stop: el.stopAufgabe,
         aufgabeId: el.id,
         aufgabe: el.aufgabe,
       } as Aufgabe;

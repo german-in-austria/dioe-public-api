@@ -139,8 +139,8 @@ const models: TsoaRoute.Models = {
     "Antwort": {
         "dataType": "refObject",
         "properties": {
-            "startAntwort": {"dataType":"string","required":true},
-            "stopAntwort": {"dataType":"string","required":true},
+            "start": {"dataType":"string","required":true},
+            "stop": {"dataType":"string","required":true},
             "tagId": {"dataType":"double","required":true},
             "tagName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
         },
@@ -173,8 +173,8 @@ const models: TsoaRoute.Models = {
     "AntwortToken": {
         "dataType": "refObject",
         "properties": {
-            "startAntwort": {"dataType":"string","required":true},
-            "stopAntwort": {"dataType":"string","required":true},
+            "start": {"dataType":"string","required":true},
+            "stop": {"dataType":"string","required":true},
             "tagId": {"dataType":"double","required":true},
             "tagName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "ortho": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
@@ -309,8 +309,8 @@ const models: TsoaRoute.Models = {
     "Aufgabe": {
         "dataType": "refObject",
         "properties": {
-            "startAufgabe": {"dataType":"string","required":true},
-            "stopAufgabe": {"dataType":"string","required":true},
+            "start": {"dataType":"string","required":true},
+            "stop": {"dataType":"string","required":true},
             "aufgabe": {"dataType":"string","required":true},
             "aufgabeId": {"dataType":"double","required":true},
         },
@@ -800,7 +800,7 @@ export function RegisterRoutes(app: express.Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/aufgaben/audio',
 
-            function AufgabenController_getAntByTags(request: any, response: any, next: any) {
+            function AufgabenController_getAntAudioByOrt(request: any, response: any, next: any) {
             const args = {
                     antwortenDto: {"in":"body","name":"antwortenDto","required":true,"ref":"antwortenDto"},
             };
@@ -814,7 +814,7 @@ export function RegisterRoutes(app: express.Router) {
                 const controller = new AufgabenController();
 
 
-              const promise = controller.getAntByTags.apply(controller, validatedArgs as any);
+              const promise = controller.getAntAudioByOrt.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

@@ -344,10 +344,10 @@
 			},
 			"Antwort": {
 				"properties": {
-					"startAntwort": {
+					"start": {
 						"type": "string"
 					},
-					"stopAntwort": {
+					"stop": {
 						"type": "string"
 					},
 					"tagId": {
@@ -360,8 +360,8 @@
 					}
 				},
 				"required": [
-					"startAntwort",
-					"stopAntwort",
+					"start",
+					"stop",
 					"tagId",
 					"tagName"
 				],
@@ -435,10 +435,10 @@
 			},
 			"AntwortToken": {
 				"properties": {
-					"startAntwort": {
+					"start": {
 						"type": "string"
 					},
-					"stopAntwort": {
+					"stop": {
 						"type": "string"
 					},
 					"tagId": {
@@ -459,8 +459,8 @@
 					}
 				},
 				"required": [
-					"startAntwort",
-					"stopAntwort",
+					"start",
+					"stop",
 					"tagId",
 					"tagName",
 					"ortho",
@@ -807,10 +807,10 @@
 			},
 			"Aufgabe": {
 				"properties": {
-					"startAufgabe": {
+					"start": {
 						"type": "string"
 					},
-					"stopAufgabe": {
+					"stop": {
 						"type": "string"
 					},
 					"aufgabe": {
@@ -822,8 +822,8 @@
 					}
 				},
 				"required": [
-					"startAufgabe",
-					"stopAufgabe",
+					"start",
+					"stop",
 					"aufgabe",
 					"aufgabeId"
 				],
@@ -1513,7 +1513,7 @@
 		},
 		"/aufgaben/audio": {
 			"post": {
-				"operationId": "GetAntByTags",
+				"operationId": "GetAntAudioByOrt",
 				"responses": {
 					"200": {
 						"description": "Ok",
