@@ -67,7 +67,7 @@ export class AufgabenController extends Controller {
   }
 
   @Post("/audio")
-  public async getAntByTags(
+  public async getAntAudioByOrt(
     @Body() antwortenDto: antwortenDto
   ): Promise<AufgabeStamp[]> {
     return aufgabenService.getAufgabeAudioByOrt(
