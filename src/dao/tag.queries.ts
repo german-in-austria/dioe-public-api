@@ -131,9 +131,9 @@ export interface IGetTagsByPresetParams {
 
 /** 'GetTagsByPreset' return type */
 export interface IGetTagsByPresetResult {
-  id: number;
+  presetId: number;
   bezeichnung: string;
-  id: number;
+  tagId: number;
   tag: string;
   tagLang: string | null;
   generation: number | null;

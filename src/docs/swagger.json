@@ -207,6 +207,29 @@
 				"type": "object",
 				"additionalProperties": true
 			},
+			"IGetPresetTagsResult": {
+				"description": "'GetPresetTags' return type",
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"bezeichnung": {
+						"type": "string"
+					},
+					"kommentar": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"bezeichnung",
+					"kommentar"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
 			"ISelectOrtTagsResult": {
 				"description": "'SelectOrtTags' return type",
 				"properties": {
@@ -906,7 +929,7 @@
 				"parameters": []
 			}
 		},
-		"/tags/{tagId}": {
+		"/tags/id/{tagId}": {
 			"get": {
 				"operationId": "GetTagById",
 				"responses": {
@@ -990,6 +1013,58 @@
 				},
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/tags/preset": {
+			"get": {
+				"operationId": "GetPresetTags",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/IGetPresetTagsResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "GetTagsFromPreset",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectOrtTagsResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/tagDto"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/tags/ort/{tagId}": {

@@ -133,8 +133,8 @@ const tagDao = {
   },
   async getTagsByPreset(tagIDs: number[]) {
     const getTagsByPreset = sql<IGetTagsByPresetQuery>`
-    select kdsp.id, kdsp."Bezeichnung", 
-    kdtt.id, kdtt."Tag", kdtt."Tag_lang", 
+    select kdsp.id as "preset_id", kdsp."Bezeichnung", 
+    kdtt.id as "tagId", kdtt."Tag", kdtt."Tag_lang", 
     kdtt."Generation" 
     from "KorpusDB_sys_presettags" kdsp 
     join "KorpusDB_sys_tagszupresettags" kdst on kdsp.id = kdst."id_PresetTags_id" 

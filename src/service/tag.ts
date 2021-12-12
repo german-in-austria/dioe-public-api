@@ -3,6 +3,8 @@ import {
   ISelectSingleGenResult,
   ISelectTagsResult,
   ISelectTagByIdResult,
+  IGetTagsByPresetResult,
+  IGetPresetTagsResult,
 } from "../dao/tag.queries";
 import tagDao from "../dao/tag";
 import _ from "lodash";
@@ -20,10 +22,15 @@ export default {
   },
 
   async getTagList(): Promise<ISelectTagsResult[]> {
-    // console.log(await tagDao.getTagTree());
     return tagDao.getTagTree();
   },
-
+  async getPresetTags(): Promise<IGetPresetTagsResult[]> {
+    return tagDao.getPresetTags();
+  },
+  async getTagsFromPreset(tagId: number[]): Promise<ISelectOrtTagsResult[]> {
+    const res: IGetTagsByPresetResult[] = await tagDao.getTagsByPreset(tagId);
+    return tagDao.getOrtTag(res.map((val) => val.tagId));
+  },
   async getTagOrte(tagId: number[]): Promise<ISelectOrtTagsResult[]> {
     return tagDao.getOrtTag(tagId);
   },
@@ -34,7 +41,6 @@ export default {
     const list = await this.getTagList();
     const listById = _.keyBy(list, "tagId");
     const firstLevelTags = list.filter((t) => t.parentIds === null);
-    // console.log(list.filter((el) => el.tagAbbrev === "rot"));
     return this.buildTreeRecursive(firstLevelTags, listById);
   },
 
