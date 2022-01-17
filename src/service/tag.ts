@@ -5,6 +5,7 @@ import {
   ISelectTagByIdResult,
   IGetTagsByPresetResult,
   IGetPresetTagsResult,
+  IGetPresetOrtTagResult,
 } from "../dao/tag.queries";
 import tagDao from "../dao/tag";
 import _ from "lodash";
@@ -30,6 +31,9 @@ export default {
   async getTagsFromPreset(tagId: number[]): Promise<ISelectOrtTagsResult[]> {
     const res: IGetTagsByPresetResult[] = await tagDao.getTagsByPreset(tagId);
     return tagDao.getOrtTag(res.map((val) => val.tagId));
+  },
+  async getPresetOrtTags(tagId: number[]): Promise<IGetPresetOrtTagResult[]> {
+    return tagDao.getPresetOrtTag(tagId);
   },
   async getTagOrte(tagId: number[]): Promise<ISelectOrtTagsResult[]> {
     return tagDao.getOrtTag(tagId);

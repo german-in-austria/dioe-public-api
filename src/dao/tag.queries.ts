@@ -108,6 +108,28 @@ export interface ISelectOrtTagsQuery {
   result: ISelectOrtTagsResult;
 }
 
+/** 'GetPresetOrtTag' parameters type */
+export interface IGetPresetOrtTagParams {
+  tagIDs: readonly (number | null | void)[];
+}
+
+/** 'GetPresetOrtTag' return type */
+export interface IGetPresetOrtTagResult {
+  numTag: string | null;
+  presetId: number;
+  presetName: string;
+  osmId: string | null;
+  ortNamelang: string;
+  lat: string | null;
+  lon: string | null;
+}
+
+/** 'GetPresetOrtTag' query type */
+export interface IGetPresetOrtTagQuery {
+  params: IGetPresetOrtTagParams;
+  result: IGetPresetOrtTagResult;
+}
+
 /** 'GetPresetTags' parameters type */
 export type IGetPresetTagsParams = void;
 

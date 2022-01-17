@@ -293,6 +293,48 @@
 				"type": "object",
 				"additionalProperties": true
 			},
+			"IGetPresetOrtTagResult": {
+				"description": "'GetPresetOrtTag' return type",
+				"properties": {
+					"numTag": {
+						"type": "string",
+						"nullable": true
+					},
+					"presetId": {
+						"type": "number",
+						"format": "double"
+					},
+					"presetName": {
+						"type": "string"
+					},
+					"osmId": {
+						"type": "string",
+						"nullable": true
+					},
+					"ortNamelang": {
+						"type": "string"
+					},
+					"lat": {
+						"type": "string",
+						"nullable": true
+					},
+					"lon": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"numTag",
+					"presetId",
+					"presetName",
+					"osmId",
+					"ortNamelang",
+					"lat",
+					"lon"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
 			"ISelectPhaenBerResult": {
 				"description": "'SelectPhaenBer' return type",
 				"properties": {
@@ -1129,6 +1171,38 @@
 						}
 					}
 				}
+			}
+		},
+		"/tags/preset/ort/{tagId}": {
+			"get": {
+				"operationId": "GetPresetOrte",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/IGetPresetOrtTagResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "tagId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		},
 		"/test/{something}": {

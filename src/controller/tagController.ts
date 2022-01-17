@@ -6,6 +6,7 @@ import {
   ISelectTagByIdResult,
   IGetTagsByPresetResult,
   IGetPresetTagsResult,
+  IGetPresetOrtTagResult,
 } from "../dao/tag.queries";
 
 import { Body, Controller, Get, Path, Post, Query, Route } from "tsoa";
@@ -66,6 +67,13 @@ export class TagController extends Controller {
     @Body() tagDto: tagDto
   ): Promise<ISelectOrtTagsResult[]> {
     return tagService.getTagsFromPreset(tagDto.ids);
+  }
+
+  @Get("/preset/ort/{tagId}")
+  public async getPresetOrte(
+    @Path() tagId: number
+  ): Promise<IGetPresetOrtTagResult[]> {
+    return tagService.getPresetOrtTags([tagId]);
   }
 }
 

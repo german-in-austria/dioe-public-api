@@ -11,6 +11,8 @@ import {
   ISelectTagByIdParams,
   IGetPresetTagsQuery,
   IGetTagsByPresetQuery,
+  IGetPresetOrtTagQuery,
+  IGetPresetOrtTagParams,
 } from "./tag.queries";
 
 const tagDao = {
@@ -121,6 +123,36 @@ const tagDao = {
       
     `;
     return await query(selectOrtTags, { tagId: tagId });
+  },
+  async getPresetOrtTag(tagIDs: number[]) {
+    const getPresetOrtTag = sql<IGetPresetOrtTagQuery & IGetPresetOrtTagParams>`
+    SELECT
+        count(*) AS num_tag,
+        kdsp.id as preset_id,
+        kdsp."Bezeichnung" as preset_name, 
+        odto. "osm_id" AS osm_id,
+        odto. "ort_namelang" AS ort_namelang,
+        odto. "lat" AS lat,
+        odto. "lon" AS lon
+    FROM "KorpusDB_sys_presettags" kdsp 
+    join "KorpusDB_sys_tagszupresettags" kdst on kdsp.id = kdst."id_PresetTags_id" 
+    join "KorpusDB_tbl_tags" kdtt on kdtt.id = kdst."id_Tag_id" 
+    JOIN "KorpusDB_tbl_antwortentags" kdta ON kdtt.id = kdta. "id_Tag_id"
+    JOIN "KorpusDB_tbl_antworten" kdta2 ON kdta. "id_Antwort_id" = kdta2.id
+    JOIN "PersonenDB_tbl_informanten" pdti ON kdta2. "von_Inf_id" = pdti.id
+    JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
+    WHERE 
+      kdsp.id IN $$tagIDs
+      GROUP BY
+        odto.osm_id,
+        odto.ort_namelang,
+        kdsp.id,
+        odto.lat,
+        odto.lon
+      ORDER BY
+      num_tag DESC;
+    `;
+    return await query(getPresetOrtTag, { tagIDs: tagIDs });
   },
   async getPresetTags() {
     const getPresetTags = sql<IGetPresetTagsQuery>`
