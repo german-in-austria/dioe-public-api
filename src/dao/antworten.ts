@@ -25,7 +25,7 @@ import {
 const antwortenDao = {
   async selectAntwortenAudio(tagID: number[], osmId: string) {
     const selectAntworten = sql<ISelectAntwortenQuery & ISelectAntwortenParams>`
-select
+        select
           kdte."start_Aufgabe" as "start_Antwort", 
           kdte."stop_Aufgabe" as "stop_Antwort",
           kdti."Dateipfad" as dateipfad, 
@@ -120,6 +120,7 @@ select
           having count(pdti.id) > 2 and count(kdti."ID_Erh_id") > 2
         `;
     return await query(selectAntworten, { tagID: tagID, osmId: osmId });
+    // Possible TODO: Mögliche Variable um Anzahl der Gruppen anzupassen
   },
   async selectMatchingSatz(str: string) {
     const selectSatz = sql<ISelectSatzQuery & ISelectSatzParams>`
