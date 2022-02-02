@@ -99,8 +99,8 @@ const aufgabenDao = {
     kdta."Aufgabenstellung" as "aufgabe", 
     kdti."Dateipfad" as "dateipfad",
     kdti."Audiofile" as "audiofile",
-    kdte."start_Aufgabe" ,
-    kdte."stop_Aufgabe",
+    kdte."start_Aufgabe" + (COALESCE(kdti.sync_time, interval '0') - COALESCE(kdti.time_beep , interval '0')) as "start_aufgabe",
+    kdte."stop_Aufgabe"  + (COALESCE(kdti.sync_time, interval '0') - COALESCE(kdti.time_beep , interval '0')) as "stop_aufgabe",
     pdtig.gruppe_bez, pdtt.team_bez
     from "KorpusDB_tbl_aufgaben" kdta
       join "KorpusDB_tbl_antworten" kdta2 on kdta2."zu_Aufgabe_id" = kdta.id
@@ -119,8 +119,8 @@ const aufgabenDao = {
       kdta."Aufgabenstellung" as "aufgabe", 
       kdti."Dateipfad" as "dateipfad",
       kdti."Audiofile" as "audiofile",
-      kdte."start_Aufgabe" ,
-      kdte."stop_Aufgabe",
+      kdte."start_Aufgabe" + (COALESCE(kdti.sync_time, interval '0') - COALESCE(kdti.time_beep , interval '0')) as "start_aufgabe",
+    kdte."stop_Aufgabe"  + (COALESCE(kdti.sync_time, interval '0') - COALESCE(kdti.time_beep , interval '0')) as "stop_aufgabe",
       pdtig.gruppe_bez, pdtt.team_bez
       from "KorpusDB_tbl_aufgaben" kdta
         join "KorpusDB_tbl_antworten" kdta2 on kdta2."zu_Aufgabe_id" = kdta.id
