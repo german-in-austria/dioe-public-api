@@ -92,15 +92,16 @@ export default {
         osmId.toString()
       );
     }
-    if (antIDs.length > 0) {
-      resAnt = await antwortenDao.selectAntwortenAudio(
-        antIDs,
-        osmId.toString()
-      );
-    }
     if (aufgIDs.length > 0) {
       resAuf = await antwortenDao.getStampsFromAntwort(
         aufgIDs,
+        osmId.toString()
+      );
+    }
+    if (antIDs.length > 0 || resAuf.length === 0) {
+      antIDs = antIDs.concat(aufgIDs);
+      resAnt = await antwortenDao.selectAntwortenAudio(
+        antIDs,
         osmId.toString()
       );
     }
