@@ -1,10 +1,30 @@
 /** Types generated for queries found in "src/dao/antworten.ts" */
 
-/** Query 'SelectAntworten' is invalid, so its result is assigned type 'never' */
-export type ISelectAntwortenResult = never;
+/** 'SelectAntworten' parameters type */
+export interface ISelectAntwortenParams {
+  tagID: readonly (number | null | void)[];
+  osmId: string | null | void;
+}
 
-/** Query 'SelectAntworten' is invalid, so its parameters are assigned type 'never' */
-export type ISelectAntwortenParams = never;
+/** 'SelectAntworten' return type */
+export interface ISelectAntwortenResult {
+  startAntwort: string | null;
+  stopAntwort: string | null;
+  dateipfad: string | null;
+  audiofile: string | null;
+  tagId: number | null;
+  osmid: string | null;
+  tagName: string | null;
+  gruppeBez: string | null;
+  teamBez: string | null;
+  idErhId: number | null;
+}
+
+/** 'SelectAntworten' query type */
+export interface ISelectAntwortenQuery {
+  params: ISelectAntwortenParams;
+  result: ISelectAntwortenResult;
+}
 
 /** 'SelectSatz' parameters type */
 export interface ISelectSatzParams {

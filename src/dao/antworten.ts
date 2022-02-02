@@ -25,7 +25,7 @@ import {
 const antwortenDao = {
   async selectAntwortenAudio(tagID: number[], osmId: string) {
     const selectAntworten = sql<ISelectAntwortenQuery & ISelectAntwortenParams>`
-        select distinct on (pdti.id, kdti."ID_Erh_id")
+select
           kdte."start_Aufgabe" as "start_Antwort", 
           kdte."stop_Aufgabe" as "stop_Antwort",
           kdti."Dateipfad" as dateipfad, 
@@ -33,7 +33,8 @@ const antwortenDao = {
           kdtt.id as tag_id, 
           odto.osm_id as osmId, 
           kdtt."Tag_lang" as tag_name,
-          pdtig.gruppe_bez, pdtt.team_bez
+          pdtig.gruppe_bez, pdtt.team_bez,
+          kdti."ID_Erh_id"
         from "KorpusDB_tbl_tags" kdtt      
           join lateral (
           	select * from "KorpusDB_tbl_antwortentags" kdta2 where kdta2."id_Tag_id" = kdtt.id
@@ -54,20 +55,34 @@ const antwortenDao = {
           join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
           join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
         WHERE 
-        	kdtt.id in $$tagID
+        	        	kdtt.id in $$tagID
         	and odto.osm_id = $osmId
           and kdti."Dateipfad" not in ('', '0') 
           and kdti."Audiofile" not in ('', '0')
           and kdta3.id = kdta."zu_Aufgabe_id"
+        group by 
+          kdti."ID_Erh_id" ,
+          pdti.id,
+          kdte."start_Aufgabe", 
+          kdte."stop_Aufgabe",
+          kdti."Dateipfad", 
+          kdti."Audiofile",
+          kdtt.id, 
+          odto.osm_id, 
+          kdtt."Tag_lang",
+          pdtig.gruppe_bez, pdtt.team_bez
+          having count(pdti.id) > 2 and count(kdti."ID_Erh_id") > 2  
         UNION
-          select distinct on (pdti.id, kdti."ID_Erh_id")
+          select
           kdte."start_Aufgabe" as "start_Antwort", 
           kdte."stop_Aufgabe" as "stop_Antwort",
           kdti."Dateipfad" as dateipfad, 
           kdti."Audiofile" as "audiofile",
           kdtt.id as tag_id, 
           odto.osm_id as osmId, 
-          kdtt."Tag_lang" as tag_name
+          kdtt."Tag_lang" as tag_name,
+          pdtig.gruppe_bez, pdtt.team_bez,
+          kdti."ID_Erh_id"
         from "KorpusDB_tbl_tags" kdtt      
           join lateral (
           	select * from "KorpusDB_tbl_antwortentags" kdta2 where kdta2."id_Tag_id" = kdtt.id
@@ -85,10 +100,24 @@ const antwortenDao = {
           	select * from "KorpusDB_tbl_erhinfaufgaben" kdte where kdte."id_InfErh_id" = kdti.id
           ) kdte on true
           join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
+          join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
+          join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
         WHERE 
-        	kdtt.id in $$tagID
+        	        	kdtt.id in $$tagID
         	and odto.osm_id = $osmId
           and kdta3.id = kdta."zu_Aufgabe_id"  
+        group by 
+          kdti."ID_Erh_id",
+          pdti.id,
+          kdte."start_Aufgabe", 
+          kdte."stop_Aufgabe",
+          kdti."Dateipfad", 
+          kdti."Audiofile",
+          kdtt.id, 
+          odto.osm_id, 
+          kdtt."Tag_lang",
+          pdtig.gruppe_bez, pdtt.team_bez
+          having count(pdti.id) > 2 and count(kdti."ID_Erh_id") > 2
         `;
     return await query(selectAntworten, { tagID: tagID, osmId: osmId });
   },
