@@ -25,7 +25,7 @@ import {
 const antwortenDao = {
   async selectAntwortenAudio(tagID: number[], osmId: string) {
     const selectAntworten = sql<ISelectAntwortenQuery & ISelectAntwortenParams>`
-        select  
+        select distinct on (pdti.id, kdti."ID_Erh_id")
           kdte."start_Aufgabe" as "start_Antwort", 
           kdte."stop_Aufgabe" as "stop_Antwort",
           kdti."Dateipfad" as dateipfad, 
@@ -39,16 +39,16 @@ const antwortenDao = {
           	select * from "KorpusDB_tbl_antwortentags" kdta2 where kdta2."id_Tag_id" = kdtt.id
           ) kdta2 on true
           join lateral (
-          	select * from "KorpusDB_tbl_antworten" kdta where kdta2."id_Antwort_id" = kdta.id limit 5
+          	select * from "KorpusDB_tbl_antworten" kdta where kdta2."id_Antwort_id" = kdta.id
           ) kdta on true
           join lateral (
-          	select * from "PersonenDB_tbl_informanten" pdti where pdti.id = kdta."von_Inf_id" limit 2
+          	select * from "PersonenDB_tbl_informanten" pdti where pdti.id = kdta."von_Inf_id"
           ) pdti on true
           join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
           join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
           join "OrteDB_tbl_orte" odto on kdti."Ort_id" = odto.id
           join lateral(
-          	select * from "KorpusDB_tbl_erhinfaufgaben" kdte where kdte."id_InfErh_id" = kdti.id limit 3
+          	select * from "KorpusDB_tbl_erhinfaufgaben" kdte where kdte."id_InfErh_id" = kdti.id
           ) kdte on true
           join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
           join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
@@ -59,6 +59,36 @@ const antwortenDao = {
           and kdti."Dateipfad" not in ('', '0') 
           and kdti."Audiofile" not in ('', '0')
           and kdta3.id = kdta."zu_Aufgabe_id"
+        UNION
+          select distinct on (pdti.id, kdti."ID_Erh_id")
+          kdte."start_Aufgabe" as "start_Antwort", 
+          kdte."stop_Aufgabe" as "stop_Antwort",
+          kdti."Dateipfad" as dateipfad, 
+          kdti."Audiofile" as "audiofile",
+          kdtt.id as tag_id, 
+          odto.osm_id as osmId, 
+          kdtt."Tag_lang" as tag_name
+        from "KorpusDB_tbl_tags" kdtt      
+          join lateral (
+          	select * from "KorpusDB_tbl_antwortentags" kdta2 where kdta2."id_Tag_id" = kdtt.id
+          ) kdta2 on true
+          join lateral (
+          	select * from "KorpusDB_tbl_antworten" kdta where kdta2."id_Antwort_id" = kdta.id
+          ) kdta on true
+          join lateral (
+          	select * from "PersonenDB_tbl_informanten" pdti where pdti.id = kdta."von_Inf_id"
+          ) pdti on true
+          join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
+          join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
+          join "OrteDB_tbl_orte" odto on pdti.inf_ort_id = odto.id
+          join lateral(
+          	select * from "KorpusDB_tbl_erhinfaufgaben" kdte where kdte."id_InfErh_id" = kdti.id
+          ) kdte on true
+          join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
+        WHERE 
+        	kdtt.id in $$tagID
+        	and odto.osm_id = $osmId
+          and kdta3.id = kdta."zu_Aufgabe_id"  
         `;
     return await query(selectAntworten, { tagID: tagID, osmId: osmId });
   },
