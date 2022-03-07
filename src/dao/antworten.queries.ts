@@ -4,6 +4,8 @@
 export interface ISelectAntwortenParams {
   tagID: readonly (number | null | void)[];
   osmId: string | null | void;
+  ageLower: number | null | void;
+  ageUpper: number | null | void;
 }
 
 /** 'SelectAntworten' return type */
@@ -96,6 +98,8 @@ export interface ICheckIfAufgabeQuery {
 export interface IGetStampsFromAntwortParams {
   tagId: readonly (number | null | void)[];
   osmId: string | null | void;
+  ageLower: number | null | void;
+  ageUpper: number | null | void;
 }
 
 /** 'GetStampsFromAntwort' return type */
@@ -121,6 +125,8 @@ export interface IGetStampsFromAntwortQuery {
 export interface ISelectAntwortenTransParams {
   tagID: readonly (number | null | void)[];
   osmId: string | null | void;
+  ageLower: number | null | void;
+  ageUpper: number | null | void;
 }
 
 /** 'SelectAntwortenTrans' return type */

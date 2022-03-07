@@ -23,7 +23,14 @@ import {
 } from "src/dao/antworten.queries";
 
 const antwortenDao = {
-  async selectAntwortenAudio(tagID: number[], osmId: string) {
+  async selectAntwortenAudio(
+    tagID: number[],
+    osmId: string,
+    ageLower: number,
+    ageUpper: number
+  ) {
+    const dateComp = `($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+    and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)`;
     const selectAntworten = sql<ISelectAntwortenQuery & ISelectAntwortenParams>`
         select
           kdte."start_Aufgabe" as "start_Antwort", 
@@ -54,12 +61,15 @@ const antwortenDao = {
           join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
           join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
           join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
+          join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
         WHERE 
-        	        	kdtt.id in $$tagID
+        	kdtt.id in $$tagID
         	and odto.osm_id = $osmId
           and kdti."Dateipfad" not in ('', '0') 
           and kdti."Audiofile" not in ('', '0')
           and kdta3.id = kdta."zu_Aufgabe_id"
+          and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+          and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
         group by 
           kdti."ID_Erh_id" ,
           pdti.id,
@@ -102,10 +112,13 @@ const antwortenDao = {
           join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
           join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
           join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
+          join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
         WHERE 
-        	        	kdtt.id in $$tagID
+        	kdtt.id in $$tagID
         	and odto.osm_id = $osmId
           and kdta3.id = kdta."zu_Aufgabe_id"  
+          and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+          and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
         group by 
           kdti."ID_Erh_id",
           pdti.id,
@@ -119,7 +132,12 @@ const antwortenDao = {
           pdtig.gruppe_bez, pdtt.team_bez
           having count(pdti.id) > 2 and count(kdti."ID_Erh_id") > 2
         `;
-    return await query(selectAntworten, { tagID: tagID, osmId: osmId });
+    return await query(selectAntworten, {
+      tagID: tagID,
+      osmId: osmId,
+      ageLower: ageLower,
+      ageUpper: ageUpper,
+    });
     // Possible TODO: Mögliche Variable um Anzahl der Gruppen anzupassen
   },
   async selectMatchingSatz(str: string) {
@@ -165,7 +183,12 @@ const antwortenDao = {
     `;
     return await query(checkIfAufgabe, { tagId: tagId });
   },
-  async getStampsFromAntwort(tagId: number[], osmId: string) {
+  async getStampsFromAntwort(
+    tagId: number[],
+    osmId: string,
+    ageLower: number,
+    ageUpper: number
+  ) {
     const getStampsFromAntwort = sql<
       IGetStampsFromAntwortParams & IGetStampsFromAntwortQuery
     >`
@@ -188,15 +211,28 @@ const antwortenDao = {
         join "OrteDB_tbl_orte" odto on odto.id = kdti."Ort_id"
         join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
         join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
+        join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
         WHERE 
           kdta."start_Antwort" <> kdta."stop_Antwort" and 
           kdtt.id in $$tagId and 
           odto.osm_id = $osmId and 
           kdta3.id = kdta."zu_Aufgabe_id" 
+          and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+          and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
     `;
-    return await query(getStampsFromAntwort, { tagId: tagId, osmId: osmId });
+    return await query(getStampsFromAntwort, {
+      tagId: tagId,
+      osmId: osmId,
+      ageLower: ageLower,
+      ageUpper: ageUpper,
+    });
   },
-  async selectAntwortenTrans(tagID: number[], osmId: string) {
+  async selectAntwortenTrans(
+    tagID: number[],
+    osmId: string,
+    ageLower: number,
+    ageUpper: number
+  ) {
     const selectAntwortenTrans = sql<
       ISelectAntwortenTransQuery & ISelectAntwortenTransParams
     >`
@@ -225,14 +261,22 @@ const antwortenDao = {
 	      join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtm.team_id 
 	      join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtt.id = pdtig.gruppe_team_id 
 	      join "PersonenDB_tbl_informanten" pdti on pdtig.id = pdti.inf_gruppe_id 
-    where (kdta.ist_token_id is not null or kdta.ist_tokenset_id is not null) and 
-    kdtt.id in $$tagID 
-    and odto.osm_id  = $osmId
-    and pdti.id = kdta."von_Inf_id" 
-    and kdti."Dateipfad" not in ('', '0') 
-    and kdti."Audiofile" not in ('', '0')
+        join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+      where (kdta.ist_token_id is not null or kdta.ist_tokenset_id is not null) and 
+        kdtt.id in $$tagID 
+        and odto.osm_id  = $osmId
+        and pdti.id = kdta."von_Inf_id" 
+        and kdti."Dateipfad" not in ('', '0') 
+        and kdti."Audiofile" not in ('', '0')
+        and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+        and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
     `;
-    return await query(selectAntwortenTrans, { tagID: tagID, osmId: osmId });
+    return await query(selectAntwortenTrans, {
+      tagID: tagID,
+      osmId: osmId,
+      ageLower: ageLower,
+      ageUpper: ageUpper,
+    });
   },
   async selectAntwortenFromAufgaben(satzid: number, aufgabeid: number) {
     const selectAntwortFromAufgabe = sql<

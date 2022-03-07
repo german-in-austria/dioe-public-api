@@ -57,7 +57,9 @@ export interface AntwortenFromAufgabe {
 export default {
   async getAntwortenAudio(
     tagIDs: number[],
-    osmId: number
+    osmId: number,
+    ageLower: number,
+    ageUpper: number
   ): Promise<AntwortTokenStamp[]> {
     const aufgabeCheck: ICheckIfAufgabeResult[] =
       await antwortenDao.checkIfAufgabe(tagIDs);
@@ -87,20 +89,26 @@ export default {
     if (transIDs.length > 0) {
       resTrans = await antwortenDao.selectAntwortenTrans(
         transIDs,
-        osmId.toString()
+        osmId.toString(),
+        ageLower,
+        ageUpper
       );
     }
     if (aufgIDs.length > 0) {
       resAuf = await antwortenDao.getStampsFromAntwort(
         aufgIDs,
-        osmId.toString()
+        osmId.toString(),
+        ageLower,
+        ageUpper
       );
     }
     if (antIDs.length > 0 || resAuf.length === 0) {
       antIDs = antIDs.concat(aufgIDs);
       resAnt = await antwortenDao.selectAntwortenAudio(
         antIDs,
-        osmId.toString()
+        osmId.toString(),
+        ageLower,
+        ageUpper
       );
     }
     // Group the different time tags together into a single Array of Objects

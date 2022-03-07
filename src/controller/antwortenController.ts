@@ -54,7 +54,9 @@ export class AntwortenController extends Controller {
   ): Promise<AntwortTokenStamp[]> {
     return antwortenService.getAntwortenAudio(
       antwortenDto.ids,
-      antwortenDto.osmId
+      antwortenDto.osmId,
+      antwortenDto.ageLower ? antwortenDto.ageLower : -1,
+      antwortenDto.ageUpper ? antwortenDto.ageUpper : -1
     );
   }
 
