@@ -72,7 +72,9 @@ export class AufgabenController extends Controller {
   ): Promise<AufgabeStamp[]> {
     return aufgabenService.getAufgabeAudioByOrt(
       antwortenDto.ids,
-      antwortenDto.osmId
+      antwortenDto.osmId,
+      antwortenDto.ageLower ? antwortenDto.ageLower : -1,
+      antwortenDto.ageUpper ? antwortenDto.ageUpper : -1
     );
   }
 }

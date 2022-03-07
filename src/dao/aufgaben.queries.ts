@@ -124,6 +124,8 @@ export interface ISelectAllTeamsQuery {
 export interface ISelectAufgabeAudioByOrtParams {
   aufIDs: readonly (number | null | void)[];
   osmId: string | null | void;
+  ageLower: number | null | void;
+  ageUpper: number | null | void;
 }
 
 /** 'SelectAufgabeAudioByOrt' return type */

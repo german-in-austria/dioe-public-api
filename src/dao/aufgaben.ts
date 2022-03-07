@@ -93,7 +93,12 @@ const aufgabenDao = {
     `;
     return await query(selectAllTeams);
   },
-  async getAufgabeOrtAudio(aufIDs: number[], osmId: string) {
+  async getAufgabeOrtAudio(
+    aufIDs: number[],
+    osmId: string,
+    ageLower: number,
+    ageUpper: number
+  ) {
     const selectAufgabeAudioByOrt = sql<ISelectAufgabeAudioByOrtQuery>`
     select kdta.id,
     kdta."Aufgabenstellung" as "aufgabe", 
@@ -111,9 +116,12 @@ const aufgabenDao = {
       join "OrteDB_tbl_orte" odto on odto.id = kdti."Ort_id" 
       join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
       join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
+      join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
     where
       kdta2."von_Inf_id" = pdti.id and kdta.id IN $$aufIDs 
       and odto.osm_id = $osmId 
+      and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+      and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
     UNION
       select kdta.id,
       kdta."Aufgabenstellung" as "aufgabe", 
@@ -131,13 +139,18 @@ const aufgabenDao = {
         join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id  
         join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
         join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
+        join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
       where
         kdta2."von_Inf_id" = pdti.id and kdta.id IN $$aufIDs 
         and odto.osm_id = $osmId  
+        and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+        and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
     `;
     return await query(selectAufgabeAudioByOrt, {
       aufIDs: aufIDs,
       osmId: osmId,
+      ageLower: ageLower,
+      ageUpper: ageUpper,
     });
   },
 };

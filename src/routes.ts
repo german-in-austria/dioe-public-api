@@ -224,6 +224,8 @@ const models: TsoaRoute.Models = {
         "properties": {
             "ids": {"dataType":"array","array":{"dataType":"double"},"required":true},
             "osmId": {"dataType":"double","required":true},
+            "ageLower": {"dataType":"double"},
+            "ageUpper": {"dataType":"double"},
         },
         "additionalProperties": true,
     },

@@ -588,6 +588,14 @@
 					"osmId": {
 						"type": "number",
 						"format": "double"
+					},
+					"ageLower": {
+						"type": "number",
+						"format": "double"
+					},
+					"ageUpper": {
+						"type": "number",
+						"format": "double"
 					}
 				},
 				"required": [

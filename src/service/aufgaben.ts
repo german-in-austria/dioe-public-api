@@ -50,9 +50,16 @@ export default {
   },
   async getAufgabeAudioByOrt(
     aufIDs: number[],
-    osmId: number
+    osmId: number,
+    ageLower: number,
+    ageUpper: number
   ): Promise<AufgabeStamp[]> {
-    const res = await aufgabenDao.getAufgabeOrtAudio(aufIDs, osmId.toString());
+    const res = await aufgabenDao.getAufgabeOrtAudio(
+      aufIDs,
+      osmId.toString(),
+      ageLower,
+      ageUpper
+    );
     let aufgaben: AufgabeStamp[] = [];
     res.forEach((el: ISelectAufgabeAudioByOrtResult) => {
       const a = {

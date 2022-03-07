@@ -33,6 +33,8 @@ import antwortenService, {
 export interface antwortenDto {
   ids: number[];
   osmId: number;
+  ageLower?: number;
+  ageUpper?: number;
 }
 
 @Route("antworten")
