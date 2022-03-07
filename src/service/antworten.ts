@@ -1,5 +1,4 @@
 import antwortenDao from "../dao/antworten";
-import tagService from "../service/tag";
 import _ from "lodash";
 
 import { ISelectOrtTagsResult } from "src/dao/tag.queries";
@@ -8,7 +7,6 @@ import {
   ISelectAntwortenResult,
   ISelectSatzResult,
   ISelectAntwortFromAufgabeResult,
-  ICheckIfTransResult,
   ISelectAntwortenTransResult,
   ISelectMatchingTokensResult,
   ICheckIfAufgabeResult,
