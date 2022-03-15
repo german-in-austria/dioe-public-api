@@ -199,3 +199,18 @@ export interface ISelectMatchingTokensQuery {
   result: ISelectMatchingTokensResult;
 }
 
+/** 'SelectErhebungsarten' parameters type */
+export type ISelectErhebungsartenParams = void;
+
+/** 'SelectErhebungsarten' return type */
+export interface ISelectErhebungsartenResult {
+  id: number;
+  bezeichnung: string;
+}
+
+/** 'SelectErhebungsarten' query type */
+export interface ISelectErhebungsartenQuery {
+  params: ISelectErhebungsartenParams;
+  result: ISelectErhebungsartenResult;
+}
+

@@ -19,7 +19,7 @@ import {
   IGetStampsFromAntwortQuery,
   IGetStampsFromAntwortParams,
   ICheckIfRepQuery,
-  ICheckIfRepParams,
+  ISelectErhebungsartenQuery,
 } from "src/dao/antworten.queries";
 
 const antwortenDao = {
@@ -334,6 +334,10 @@ const antwortenDao = {
       phon: phon,
       lemma: lemma,
     });
+  },
+  async selectErhebungsarten() {
+    const selectErhebungsarten = sql<ISelectErhebungsartenQuery>`select kdte.id, kdte."Bezeichnung" from "KorpusDB_tbl_erhebungsarten" kdte;`;
+    return await query(selectErhebungsarten);
   },
 };
 

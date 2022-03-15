@@ -658,6 +658,24 @@
 				"type": "object",
 				"additionalProperties": true
 			},
+			"ISelectErhebungsartenResult": {
+				"description": "'SelectErhebungsarten' return type",
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"bezeichnung": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"bezeichnung"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
 			"ISelectAllAufgabenResult": {
 				"description": "'SelectAllAufgaben' return type",
 				"properties": {
@@ -1496,6 +1514,28 @@
 						}
 					}
 				]
+			}
+		},
+		"/antworten/arten": {
+			"get": {
+				"operationId": "GetErhebungsArten",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectErhebungsartenResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
 			}
 		},
 		"/aufgaben": {

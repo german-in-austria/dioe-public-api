@@ -12,6 +12,7 @@ import {
 import {
   ISelectSatzResult,
   ISelectMatchingTokensResult,
+  ISelectErhebungsartenResult,
 } from "../dao/antworten.queries";
 
 export interface ISelectAntwortenResult {
@@ -74,5 +75,10 @@ export class AntwortenController extends Controller {
     @Query("l") lemma?: string
   ): Promise<ISelectMatchingTokensResult[]> {
     return antwortenService.getMatchingTokens(ortho, phon, lemma);
+  }
+
+  @Get("/arten")
+  public async getErhebungsArten(): Promise<ISelectErhebungsartenResult[]> {
+    return antwortenService.getErhebungsarten();
   }
 }

@@ -12,6 +12,7 @@ import {
   ICheckIfAufgabeResult,
   IGetStampsFromAntwortResult,
   ICheckIfRepResult,
+  ISelectErhebungsartenResult,
 } from "../dao/antworten.queries";
 
 export interface Antwort {
@@ -168,6 +169,9 @@ export default {
   },
   async getAntSatz(str: string): Promise<ISelectSatzResult[]> {
     return antwortenDao.selectMatchingSatz(str);
+  },
+  async getErhebungsarten(): Promise<ISelectErhebungsartenResult[]> {
+    return antwortenDao.selectErhebungsarten();
   },
   async getAntFromAufgabe(
     satzid: number | undefined | null,
