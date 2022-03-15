@@ -91,7 +91,7 @@ const tagDao = {
     `;
     return await query(selectSingleGen, { gen: gen });
   },
-  async getOrtTag(tagId: number[]) {
+  async getOrtTag(tagId: number[], erhArt: number[]) {
     const selectOrtTags = sql<ISelectOrtTagsQuery & ISelectOrtTagsParams>`
       SELECT
         count(*) AS num_tag,
@@ -109,7 +109,12 @@ const tagDao = {
         JOIN "PersonenDB_tbl_informanten" pdti ON kdta2. "von_Inf_id" = pdti.id
         JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
       WHERE
-        kdtt.id IN $$tagId
+        kdtt.id IN $$tagId and odto.osm_id not in (
+	        select osm_id from "OrteDB_tbl_orte" odto 
+	        	join "KorpusDB_tbl_inferhebung" kdti on kdti."Ort_id" = odto.id 
+	        	join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
+	        	where kdte."Art_Erhebung_id" in $$erhArt
+        )
       GROUP BY
         odto.osm_id,
         odto.ort_namelang,
@@ -122,7 +127,7 @@ const tagDao = {
       num_tag DESC;
       
     `;
-    return await query(selectOrtTags, { tagId: tagId });
+    return await query(selectOrtTags, { tagId: tagId, erhArt: erhArt });
   },
   async getPresetOrtTag(tagIDs: number[]) {
     const getPresetOrtTag = sql<IGetPresetOrtTagQuery & IGetPresetOrtTagParams>`

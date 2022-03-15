@@ -88,6 +88,7 @@ export interface ISelectSingleGenQuery {
 /** 'SelectOrtTags' parameters type */
 export interface ISelectOrtTagsParams {
   tagId: readonly (number | null | void)[];
+  erhArt: readonly (number | null | void)[];
 }
 
 /** 'SelectOrtTags' return type */

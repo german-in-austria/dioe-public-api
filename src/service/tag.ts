@@ -28,15 +28,24 @@ export default {
   async getPresetTags(): Promise<IGetPresetTagsResult[]> {
     return tagDao.getPresetTags();
   },
-  async getTagsFromPreset(tagId: number[]): Promise<ISelectOrtTagsResult[]> {
+  async getTagsFromPreset(
+    tagId: number[],
+    erhArt: number[]
+  ): Promise<ISelectOrtTagsResult[]> {
     const res: IGetTagsByPresetResult[] = await tagDao.getTagsByPreset(tagId);
-    return tagDao.getOrtTag(res.map((val) => val.tagId));
+    return tagDao.getOrtTag(
+      res.map((val) => val.tagId),
+      erhArt
+    );
   },
   async getPresetOrtTags(tagId: number[]): Promise<IGetPresetOrtTagResult[]> {
     return tagDao.getPresetOrtTag(tagId);
   },
-  async getTagOrte(tagId: number[]): Promise<ISelectOrtTagsResult[]> {
-    return tagDao.getOrtTag(tagId);
+  async getTagOrte(
+    tagId: number[],
+    erhArt: number[]
+  ): Promise<ISelectOrtTagsResult[]> {
+    return tagDao.getOrtTag(tagId, erhArt);
   },
   async getTagGen(gen: number): Promise<ISelectSingleGenResult[]> {
     return tagDao.getSingleGen(gen);

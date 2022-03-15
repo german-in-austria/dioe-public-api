@@ -15,6 +15,7 @@ import tagService, { TagTree } from "../service/tag";
 
 interface tagDto {
   ids: number[];
+  erhArt: number[];
 }
 
 @Route("tags")
@@ -52,21 +53,21 @@ export class TagController extends Controller {
   public async getTagOrte(
     @Path() tagId: number
   ): Promise<ISelectOrtTagsResult[]> {
-    return tagService.getTagOrte([tagId]);
+    return tagService.getTagOrte([tagId], []);
   }
 
   @Post("/ort")
   public async getTagOrteMultiple(
     @Body() tagDto: tagDto
   ): Promise<ISelectOrtTagsResult[]> {
-    return tagService.getTagOrte(tagDto.ids);
+    return tagService.getTagOrte(tagDto.ids, tagDto.erhArt);
   }
 
   @Post("/preset")
   public async getTagsFromPreset(
     @Body() tagDto: tagDto
   ): Promise<ISelectOrtTagsResult[]> {
-    return tagService.getTagsFromPreset(tagDto.ids);
+    return tagService.getTagsFromPreset(tagDto.ids, tagDto.erhArt);
   }
 
   @Get("/preset/ort/{tagId}")

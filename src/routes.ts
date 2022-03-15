@@ -111,6 +111,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "ids": {"dataType":"array","array":{"dataType":"double"},"required":true},
+            "erhArt": {"dataType":"array","array":{"dataType":"double"},"required":true},
         },
         "additionalProperties": true,
     },
