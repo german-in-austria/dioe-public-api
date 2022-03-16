@@ -53,7 +53,7 @@ export class TagController extends Controller {
   public async getTagOrte(
     @Path() tagId: number
   ): Promise<ISelectOrtTagsResult[]> {
-    return tagService.getTagOrte([tagId], []);
+    return tagService.getTagOrte([tagId], [-1]);
   }
 
   @Post("/ort")
