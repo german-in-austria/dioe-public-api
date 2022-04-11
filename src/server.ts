@@ -35,6 +35,7 @@ import "./controller/tagController";
 import "./controller/phaenController";
 import "./controller/aufgabenController";
 import "./controller/antwortenController";
+import "./controller/socialController";
 
 const tsoaConfig = require("./../tsoa.json");
 

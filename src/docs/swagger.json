@@ -963,6 +963,20 @@
 				],
 				"type": "object",
 				"additionalProperties": true
+			},
+			"ISelectAusbildungResult": {
+				"description": "'SelectAusbildung' return type",
+				"properties": {
+					"ausbildungMax": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"ausbildungMax"
+				],
+				"type": "object",
+				"additionalProperties": true
 			}
 		},
 		"securitySchemes": {
@@ -1746,6 +1760,28 @@
 						}
 					}
 				}
+			}
+		},
+		"/social/berufe": {
+			"get": {
+				"operationId": "GetAllAusbildung",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectAusbildungResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
 			}
 		}
 	},
