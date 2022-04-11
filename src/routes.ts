@@ -114,6 +114,9 @@ const models: TsoaRoute.Models = {
         "properties": {
             "ids": {"dataType":"array","array":{"dataType":"double"},"required":true},
             "erhArt": {"dataType":"array","array":{"dataType":"double"},"required":true},
+            "ausbildung": {"dataType":"string"},
+            "beruf_id": {"dataType":"array","array":{"dataType":"double"}},
+            "weiblich": {"dataType":"boolean"},
         },
         "additionalProperties": true,
     },
