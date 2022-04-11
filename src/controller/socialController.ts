@@ -13,13 +13,6 @@ import { ISelectAusbildungResult } from "../dao/social.queries";
 
 import socialService from "../service/social";
 
-export interface antwortenDto {
-  ids: number[];
-  osmId: number;
-  ageLower?: number;
-  ageUpper?: number;
-}
-
 @Route("social")
 export class SocialController extends Controller {
   @Get("/berufe")
