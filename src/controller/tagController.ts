@@ -12,10 +12,14 @@ import {
 import { Body, Controller, Get, Path, Post, Query, Route } from "tsoa";
 
 import tagService, { TagTree } from "../service/tag";
+import validator from "../service/validate";
 
-interface tagDto {
+export interface tagDto {
   ids: number[];
   erhArt: number[];
+  ausbildung?: string;
+  beruf_id?: number;
+  weiblich?: boolean;
 }
 
 @Route("tags")
@@ -53,21 +57,29 @@ export class TagController extends Controller {
   public async getTagOrte(
     @Path() tagId: number
   ): Promise<ISelectOrtTagsResult[]> {
-    return tagService.getTagOrte([tagId], [-1]);
+    return tagService.getTagOrte(
+      validator.validateTagDto({
+        ids: [tagId],
+        erhArt: [-1],
+        ausbildung: "",
+        beruf_id: undefined,
+        weiblich: undefined,
+      })
+    );
   }
 
   @Post("/ort")
   public async getTagOrteMultiple(
     @Body() tagDto: tagDto
   ): Promise<ISelectOrtTagsResult[]> {
-    return tagService.getTagOrte(tagDto.ids, tagDto.erhArt);
+    return tagService.getTagOrte(validator.validateTagDto(tagDto));
   }
 
   @Post("/preset")
   public async getTagsFromPreset(
     @Body() tagDto: tagDto
   ): Promise<ISelectOrtTagsResult[]> {
-    return tagService.getTagsFromPreset(tagDto.ids, tagDto.erhArt);
+    return tagService.getTagsFromPreset(validator.validateTagDto(tagDto));
   }
 
   @Get("/preset/ort/{tagId}")

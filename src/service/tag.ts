@@ -8,7 +8,10 @@ import {
   IGetPresetOrtTagResult,
 } from "../dao/tag.queries";
 import tagDao from "../dao/tag";
-import _ from "lodash";
+import _, { String } from "lodash";
+
+import { ausbildungGrad } from "./social";
+import { tag } from "./validate";
 
 export interface TagTree extends ISelectTagsResult {
   children: TagTree[];
@@ -28,24 +31,31 @@ export default {
   async getPresetTags(): Promise<IGetPresetTagsResult[]> {
     return tagDao.getPresetTags();
   },
-  async getTagsFromPreset(
-    tagId: number[],
-    erhArt: number[]
-  ): Promise<ISelectOrtTagsResult[]> {
-    const res: IGetTagsByPresetResult[] = await tagDao.getTagsByPreset(tagId);
+  async getTagsFromPreset(tag: tag): Promise<ISelectOrtTagsResult[]> {
+    const res: IGetTagsByPresetResult[] = await tagDao.getTagsByPreset(tag.ids);
+    let aus = ausbildungGrad.find((el: string) => el === tag.ausbildung);
+    if (aus == undefined) {
+      aus = "";
+    }
     return tagDao.getOrtTag(
       res.map((val) => val.tagId),
-      erhArt
+      tag.erhArt,
+      aus,
+      tag.beruf_id,
+      tag.weiblich
     );
   },
   async getPresetOrtTags(tagId: number[]): Promise<IGetPresetOrtTagResult[]> {
     return tagDao.getPresetOrtTag(tagId);
   },
-  async getTagOrte(
-    tagId: number[],
-    erhArt: number[]
-  ): Promise<ISelectOrtTagsResult[]> {
-    return tagDao.getOrtTag(tagId, erhArt);
+  async getTagOrte(tag: tag): Promise<ISelectOrtTagsResult[]> {
+    return tagDao.getOrtTag(
+      tag.ids,
+      tag.erhArt,
+      tag.ausbildung,
+      tag.beruf_id,
+      tag.weiblich
+    );
   },
   async getTagGen(gen: number): Promise<ISelectSingleGenResult[]> {
     return tagDao.getSingleGen(gen);
