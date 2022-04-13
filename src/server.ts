@@ -47,7 +47,6 @@ process.on("unhandledRejection", (error: Error) => {
 
 // initialize express server
 const app = express();
-
 // gzip
 app.use(compression());
 
@@ -98,6 +97,8 @@ RegisterRoutes(app);
 app.use(errorHandler);
 
 // start the server
-app.listen(process.env.NODE_PORT || defaultPort, () => {
+const server = app.listen(process.env.NODE_PORT || defaultPort, () => {
   console.log(`Started server on port ${process.env.NODE_PORT || defaultPort}`);
 });
+
+export default server;
