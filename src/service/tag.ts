@@ -42,7 +42,8 @@ export default {
       tag.erhArt,
       aus,
       tag.beruf_id,
-      tag.weiblich
+      tag.weiblich,
+      tag.gender_sel
     );
   },
   async getPresetOrtTags(tagId: number[]): Promise<IGetPresetOrtTagResult[]> {
@@ -54,7 +55,8 @@ export default {
       tag.erhArt,
       tag.ausbildung,
       tag.beruf_id,
-      tag.weiblich
+      tag.weiblich,
+      tag.gender_sel
     );
   },
   async getTagGen(gen: number): Promise<ISelectSingleGenResult[]> {

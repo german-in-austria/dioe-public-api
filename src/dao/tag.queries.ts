@@ -90,6 +90,9 @@ export interface ISelectOrtTagsParams {
   tagId: readonly (number | null | void)[];
   erhArt: readonly (number | null | void)[];
   aus: string | null | void;
+  beruf: number | null | void;
+  gender_sel: number | null | void;
+  gender: boolean | null | void;
 }
 
 /** 'SelectOrtTags' return type */

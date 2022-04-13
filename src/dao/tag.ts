@@ -96,7 +96,8 @@ const tagDao = {
     erhArt: number[],
     aus: string,
     beruf: number,
-    gender: string
+    gender: boolean,
+    gender_sel: number
   ) {
     const selectOrtTags = sql<ISelectOrtTagsQuery & ISelectOrtTagsParams>`
       SELECT
@@ -125,7 +126,7 @@ const tagDao = {
         )
         and ($aus = '' OR pdti.ausbildung_max = $aus)
         and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
-        and ($gender = '' OR pdtp.weiblich = $gender)
+        and ($gender_sel < 0 OR pdtp.weiblich = $gender)
       GROUP BY
         odto.osm_id,
         odto.ort_namelang,
@@ -143,6 +144,7 @@ const tagDao = {
       beruf: beruf,
       gender: gender,
       erhArt: erhArt,
+      gender_sel: gender_sel,
       aus: aus,
     });
   },
