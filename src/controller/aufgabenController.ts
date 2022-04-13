@@ -19,6 +19,8 @@ import {
   BodyProp,
 } from "tsoa";
 
+import validator from "../service/validate";
+
 import aufgabenService, { AufgabeStamp } from "../service/aufgaben";
 
 import { antwortenDto } from "../controller/antwortenController";
@@ -70,11 +72,15 @@ export class AufgabenController extends Controller {
   public async getAntAudioByOrt(
     @Body() antwortenDto: antwortenDto
   ): Promise<AufgabeStamp[]> {
+    const val = validator.validateAgeBound(
+      antwortenDto.ageLower,
+      antwortenDto.ageUpper
+    );
     return aufgabenService.getAufgabeAudioByOrt(
       antwortenDto.ids,
       antwortenDto.osmId,
-      antwortenDto.ageLower ? antwortenDto.ageLower : -1,
-      antwortenDto.ageUpper ? antwortenDto.ageUpper : -1
+      val.ageLower,
+      val.ageUpper
     );
   }
 }
