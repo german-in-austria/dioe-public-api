@@ -8,7 +8,8 @@ export interface tag {
   erhArt: number[];
   ausbildung: string;
   beruf_id: number;
-  weiblich: string;
+  weiblich: boolean;
+  gender_sel: number;
 }
 
 export interface ageBound {
@@ -19,21 +20,25 @@ export interface ageBound {
 export interface filters extends ageBound {
   ausbildung: string;
   beruf_id: number;
-  weiblich: string;
+  weiblich: boolean;
+  gender_sel: number;
 }
 
 export default {
   validateTagDto(tag: tagDto): tag {
     const aus = this.validateAusbildung(tag.ausbildung ? tag.ausbildung : "");
     const beruf = this.validateBeruf(tag.beruf_id ? tag.beruf_id : -1);
-    const gender = String(tag.weiblich);
-
+    let gender_sel = 0;
+    if (tag.weiblich == undefined) {
+      gender_sel = -1;
+      tag.weiblich = false;
+    }
     const res = {
       ids: tag.ids,
       erhArt: tag.erhArt,
       ausbildung: aus,
       beruf_id: beruf,
-      weiblich: gender,
+      weiblich: tag.weiblich,
     } as tag;
     return res;
   },
@@ -41,12 +46,16 @@ export default {
     const ageBound = this.validateAgeBound(ant.ageLower, ant.ageUpper);
     const aus = this.validateAusbildung(ant.ausbildung ? ant.ausbildung : "");
     const beruf = this.validateBeruf(ant.beruf_id ? ant.beruf_id : -1);
-    const gender = String(ant.weiblich);
-
+    let gender_sel = 0;
+    if (ant.weiblich == undefined) {
+      gender_sel = -1;
+      ant.weiblich = false;
+    }
     return {
       ausbildung: aus,
       beruf_id: beruf,
-      weiblich: gender,
+      weiblich: ant.weiblich,
+      gender_sel: gender_sel,
       ageLower: ageBound.ageLower,
       ageUpper: ageBound.ageUpper,
     } as filters;
