@@ -297,11 +297,8 @@
 						"type": "string"
 					},
 					"beruf_id": {
-						"items": {
-							"type": "number",
-							"format": "double"
-						},
-						"type": "array"
+						"type": "number",
+						"format": "double"
 					},
 					"weiblich": {
 						"type": "boolean"
@@ -617,6 +614,16 @@
 					"ageUpper": {
 						"type": "number",
 						"format": "double"
+					},
+					"ausbildung": {
+						"type": "string"
+					},
+					"beruf_id": {
+						"type": "number",
+						"format": "double"
+					},
+					"weiblich": {
+						"type": "boolean"
 					}
 				},
 				"required": [
