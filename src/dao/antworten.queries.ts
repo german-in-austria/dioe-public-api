@@ -6,6 +6,10 @@ export interface ISelectAntwortenParams {
   osmId: string | null | void;
   ageLower: number | null | void;
   ageUpper: number | null | void;
+  aus: string | null | void;
+  beruf: number | null | void;
+  gender_sel: number | null | void;
+  gender: boolean | null | void;
 }
 
 /** 'SelectAntworten' return type */
@@ -100,6 +104,10 @@ export interface IGetStampsFromAntwortParams {
   osmId: string | null | void;
   ageLower: number | null | void;
   ageUpper: number | null | void;
+  aus: string | null | void;
+  beruf: number | null | void;
+  gender_sel: number | null | void;
+  gender: boolean | null | void;
 }
 
 /** 'GetStampsFromAntwort' return type */
@@ -127,6 +135,10 @@ export interface ISelectAntwortenTransParams {
   osmId: string | null | void;
   ageLower: number | null | void;
   ageUpper: number | null | void;
+  aus: string | null | void;
+  beruf: number | null | void;
+  gender_sel: number | null | void;
+  gender: boolean | null | void;
 }
 
 /** 'SelectAntwortenTrans' return type */

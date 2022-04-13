@@ -27,10 +27,12 @@ const antwortenDao = {
     tagID: number[],
     osmId: string,
     ageLower: number,
-    ageUpper: number
+    ageUpper: number,
+    aus: string,
+    beruf: number,
+    gender: boolean,
+    gender_sel: number
   ) {
-    const dateComp = `($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
-    and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)`;
     const selectAntworten = sql<ISelectAntwortenQuery & ISelectAntwortenParams>`
         select
           kdte."start_Aufgabe" as "start_Antwort", 
@@ -52,6 +54,7 @@ const antwortenDao = {
           join lateral (
           	select * from "PersonenDB_tbl_informanten" pdti where pdti.id = kdta."von_Inf_id"
           ) pdti on true
+          JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
           join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
           join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
           join "OrteDB_tbl_orte" odto on kdti."Ort_id" = odto.id
@@ -70,6 +73,9 @@ const antwortenDao = {
           and kdta3.id = kdta."zu_Aufgabe_id"
           and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
           and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+          and ($aus = '' OR pdti.ausbildung_max = $aus)
+          and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+          and ($gender_sel < 0 OR pdtp.weiblich = $gender)
         group by 
           kdti."ID_Erh_id" ,
           pdti.id,
@@ -103,6 +109,7 @@ const antwortenDao = {
           join lateral (
           	select * from "PersonenDB_tbl_informanten" pdti where pdti.id = kdta."von_Inf_id"
           ) pdti on true
+          JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
           join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
           join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
           join "OrteDB_tbl_orte" odto on pdti.inf_ort_id = odto.id
@@ -119,6 +126,9 @@ const antwortenDao = {
           and kdta3.id = kdta."zu_Aufgabe_id"  
           and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
           and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+          and ($aus = '' OR pdti.ausbildung_max = $aus)
+          and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+          and ($gender_sel < 0 OR pdtp.weiblich = $gender)
         group by 
           kdti."ID_Erh_id",
           pdti.id,
@@ -137,6 +147,10 @@ const antwortenDao = {
       osmId: osmId,
       ageLower: ageLower,
       ageUpper: ageUpper,
+      aus: aus,
+      beruf: beruf,
+      gender: gender,
+      gender_sel: gender_sel,
     });
     // Possible TODO: Mögliche Variable um Anzahl der Gruppen anzupassen
   },
@@ -187,7 +201,11 @@ const antwortenDao = {
     tagId: number[],
     osmId: string,
     ageLower: number,
-    ageUpper: number
+    ageUpper: number,
+    aus: string,
+    beruf: number,
+    gender: boolean,
+    gender_sel: number
   ) {
     const getStampsFromAntwort = sql<
       IGetStampsFromAntwortParams & IGetStampsFromAntwortQuery
@@ -203,7 +221,8 @@ const antwortenDao = {
        	from "KorpusDB_tbl_tags" kdtt       
         join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
         join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
-        join "PersonenDB_tbl_informanten" pdti on pdti.id = kdta."von_Inf_id" 
+        join "PersonenDB_tbl_informanten" pdti on pdti.id = kdta."von_Inf_id"
+        JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
         join "KorpusDB_tbl_inf_zu_erhebung" kdtize on pdti.id = kdtize."ID_Inf_id" 
         join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id 
         join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
@@ -219,19 +238,30 @@ const antwortenDao = {
           kdta3.id = kdta."zu_Aufgabe_id" 
           and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
           and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+          and ($aus = '' OR pdti.ausbildung_max = $aus)
+          and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+          and ($gender_sel < 0 OR pdtp.weiblich = $gender)
     `;
     return await query(getStampsFromAntwort, {
       tagId: tagId,
       osmId: osmId,
       ageLower: ageLower,
       ageUpper: ageUpper,
+      beruf: beruf,
+      gender: gender,
+      aus: aus,
+      gender_sel: gender_sel,
     });
   },
   async selectAntwortenTrans(
     tagID: number[],
     osmId: string,
     ageLower: number,
-    ageUpper: number
+    ageUpper: number,
+    aus: string,
+    beruf: number,
+    gender: boolean,
+    gender_sel: number
   ) {
     const selectAntwortenTrans = sql<
       ISelectAntwortenTransQuery & ISelectAntwortenTransParams
@@ -260,7 +290,8 @@ const antwortenDao = {
 	      join "PersonenDB_tbl_mitarbeiter" pdtm on pdtm.id = kdti."Explorator_id" 
 	      join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtm.team_id 
 	      join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtt.id = pdtig.gruppe_team_id 
-	      join "PersonenDB_tbl_informanten" pdti on pdtig.id = pdti.inf_gruppe_id 
+	      join "PersonenDB_tbl_informanten" pdti on pdtig.id = pdti.inf_gruppe_id
+        JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
       where (kdta.ist_token_id is not null or kdta.ist_tokenset_id is not null) and 
         kdtt.id in $$tagID 
@@ -270,12 +301,19 @@ const antwortenDao = {
         and kdti."Audiofile" not in ('', '0')
         and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
         and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+        and ($aus = '' OR pdti.ausbildung_max = $aus)
+        and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+        and ($gender_sel < 0 OR pdtp.weiblich = $gender)
     `;
     return await query(selectAntwortenTrans, {
       tagID: tagID,
       osmId: osmId,
       ageLower: ageLower,
       ageUpper: ageUpper,
+      beruf: beruf,
+      gender: gender,
+      aus: aus,
+      gender_sel: gender_sel,
     });
   },
   async selectAntwortenFromAufgaben(satzid: number, aufgabeid: number) {
@@ -298,14 +336,16 @@ const antwortenDao = {
           join "KorpusDB_tbl_tags" kdtt on kdtt.id = kdta2."id_Tag_id" 
           join "KorpusDB_tbl_tagebene" kdtt2 on kdta2."id_TagEbene_id"  = kdtt2.id
           join "PersonenDB_tbl_informanten" pdti on pdti.id = kdta."von_Inf_id" 
+          JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
           join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
           join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
           join "OrteDB_tbl_orte" odto on kdti."Ort_id" = odto.id
           join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
           join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
           join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
+          join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
         where ($satzid < 0 or kdta."ist_Satz_id" = $satzid) and 
-        ($aufgabeid < 0 or kdte."id_Aufgabe_id" = $aufgabeid)
+          ($aufgabeid < 0 or kdte."id_Aufgabe_id" = $aufgabeid)
         group by kdti."Dateipfad", kdti."Audiofile", kdtt."Tag_lang", kdtt.id,
           kdte."start_Aufgabe" , kdte."stop_Aufgabe",
           kdta."Kommentar", 

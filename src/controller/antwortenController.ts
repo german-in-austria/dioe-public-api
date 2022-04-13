@@ -31,11 +31,16 @@ import antwortenService, {
   AntwortTokenStamp,
 } from "../service/antworten";
 
+import validator from "../service/validate";
+
 export interface antwortenDto {
   ids: number[];
   osmId: number;
   ageLower?: number;
   ageUpper?: number;
+  ausbildung?: string;
+  beruf_id?: number;
+  weiblich?: boolean;
 }
 
 @Route("antworten")
@@ -56,8 +61,7 @@ export class AntwortenController extends Controller {
     return antwortenService.getAntwortenAudio(
       antwortenDto.ids,
       antwortenDto.osmId,
-      antwortenDto.ageLower ? antwortenDto.ageLower : -1,
-      antwortenDto.ageUpper ? antwortenDto.ageUpper : -1
+      validator.validateAntwortenDto(antwortenDto)
     );
   }
 

@@ -1,7 +1,9 @@
 import antwortenDao from "../dao/antworten";
-import _ from "lodash";
+import _, { filter } from "lodash";
 
 import { ISelectOrtTagsResult } from "src/dao/tag.queries";
+
+import { filters, tag } from "src/service/validate";
 
 import {
   ISelectAntwortenResult,
@@ -59,8 +61,7 @@ export default {
   async getAntwortenAudio(
     tagIDs: number[],
     osmId: number,
-    ageLower: number,
-    ageUpper: number
+    filters: filters
   ): Promise<AntwortTokenStamp[]> {
     const aufgabeCheck: ICheckIfAufgabeResult[] =
       await antwortenDao.checkIfAufgabe(tagIDs);
@@ -91,16 +92,24 @@ export default {
       resTrans = await antwortenDao.selectAntwortenTrans(
         transIDs,
         osmId.toString(),
-        ageLower,
-        ageUpper
+        filters.ageLower,
+        filters.ageUpper,
+        filters.ausbildung,
+        filters.beruf_id,
+        filters.weiblich,
+        filters.gender_sel
       );
     }
     if (aufgIDs.length > 0) {
       resAuf = await antwortenDao.getStampsFromAntwort(
         aufgIDs,
         osmId.toString(),
-        ageLower,
-        ageUpper
+        filters.ageLower,
+        filters.ageUpper,
+        filters.ausbildung,
+        filters.beruf_id,
+        filters.weiblich,
+        filters.gender_sel
       );
     }
     if (antIDs.length > 0 || resAuf.length === 0) {
@@ -108,8 +117,12 @@ export default {
       resAnt = await antwortenDao.selectAntwortenAudio(
         antIDs,
         osmId.toString(),
-        ageLower,
-        ageUpper
+        filters.ageLower,
+        filters.ageUpper,
+        filters.ausbildung,
+        filters.beruf_id,
+        filters.weiblich,
+        filters.gender_sel
       );
     }
     // Group the different time tags together into a single Array of Objects
