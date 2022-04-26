@@ -6,7 +6,6 @@ import { after, endsWith } from "lodash";
 import { tagDto } from "src/controller/tagController";
 import { filters } from "src/service/validate";
 import { antwortenDto } from "src/controller/antwortenController";
-import { ausbildungGrad } from "src/service/social";
 import { Ausbildungsgrade } from "src/enums/enums";
 
 let app: Server;
