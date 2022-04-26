@@ -4,15 +4,7 @@ import server from "../server";
 import { Server } from "http";
 import { after, endsWith } from "lodash";
 import { tagDto } from "src/controller/tagController";
-// import { Ausbildungsgrad } from "src/enums/enums";
-
-enum Ausbildungsgrad {
-  pflicht = "pflichtschule",
-  reife = "hochschulreife",
-  abschluss = "hochschulabschluss",
-  beruf = "berufsausbildung",
-  empty = "",
-}
+import { Ausbildungsgrade } from "src/enums/enums";
 
 let app: Server;
 
@@ -91,7 +83,7 @@ describe("POST /api/tags/ort", () => {
     const tagBody: tagDto = {
       ids: [4],
       erhArt: [1],
-      ausbildung: Ausbildungsgrad.pflicht,
+      ausbildung: Ausbildungsgrade.pflicht,
       beruf_id: 16,
       weiblich: true,
     } as tagDto;

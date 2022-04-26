@@ -1,4 +1,4 @@
-export enum Ausbildungsgrad {
+export enum Ausbildungsgrade {
   pflicht = "pflichtschule",
   reife = "hochschulreife",
   abschluss = "hochschulabschluss",

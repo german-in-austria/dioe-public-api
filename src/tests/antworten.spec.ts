@@ -7,15 +7,7 @@ import { tagDto } from "src/controller/tagController";
 import { filters } from "src/service/validate";
 import { antwortenDto } from "src/controller/antwortenController";
 import { ausbildungGrad } from "src/service/social";
-// import { Ausbildungsgrad } from "src/enums/enums";
-
-enum Ausbildungsgrad {
-  pflicht = "pflichtschule",
-  reife = "hochschulreife",
-  abschluss = "hochschulabschluss",
-  beruf = "berufsausbildung",
-  empty = "",
-}
+import { Ausbildungsgrade } from "src/enums/enums";
 
 let app: Server;
 
@@ -112,7 +104,7 @@ describe("POST /api/antworten/tags", () => {
     const filters: antwortenDto = {
       ids: [4],
       osmId: 109524,
-      ausbildung: Ausbildungsgrad.pflicht,
+      ausbildung: Ausbildungsgrade.pflicht,
     } as antwortenDto;
     request(app)
       .post("/api/antworten/tags")
@@ -166,7 +158,7 @@ describe("POST /api/antworten/tags", () => {
       osmId: 109524,
       weiblich: true,
       beruf_id: 11,
-      ausbildung: Ausbildungsgrad.beruf,
+      ausbildung: Ausbildungsgrade.beruf,
       ageUpper: 50,
     } as antwortenDto;
     request(app)
