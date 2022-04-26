@@ -16,7 +16,7 @@ import validator from "../service/validate";
 
 export interface tagDto {
   ids: number[];
-  erhArt: number[];
+  erhArt?: number[];
   ausbildung?: string;
   beruf_id?: number;
   weiblich?: boolean;

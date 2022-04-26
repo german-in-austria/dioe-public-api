@@ -67,7 +67,6 @@ describe("POST /api/tags/ort", () => {
   it("Fetch Single Tag using multiple endpoint, Get results", (done) => {
     const tagBody: tagDto = {
       ids: [3],
-      erhArt: [-1],
     } as tagDto;
     request(app)
       .post("/api/tags/ort")

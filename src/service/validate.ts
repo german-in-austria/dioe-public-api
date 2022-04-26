@@ -37,7 +37,7 @@ export default {
     }
     const res = {
       ids: tag.ids,
-      erhArt: tag.erhArt,
+      erhArt: tag.erhArt == undefined ? [-1] : tag.erhArt,
       ausbildung: aus,
       beruf_id: beruf,
       weiblich: tag.weiblich,

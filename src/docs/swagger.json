@@ -309,8 +309,7 @@
 					}
 				},
 				"required": [
-					"ids",
-					"erhArt"
+					"ids"
 				],
 				"type": "object",
 				"additionalProperties": true
