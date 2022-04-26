@@ -32,7 +32,67 @@ describe("POST /api/aufgaben/audio", () => {
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
+        const body = res.body;
 
+        /*
+        body.forEach((el: any) => {
+          
+        });*/
+        console.log(body);
+        expect(body.length).toBeGreaterThanOrEqual(1);
+        expect(body[0].data.length).toBeGreaterThanOrEqual(1);
+        done();
+      });
+  });
+
+  it("Fetch antworten aufgaben Audio with upper age filter, Should be more than 1", (done) => {
+    const filters: antwortenDto = {
+      ids: [4],
+      osmId: 109524,
+      ageUpper: 50,
+    } as antwortenDto;
+    request(app)
+      .post("/api/aufgaben/audio")
+      .send(filters)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        const body = res.body;
+
+        body.forEach((el: any) => {
+          const file = el.audiofile;
+          const grp = el.gruppeBez;
+          expect(grp.includes("jung")).toBeTruthy;
+          expect(grp.includes("65")).toBeFalsy;
+        });
+        expect(body.length).toBeGreaterThanOrEqual(1);
+        expect(body[0].data.length).toBeGreaterThanOrEqual(1);
+        done();
+      });
+  });
+
+  it("Fetch antworten aufgaben Audio with lower age filter, Should be more than 1", (done) => {
+    const filters: antwortenDto = {
+      ids: [4],
+      osmId: 109524,
+      ageLower: 60,
+    } as antwortenDto;
+    request(app)
+      .post("/api/aufgaben/audio")
+      .send(filters)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        const body = res.body;
+
+        body.forEach((el: any) => {
+          const file = el.audiofile;
+          const grp = el.gruppeBez;
+          expect(grp.includes("jung")).toBeFalsy;
+          expect(grp.includes("65")).toBeTruthy;
+        });
+        expect(body.length).toBeGreaterThanOrEqual(1);
+        expect(body[0].data.length).toBeGreaterThanOrEqual(1);
         done();
       });
   });
