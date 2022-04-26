@@ -4,7 +4,13 @@ import server from "../server";
 import { Server } from "http";
 import { after, endsWith } from "lodash";
 import { tagDto } from "src/controller/tagController";
-import { Ausbildungsgrade } from "src/enums/enums";
+enum Ausbildungsgrade {
+  pflicht = "pflichtschule",
+  reife = "hochschulreife",
+  abschluss = "hochschulabschluss",
+  beruf = "berufsausbildung",
+  empty = "",
+}
 
 let app: Server;
 
@@ -122,6 +128,60 @@ describe("POST /api/tags/ort", () => {
         const first = res.body[0];
         expect(res.body.length).toBeGreaterThan(1);
         expect(first.numTag).toBe("419");
+        done();
+      });
+  });
+
+  it("Fetch Single Tag using multiple endpoint with all filters enabled, Get results", (done) => {
+    const tagBody: tagDto = {
+      ids: [4],
+      erhArt: [1],
+      ausbildung: Ausbildungsgrade.pflicht,
+      beruf_id: 16,
+      weiblich: true,
+      project: 2,
+    } as tagDto;
+    request(app)
+      .post("/api/tags/ort")
+      .send(tagBody)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.headers["content-type"]).toEqual(
+          expect.stringContaining("json")
+        );
+        const first = res.body[0];
+        expect(res.body.length).toBeGreaterThanOrEqual(1);
+        expect(+first.numTag).toBeGreaterThanOrEqual(122);
+        expect(first.tagName).toBe("SDent");
+        expect(first.tagId).toBe(4);
+        done();
+      });
+  });
+
+  it("Fetch Single Tag using multiple endpoint with all filters besides project, Get results", (done) => {
+    const tagBody: tagDto = {
+      ids: [4],
+      erhArt: [1],
+      ausbildung: Ausbildungsgrade.pflicht,
+      beruf_id: 16,
+      weiblich: true,
+      project: -1,
+    } as tagDto;
+    request(app)
+      .post("/api/tags/ort")
+      .send(tagBody)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.headers["content-type"]).toEqual(
+          expect.stringContaining("json")
+        );
+        const first = res.body[0];
+        expect(res.body.length).toBeGreaterThanOrEqual(1);
+        expect(+first.numTag).toBeGreaterThanOrEqual(122);
+        expect(first.tagName).toBe("SDent");
+        expect(first.tagId).toBe(4);
         done();
       });
   });
