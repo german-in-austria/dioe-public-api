@@ -118,7 +118,7 @@ const tagDao = {
         JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
       WHERE
-        kdtt.id IN $$tagId and odto.osm_id not in (
+        kdtt.id IN $$tagId and odto.osm_id in (
 	        select osm_id from "OrteDB_tbl_orte" odto 
 	        	join "KorpusDB_tbl_inferhebung" kdti on kdti."Ort_id" = odto.id 
 	        	join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
