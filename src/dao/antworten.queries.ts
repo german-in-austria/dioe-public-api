@@ -98,6 +98,38 @@ export interface ICheckIfAufgabeQuery {
   result: ICheckIfAufgabeResult;
 }
 
+/** 'GetTimeStampAntwort' parameters type */
+export interface IGetTimeStampAntwortParams {
+  tagId: readonly (number | null | void)[];
+  osmId: string | null | void;
+  ageLower: number | null | void;
+  ageUpper: number | null | void;
+  aus: string | null | void;
+  beruf: number | null | void;
+  gender_sel: number | null | void;
+  gender: boolean | null | void;
+}
+
+/** 'GetTimeStampAntwort' return type */
+export interface IGetTimeStampAntwortResult {
+  startAntwort: string | null;
+  stopAntwort: string | null;
+  dateipfad: string | null;
+  audiofile: string | null;
+  tagId: number | null;
+  osmid: string | null;
+  tagName: string | null;
+  gruppeBez: string | null;
+  teamBez: string | null;
+  idErhId: number | null;
+}
+
+/** 'GetTimeStampAntwort' query type */
+export interface IGetTimeStampAntwortQuery {
+  params: IGetTimeStampAntwortParams;
+  result: IGetTimeStampAntwortResult;
+}
+
 /** 'GetStampsFromAntwort' parameters type */
 export interface IGetStampsFromAntwortParams {
   tagId: readonly (number | null | void)[];

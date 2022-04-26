@@ -15,6 +15,8 @@ import {
   IGetStampsFromAntwortResult,
   ICheckIfRepResult,
   ISelectErhebungsartenResult,
+  ICheckIfTransResult,
+  IGetTimeStampAntwortResult,
 } from "../dao/antworten.queries";
 
 export interface Antwort {
@@ -63,6 +65,32 @@ export default {
     osmId: number,
     filters: filters
   ): Promise<AntwortTokenStamp[]> {
+    const transCheck: ICheckIfTransResult[] = await antwortenDao.checkIfTrans(
+      tagIDs
+    );
+    const resTrans: ISelectAntwortenTransResult[] =
+      await antwortenDao.selectAntwortenTrans(
+        transCheck.map((el) => el.id),
+        osmId.toString(),
+        filters.ageLower,
+        filters.ageUpper,
+        filters.ausbildung,
+        filters.beruf_id,
+        filters.weiblich,
+        filters.gender_sel
+      );
+    const resAntAuf: IGetTimeStampAntwortResult[] =
+      await antwortenDao.getTimeStampAntwort(
+        tagIDs,
+        osmId.toString(),
+        filters.ageLower,
+        filters.ageUpper,
+        filters.ausbildung,
+        filters.beruf_id,
+        filters.weiblich,
+        filters.gender_sel
+      );
+    /*
     const aufgabeCheck: ICheckIfAufgabeResult[] =
       await antwortenDao.checkIfAufgabe(tagIDs);
     let repCheck: ICheckIfRepResult[] = [];
@@ -124,13 +152,13 @@ export default {
         filters.weiblich,
         filters.gender_sel
       );
-    }
+    }*/
     // Group the different time tags together into a single Array of Objects
     // const tagNum = await tagService.getTagOrte(tagIDs);
 
     // let mergeArr: Array<{ tagId: number; osmid: string }> = resTrans;
     let mergeArr: any = resTrans;
-    mergeArr = mergeArr.concat(resAnt).concat(resAuf);
+    mergeArr = mergeArr.concat(resTrans).concat(resAntAuf);
     /*
     mergeArr = [
       ...new Map(

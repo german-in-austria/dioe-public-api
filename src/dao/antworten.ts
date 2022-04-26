@@ -20,6 +20,8 @@ import {
   IGetStampsFromAntwortParams,
   ICheckIfRepQuery,
   ISelectErhebungsartenQuery,
+  IGetTimeStampAntwortQuery,
+  IGetTimeStampAntwortParams,
 } from "src/dao/antworten.queries";
 
 const antwortenDao = {
@@ -196,6 +198,171 @@ const antwortenDao = {
           kdtt.id in $$tagId
     `;
     return await query(checkIfAufgabe, { tagId: tagId });
+  },
+  async getTimeStampAntwort(
+    tagId: number[],
+    osmId: string,
+    ageLower: number,
+    ageUpper: number,
+    aus: string,
+    beruf: number,
+    gender: boolean,
+    gender_sel: number
+  ) {
+    const getTimeStampAntwort = sql<
+      IGetTimeStampAntwortQuery & IGetTimeStampAntwortParams
+    >`
+    select kdta."start_Antwort" as "start_Antwort", 
+          kdta."stop_Antwort" as "stop_Antwort",
+          kdti."Dateipfad" as dateipfad, 
+          kdti."Audiofile" as "audiofile",
+          kdtt.id as tag_id, 
+          odto.osm_id as osmId, 
+          kdtt."Tag_lang" as tag_name,
+          pdtig.gruppe_bez, pdtt.team_bez,
+          kdti."ID_Erh_id"
+       	from "KorpusDB_tbl_tags" kdtt       
+        join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
+        join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
+        join "PersonenDB_tbl_informanten" pdti on pdti.id = kdta."von_Inf_id"
+        JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
+        join "KorpusDB_tbl_inf_zu_erhebung" kdtize on pdti.id = kdtize."ID_Inf_id" 
+        join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id 
+        join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
+        join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
+        join "OrteDB_tbl_orte" odto on odto.id = kdti."Ort_id"
+        join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
+        join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
+        join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+        WHERE 
+          kdta."start_Antwort" <> kdta."stop_Antwort" and 
+          kdtt.id in $$tagId and 
+          odto.osm_id = $osmId and 
+          kdta3.id = kdta."zu_Aufgabe_id" 
+          and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+          and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+          and ($aus = '' OR pdti.ausbildung_max = $aus)
+          and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+          and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+    UNION
+    select
+          kdte."start_Aufgabe" as "start_Antwort", 
+          kdte."stop_Aufgabe" as "stop_Antwort",
+          kdti."Dateipfad" as dateipfad, 
+          kdti."Audiofile" as "audiofile",
+          kdtt.id as tag_id, 
+          odto.osm_id as osmId, 
+          kdtt."Tag_lang" as tag_name,
+          pdtig.gruppe_bez, pdtt.team_bez,
+          kdti."ID_Erh_id"
+        from "KorpusDB_tbl_tags" kdtt      
+          join lateral (
+          	select * from "KorpusDB_tbl_antwortentags" kdta2 where kdta2."id_Tag_id" = kdtt.id
+          ) kdta2 on true
+          join lateral (
+          	select * from "KorpusDB_tbl_antworten" kdta where kdta2."id_Antwort_id" = kdta.id
+          ) kdta on true
+          join lateral (
+          	select * from "PersonenDB_tbl_informanten" pdti where pdti.id = kdta."von_Inf_id"
+          ) pdti on true
+          JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
+          join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
+          join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
+          join "OrteDB_tbl_orte" odto on kdti."Ort_id" = odto.id
+          join lateral(
+          	select * from "KorpusDB_tbl_erhinfaufgaben" kdte where kdte."id_InfErh_id" = kdti.id
+          ) kdte on true
+          join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
+          join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
+          join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
+          join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+        WHERE 
+        	kdtt.id in $$tagId
+        	and odto.osm_id = $osmId
+          and kdti."Dateipfad" not in ('', '0') 
+          and kdti."Audiofile" not in ('', '0')
+          and kdta3.id = kdta."zu_Aufgabe_id"
+          and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+          and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+          and ($aus = '' OR pdti.ausbildung_max = $aus)
+          and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+          and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+        group by 
+          kdti."ID_Erh_id" ,
+          pdti.id,
+          kdte."start_Aufgabe", 
+          kdte."stop_Aufgabe",
+          kdti."Dateipfad", 
+          kdti."Audiofile",
+          kdtt.id, 
+          odto.osm_id, 
+          kdtt."Tag_lang",
+          pdtig.gruppe_bez, pdtt.team_bez
+          having count(pdti.id) > 2 and count(kdti."ID_Erh_id") > 2  
+        UNION
+          select
+            kdte."start_Aufgabe" as "start_Antwort", 
+            kdte."stop_Aufgabe" as "stop_Antwort",
+            kdti."Dateipfad" as dateipfad, 
+            kdti."Audiofile" as "audiofile",
+            kdtt.id as tag_id, 
+            odto.osm_id as osmId, 
+            kdtt."Tag_lang" as tag_name,
+            pdtig.gruppe_bez, pdtt.team_bez,
+            kdti."ID_Erh_id"
+        from "KorpusDB_tbl_tags" kdtt      
+          join lateral (
+          	select * from "KorpusDB_tbl_antwortentags" kdta2 where kdta2."id_Tag_id" = kdtt.id
+          ) kdta2 on true
+          join lateral (
+          	select * from "KorpusDB_tbl_antworten" kdta where kdta2."id_Antwort_id" = kdta.id
+          ) kdta on true
+          join lateral (
+          	select * from "PersonenDB_tbl_informanten" pdti where pdti.id = kdta."von_Inf_id"
+          ) pdti on true
+          JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
+          join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
+          join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
+          join "OrteDB_tbl_orte" odto on pdti.inf_ort_id = odto.id
+          join lateral(
+          	select * from "KorpusDB_tbl_erhinfaufgaben" kdte where kdte."id_InfErh_id" = kdti.id
+          ) kdte on true
+          join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
+          join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
+          join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
+          join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+        WHERE 
+        	kdtt.id in $$tagId
+        	and odto.osm_id = $osmId
+          and kdta3.id = kdta."zu_Aufgabe_id"  
+          and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+          and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+          and ($aus = '' OR pdti.ausbildung_max = $aus)
+          and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+          and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+        group by 
+          kdti."ID_Erh_id",
+          pdti.id,
+          kdte."start_Aufgabe", 
+          kdte."stop_Aufgabe",
+          kdti."Dateipfad", 
+          kdti."Audiofile",
+          kdtt.id, 
+          odto.osm_id, 
+          kdtt."Tag_lang",
+          pdtig.gruppe_bez, pdtt.team_bez
+          having count(pdti.id) > 2 and count(kdti."ID_Erh_id") > 2      
+    `;
+    return await query(getTimeStampAntwort, {
+      tagId: tagId,
+      osmId: osmId,
+      ageLower: ageLower,
+      ageUpper: ageUpper,
+      beruf: beruf,
+      gender: gender,
+      aus: aus,
+      gender_sel: gender_sel,
+    });
   },
   async getStampsFromAntwort(
     tagId: number[],
