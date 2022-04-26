@@ -93,6 +93,7 @@ export interface ISelectOrtTagsParams {
   beruf: number | null | void;
   gender_sel: number | null | void;
   gender: boolean | null | void;
+  project_id: number | null | void;
 }
 
 /** 'SelectOrtTags' return type */

@@ -10,6 +10,7 @@ export interface tag {
   beruf_id: number;
   weiblich: boolean;
   gender_sel: number;
+  project_id: number;
 }
 
 export interface ageBound {
@@ -28,6 +29,7 @@ export default {
   validateTagDto(tag: tagDto): tag {
     const aus = this.validateAusbildung(tag.ausbildung ? tag.ausbildung : "");
     const beruf = this.validateBeruf(tag.beruf_id ? tag.beruf_id : -1);
+    let project_id = tag.project == undefined ? -1 : tag.project;
     let gender_sel = 0;
     if (tag.weiblich == undefined) {
       gender_sel = -1;
@@ -39,6 +41,7 @@ export default {
       ausbildung: aus,
       beruf_id: beruf,
       weiblich: tag.weiblich,
+      project_id: project_id,
     } as tag;
     return res;
   },

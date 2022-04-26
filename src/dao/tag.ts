@@ -97,7 +97,8 @@ const tagDao = {
     aus: string,
     beruf: number,
     gender: boolean,
-    gender_sel: number
+    gender_sel: number,
+    project_id: number
   ) {
     const selectOrtTags = sql<ISelectOrtTagsQuery & ISelectOrtTagsParams>`
       SELECT
@@ -127,6 +128,9 @@ const tagDao = {
         and ($aus = '' OR pdti.ausbildung_max = $aus)
         and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
         and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+        and pdti.inf_gruppe_id in (
+          select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
+          where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
       GROUP BY
         odto.osm_id,
         odto.ort_namelang,
@@ -146,6 +150,7 @@ const tagDao = {
       erhArt: erhArt,
       gender_sel: gender_sel,
       aus: aus,
+      project_id: project_id,
     });
   },
   async getPresetOrtTag(tagIDs: number[]) {

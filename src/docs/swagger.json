@@ -302,6 +302,10 @@
 					},
 					"weiblich": {
 						"type": "boolean"
+					},
+					"project": {
+						"type": "number",
+						"format": "double"
 					}
 				},
 				"required": [
