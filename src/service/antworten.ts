@@ -3,25 +3,21 @@ import _, { filter } from "lodash";
 
 import { ISelectOrtTagsResult } from "src/dao/tag.queries";
 
-import { filters, tag } from "src/service/validate";
+import validator, { filters, tag } from "../service/validate";
 
 import {
-  ISelectAntwortenResult,
   ISelectSatzResult,
   ISelectAntwortFromAufgabeResult,
   ISelectAntwortenTransResult,
   ISelectMatchingTokensResult,
-  ICheckIfAufgabeResult,
-  IGetStampsFromAntwortResult,
-  ICheckIfRepResult,
   ISelectErhebungsartenResult,
   ICheckIfTransResult,
   IGetTimeStampAntwortResult,
 } from "../dao/antworten.queries";
 
 export interface Antwort {
-  start: string;
-  stop: string;
+  start: any;
+  stop: any;
   tagId: number;
   tagName: string | null;
 }
@@ -68,6 +64,7 @@ export default {
     const transCheck: ICheckIfTransResult[] = await antwortenDao.checkIfTrans(
       tagIDs
     );
+    console.log(transCheck);
     const resTrans: ISelectAntwortenTransResult[] =
       await antwortenDao.selectAntwortenTrans(
         transCheck.map((el) => el.id),
@@ -158,7 +155,7 @@ export default {
 
     // let mergeArr: Array<{ tagId: number; osmid: string }> = resTrans;
     let mergeArr: any = resTrans;
-    mergeArr = mergeArr.concat(resTrans).concat(resAntAuf);
+    mergeArr = mergeArr.concat(resAntAuf);
     /*
     mergeArr = [
       ...new Map(
@@ -169,6 +166,8 @@ export default {
     const merged = this.mergeTagNum(mergeArr, tagNum);
     */
     let antworten: AntwortTokenStamp[] = [];
+    mergeArr = _.uniqWith(mergeArr, _.isEqual);
+    console.log(mergeArr);
     mergeArr.forEach((el: any) => {
       // const cont = el.content;
       let ant: Antwort | AntwortToken = {} as Antwort;
@@ -201,7 +200,36 @@ export default {
           a.dateipfad === el.dateipfad && a.audiofile === el.audiofile
       );
       if (dataIdx >= 0) {
-        antworten[dataIdx].data.push(ant);
+        // Data already exists in the return array.
+        // Check if the timestamps are also already there
+        const idx = antworten[dataIdx].data.findIndex(
+          (a: Antwort | AntwortToken) => validator.compareTimeStamps(a, ant)
+        );
+        if (idx < 0) {
+          // does not exist
+          antworten[dataIdx].data.push(ant);
+        } else {
+          const curr: Antwort | AntwortToken = antworten[dataIdx].data[idx];
+          if (
+            (<AntwortToken>curr).ortho !== undefined &&
+            (<AntwortToken>ant).ortho !== undefined
+          ) {
+            // Is AntwortToken
+            let currStr = (<AntwortToken>curr).ortho;
+            const antStr = (<AntwortToken>ant).ortho;
+            if (
+              currStr !== antStr ||
+              (currStr && antStr && !currStr.includes(antStr))
+            ) {
+              console.log(antStr);
+              (<AntwortToken>curr).ortho = `${currStr}, ${antStr}`;
+              (<AntwortToken>curr).orthoText = `${currStr}, ${antStr}`;
+            }
+          } else {
+            // Is Antwort
+            antworten[dataIdx].data.push(ant);
+          }
+        }
       } else {
         antworten.push(newTimestamp);
       }

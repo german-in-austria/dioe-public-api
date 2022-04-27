@@ -430,12 +430,8 @@
 			},
 			"Antwort": {
 				"properties": {
-					"start": {
-						"type": "string"
-					},
-					"stop": {
-						"type": "string"
-					},
+					"start": {},
+					"stop": {},
 					"tagId": {
 						"type": "number",
 						"format": "double"
@@ -521,12 +517,8 @@
 			},
 			"AntwortToken": {
 				"properties": {
-					"start": {
-						"type": "string"
-					},
-					"stop": {
-						"type": "string"
-					},
+					"start": {},
+					"stop": {},
 					"tagId": {
 						"type": "number",
 						"format": "double"

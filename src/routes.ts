@@ -170,8 +170,8 @@ const models: TsoaRoute.Models = {
     "Antwort": {
         "dataType": "refObject",
         "properties": {
-            "start": {"dataType":"string","required":true},
-            "stop": {"dataType":"string","required":true},
+            "start": {"dataType":"any","required":true},
+            "stop": {"dataType":"any","required":true},
             "tagId": {"dataType":"double","required":true},
             "tagName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
         },
@@ -204,8 +204,8 @@ const models: TsoaRoute.Models = {
     "AntwortToken": {
         "dataType": "refObject",
         "properties": {
-            "start": {"dataType":"string","required":true},
-            "stop": {"dataType":"string","required":true},
+            "start": {"dataType":"any","required":true},
+            "stop": {"dataType":"any","required":true},
             "tagId": {"dataType":"double","required":true},
             "tagName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "ortho": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},

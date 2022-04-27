@@ -184,6 +184,7 @@ export interface ISelectAntwortenTransResult {
   orthoText: string | null;
   gruppeBez: string | null;
   teamBez: string | null;
+  tokenReihung: number | null;
 }
 
 /** 'SelectAntwortenTrans' query type */

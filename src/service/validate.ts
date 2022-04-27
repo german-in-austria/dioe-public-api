@@ -1,6 +1,7 @@
 import _, { String } from "lodash";
 import { antwortenDto } from "src/controller/antwortenController";
 import { tagDto } from "src/controller/tagController";
+import { Antwort } from "./antworten";
 import { ausbildungGrad } from "./social";
 
 export interface tag {
@@ -83,5 +84,21 @@ export default {
       ageLower: low,
       ageUpper: up,
     } as ageBound;
+  },
+  compareTimeStamps(currStamp: Antwort, currAnt: Antwort): boolean {
+    const sStamp = currStamp.start;
+    const eStamp = currStamp.stop;
+
+    const sAnt = currAnt.start;
+    const eAnt = currAnt.stop;
+
+    return (
+      sStamp.minutes === sAnt.minutes &&
+      sStamp.seconds === sAnt.seconds &&
+      sStamp.milliseconds === sAnt.milliseconds &&
+      eStamp.minutes == eAnt.minutes &&
+      eStamp.seconds === eStamp.seconds &&
+      eStamp.milliseconds === eStamp.milliseconds
+    );
   },
 };
