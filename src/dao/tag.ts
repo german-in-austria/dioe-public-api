@@ -115,7 +115,7 @@ const tagDao = {
         JOIN "KorpusDB_tbl_antwortentags" kdta ON kdtt.id = kdta. "id_Tag_id"
         JOIN "KorpusDB_tbl_antworten" kdta2 ON kdta. "id_Antwort_id" = kdta2.id
         JOIN "PersonenDB_tbl_informanten" pdti ON kdta2. "von_Inf_id" = pdti.id
-        JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
+        LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
         JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
       WHERE
