@@ -64,7 +64,6 @@ export default {
     const transCheck: ICheckIfTransResult[] = await antwortenDao.checkIfTrans(
       tagIDs
     );
-    console.log(transCheck);
     const resTrans: ISelectAntwortenTransResult[] =
       await antwortenDao.selectAntwortenTrans(
         transCheck.map((el) => el.id),
@@ -221,7 +220,6 @@ export default {
               currStr !== antStr ||
               (currStr && antStr && !currStr.includes(antStr))
             ) {
-              console.log(antStr);
               (<AntwortToken>curr).ortho = `${currStr}, ${antStr}`;
               (<AntwortToken>curr).orthoText = `${currStr}, ${antStr}`;
             }
