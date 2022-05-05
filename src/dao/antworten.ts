@@ -449,10 +449,10 @@ const antwortenDao = {
     left join lateral (
       select * from "KorpusDB_tbl_antworten" kdta where kdta2."id_Antwort_id" = kdta.id
     ) kdta on true
-    join tokenset t4 on t4.id = kdta.ist_tokenset_id 
-    join tokentoset t2 on t2.id_tokenset_id = t4.id
-    join token t on t.id = t2.id_token_id or t.id = kdta.ist_token_id 
-    join event e on t.event_id_id = e.id 
+    left join tokenset t4 on t4.id = kdta.ist_tokenset_id 
+    left join tokentoset t2 on t2.id_tokenset_id = t4.id
+    left join token t on t.id = t2.id_token_id or t.id = kdta.ist_token_id 
+    left join event e on t.event_id_id = e.id 
     left join transcript t3 on t3.id = t.transcript_id_id 
     left join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
     left join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
