@@ -306,6 +306,9 @@
 					"project": {
 						"type": "number",
 						"format": "double"
+					},
+					"group": {
+						"type": "boolean"
 					}
 				},
 				"required": [

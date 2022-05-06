@@ -114,6 +114,36 @@ export interface ISelectOrtTagsQuery {
   result: ISelectOrtTagsResult;
 }
 
+/** 'SelectOrtTagGroup' parameters type */
+export interface ISelectOrtTagGroupParams {
+  tagId: readonly (number | null | void)[];
+  erhArt: readonly (number | null | void)[];
+  aus: string | null | void;
+  beruf: number | null | void;
+  gender_sel: number | null | void;
+  gender: boolean | null | void;
+  tagGroupLength: string | null | void;
+  project_id: number | null | void;
+}
+
+/** 'SelectOrtTagGroup' return type */
+export interface ISelectOrtTagGroupResult {
+  numTag: string | null;
+  tagName: string;
+  tagLang: string | null;
+  tagId: number;
+  osmId: string | null;
+  ortNamelang: string;
+  lat: string | null;
+  lon: string | null;
+}
+
+/** 'SelectOrtTagGroup' query type */
+export interface ISelectOrtTagGroupQuery {
+  params: ISelectOrtTagGroupParams;
+  result: ISelectOrtTagGroupResult;
+}
+
 /** 'GetPresetOrtTag' parameters type */
 export interface IGetPresetOrtTagParams {
   tagIDs: readonly (number | null | void)[];

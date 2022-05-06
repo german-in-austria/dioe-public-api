@@ -13,6 +13,8 @@ import {
   IGetTagsByPresetQuery,
   IGetPresetOrtTagQuery,
   IGetPresetOrtTagParams,
+  ISelectOrtTagGroupParams,
+  ISelectOrtTagGroupQuery,
 } from "./tag.queries";
 
 const tagDao = {
@@ -151,6 +153,77 @@ const tagDao = {
       gender_sel: gender_sel,
       aus: aus,
       project_id: project_id,
+    });
+  },
+  async getOrtTagGroup(
+    tagId: number[],
+    erhArt: number[],
+    aus: string,
+    beruf: number,
+    gender: boolean,
+    gender_sel: number,
+    project_id: number,
+    tagGroupLength: number
+  ) {
+    const selectOrtTagGroup = sql<
+      ISelectOrtTagGroupParams & ISelectOrtTagGroupQuery
+    >`
+      SELECT
+        count(*) AS num_tag,
+        kdtt. "Tag" AS tag_name,
+        kdtt. "Tag_lang" AS tag_lang,
+        kdtt.id as tag_id,
+        odto. "osm_id" AS osm_id,
+        odto. "ort_namelang" AS ort_namelang,
+        odto. "lat" AS lat,
+        odto. "lon" AS lon
+      FROM
+        "KorpusDB_tbl_tags" kdtt
+        JOIN "KorpusDB_tbl_antwortentags" kdta ON kdtt.id = kdta. "id_Tag_id"
+        JOIN "KorpusDB_tbl_antworten" kdta2 ON kdta. "id_Antwort_id" = kdta2.id
+        JOIN "PersonenDB_tbl_informanten" pdti ON kdta2. "von_Inf_id" = pdti.id
+        LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
+        JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
+        join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+      WHERE
+        kdtt.id IN $$tagId and odto.osm_id in (
+	        select osm_id from "OrteDB_tbl_orte" odto 
+	        	join "KorpusDB_tbl_inferhebung" kdti on kdti."Ort_id" = odto.id 
+	        	join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
+	        	where ($$erhArt < 0 or $$erhArt > (select max(kdte2.id) from "KorpusDB_tbl_erhebungsarten" kdte2) or kdte."Art_Erhebung_id" in $$erhArt)
+        )
+        and ($aus = '' OR pdti.ausbildung_max = $aus)
+        and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+        and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+        and kdta."id_Antwort_id" in 
+        (select kdta3."id_Antwort_id" from "KorpusDB_tbl_antwortentags" kdta3 
+        	where kdta3."id_Tag_id" in $$tagId
+        	group by
+        	kdta3."id_Antwort_id" having count(kdta3."id_Tag_id") = $tagGroupLength)
+        and pdti.inf_gruppe_id in (
+          select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
+          where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
+      GROUP BY
+        odto.osm_id,
+        odto.ort_namelang,
+        kdtt. "Tag",
+        kdtt. "Tag_lang",
+        kdtt.id,
+        odto.lat,
+        odto.lon
+      ORDER BY
+      num_tag DESC;
+      
+    `;
+    return await query(selectOrtTagGroup, {
+      tagId: tagId,
+      beruf: beruf,
+      gender: gender,
+      erhArt: erhArt,
+      gender_sel: gender_sel,
+      aus: aus,
+      project_id: project_id,
+      tagGroupLength: String(tagGroupLength),
     });
   },
   async getPresetOrtTag(tagIDs: number[]) {

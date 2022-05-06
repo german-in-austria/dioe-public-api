@@ -21,6 +21,7 @@ export interface tagDto {
   beruf_id?: number;
   weiblich?: boolean;
   project?: number;
+  group?: boolean;
 }
 
 @Route("tags")

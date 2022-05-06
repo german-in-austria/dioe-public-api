@@ -51,15 +51,28 @@ export default {
     return tagDao.getPresetOrtTag(tagId);
   },
   async getTagOrte(tag: tag): Promise<ISelectOrtTagsResult[]> {
-    return tagDao.getOrtTag(
-      tag.ids,
-      tag.erhArt,
-      tag.ausbildung,
-      tag.beruf_id,
-      tag.weiblich,
-      tag.gender_sel,
-      tag.project_id
-    );
+    if (tag.group) {
+      return tagDao.getOrtTagGroup(
+        tag.ids,
+        tag.erhArt,
+        tag.ausbildung,
+        tag.beruf_id,
+        tag.weiblich,
+        tag.gender_sel,
+        tag.project_id,
+        tag.ids.length
+      ) as any as ISelectOrtTagsResult[];
+    } else {
+      return tagDao.getOrtTag(
+        tag.ids,
+        tag.erhArt,
+        tag.ausbildung,
+        tag.beruf_id,
+        tag.weiblich,
+        tag.gender_sel,
+        tag.project_id
+      );
+    }
   },
   async getTagGen(gen: number): Promise<ISelectSingleGenResult[]> {
     return tagDao.getSingleGen(gen);
