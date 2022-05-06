@@ -57,7 +57,7 @@ describe("GET /api/tags/ort/{tagId}", () => {
         );
         const first = res.body[0];
         expect(res.body.length).toBeGreaterThan(1);
-        expect(first.numTag).toBe("419");
+        expect(+first.numTag).toBeGreaterThanOrEqual(458);
         done();
       });
   });
@@ -79,7 +79,7 @@ describe("POST /api/tags/ort", () => {
         );
         const first = res.body[0];
         expect(res.body.length).toBeGreaterThan(1);
-        expect(first.numTag).toBe("419");
+        expect(+first.numTag).toBeGreaterThanOrEqual(458);
         done();
       });
   });
@@ -126,7 +126,7 @@ describe("POST /api/tags/ort", () => {
         );
         const first = res.body[0];
         expect(res.body.length).toBeGreaterThan(1);
-        expect(first.numTag).toBe("419");
+        expect(Number(first.numTag)).toBeGreaterThanOrEqual(458);
         done();
       });
   });
@@ -181,6 +181,57 @@ describe("POST /api/tags/ort", () => {
         expect(+first.numTag).toBeGreaterThanOrEqual(122);
         expect(first.tagName).toBe("SDent");
         expect(first.tagId).toBe(4);
+        done();
+      });
+  });
+
+  it("Fetch Single Tag using multiple endpoint with taggroup filter disabled, Get results", (done) => {
+    const tagBody: tagDto = {
+      ids: [4],
+      erhArt: [-1],
+      group: false,
+    } as tagDto;
+    request(app)
+      .post("/api/tags/ort")
+      .send(tagBody)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.headers["content-type"]).toEqual(
+          expect.stringContaining("json")
+        );
+        const first = res.body[0];
+        expect(res.body.length).toBeGreaterThanOrEqual(1);
+        expect(+first.numTag).toBeGreaterThanOrEqual(122);
+        expect(first.tagName).toBe("SDent");
+        expect(first.tagId).toBe(4);
+        done();
+      });
+  });
+
+  it("Fetch Single Tag using multiple endpoint with taggroup filter enabled, Get results", (done) => {
+    const tagBody: tagDto = {
+      ids: [5, 4, 11],
+      erhArt: [-1],
+      group: true,
+    } as tagDto;
+    request(app)
+      .post("/api/tags/ort")
+      .send(tagBody)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.headers["content-type"]).toEqual(
+          expect.stringContaining("json")
+        );
+        const first = res.body[0];
+        expect(res.body.length).toBeGreaterThanOrEqual(1);
+        expect(+first.numTag).toBeGreaterThanOrEqual(122);
+        expect(first.tagName).toBe("Suff");
+        expect(first.tagId).toBe(11);
+        res.body.forEach((el: any) => {
+          expect([5, 4, 11]).toContain(el.tagId);
+        });
         done();
       });
   });
