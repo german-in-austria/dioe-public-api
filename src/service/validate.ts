@@ -12,6 +12,7 @@ export interface tag {
   weiblich: boolean;
   gender_sel: number;
   project_id: number;
+  group: boolean;
 }
 
 export interface ageBound {
@@ -36,6 +37,8 @@ export default {
       gender_sel = -1;
       tag.weiblich = false;
     }
+
+    if (tag.group === undefined) tag.group = false;
     const res = {
       ids: tag.ids,
       erhArt: tag.erhArt == undefined ? [-1] : tag.erhArt,
@@ -43,6 +46,7 @@ export default {
       beruf_id: beruf,
       weiblich: tag.weiblich,
       project_id: project_id,
+      group: tag.group,
     } as tag;
     return res;
   },
