@@ -25,6 +25,7 @@ export interface filters extends ageBound {
   beruf_id: number;
   weiblich: boolean;
   gender_sel: number;
+  group: boolean;
 }
 
 export default {
@@ -66,6 +67,7 @@ export default {
       gender_sel: gender_sel,
       ageLower: ageBound.ageLower,
       ageUpper: ageBound.ageUpper,
+      group: ant.group === undefined ? false : ant.group,
     } as filters;
   },
   validateAusbildung(str: string): string {
