@@ -108,6 +108,7 @@ export interface IGetTimeStampAntwortParams {
   beruf: number | null | void;
   gender_sel: number | null | void;
   gender: boolean | null | void;
+  tagGroupLength: string | null | void;
 }
 
 /** 'GetTimeStampAntwort' return type */
@@ -171,6 +172,7 @@ export interface ISelectAntwortenTransParams {
   beruf: number | null | void;
   gender_sel: number | null | void;
   gender: boolean | null | void;
+  tagGroupLength: string | null | void;
 }
 
 /** 'SelectAntwortenTrans' return type */
@@ -184,7 +186,6 @@ export interface ISelectAntwortenTransResult {
   orthoText: string | null;
   gruppeBez: string | null;
   teamBez: string | null;
-  tokenReihung: number | null;
 }
 
 /** 'SelectAntwortenTrans' query type */

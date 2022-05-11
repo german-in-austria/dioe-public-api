@@ -622,6 +622,9 @@
 					},
 					"weiblich": {
 						"type": "boolean"
+					},
+					"group": {
+						"type": "boolean"
 					}
 				},
 				"required": [

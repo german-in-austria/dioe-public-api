@@ -61,11 +61,13 @@ export default {
     osmId: number,
     filters: filters
   ): Promise<AntwortTokenStamp[]> {
+    const start = Date.now();
     const transCheck: ICheckIfTransResult[] = await antwortenDao.checkIfTrans(
       tagIDs
     );
-    const resTrans: ISelectAntwortenTransResult[] =
-      await antwortenDao.selectAntwortenTrans(
+    let resTrans: ISelectAntwortenTransResult[] = [];
+    if (transCheck.length > 0) {
+      resTrans = await antwortenDao.selectAntwortenTrans(
         transCheck.map((el) => el.id),
         osmId.toString(),
         filters.ageLower,
@@ -73,10 +75,13 @@ export default {
         filters.ausbildung,
         filters.beruf_id,
         filters.weiblich,
-        filters.gender_sel
+        filters.gender_sel,
+        filters.group ? transCheck.map((el) => el.id).length : 0
       );
-    const resAntAuf: IGetTimeStampAntwortResult[] =
-      await antwortenDao.getTimeStampAntwort(
+    }
+    let resAntAuf: IGetTimeStampAntwortResult[] = [];
+    if (transCheck.length - tagIDs.length != 0) {
+      resAntAuf = await antwortenDao.getTimeStampAntwort(
         tagIDs,
         osmId.toString(),
         filters.ageLower,
@@ -84,8 +89,10 @@ export default {
         filters.ausbildung,
         filters.beruf_id,
         filters.weiblich,
-        filters.gender_sel
+        filters.gender_sel,
+        filters.group ? tagIDs.length : 0
       );
+    }
     /*
     const aufgabeCheck: ICheckIfAufgabeResult[] =
       await antwortenDao.checkIfAufgabe(tagIDs);
@@ -165,8 +172,6 @@ export default {
     const merged = this.mergeTagNum(mergeArr, tagNum);
     */
     let antworten: AntwortTokenStamp[] = [];
-    mergeArr = _.uniqWith(mergeArr, _.isEqual);
-    console.log(mergeArr);
     mergeArr.forEach((el: any) => {
       // const cont = el.content;
       let ant: Antwort | AntwortToken = {} as Antwort;

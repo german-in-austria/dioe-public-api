@@ -199,7 +199,7 @@ const tagDao = {
         (select kdta3."id_Antwort_id" from "KorpusDB_tbl_antwortentags" kdta3 
         	where kdta3."id_Tag_id" in $$tagId
         	group by
-        	kdta3."id_Antwort_id" having count(kdta3."id_Tag_id") = $tagGroupLength)
+        	kdta3."id_Antwort_id" having count(kdta3."id_Tag_id") >= $tagGroupLength)
         and pdti.inf_gruppe_id in (
           select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
           where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
