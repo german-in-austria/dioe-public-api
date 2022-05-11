@@ -207,7 +207,8 @@ const antwortenDao = {
     aus: string,
     beruf: number,
     gender: boolean,
-    gender_sel: number
+    gender_sel: number,
+    tagGroupLength: number
   ) {
     const getTimeStampAntwort = sql<
       IGetTimeStampAntwortQuery & IGetTimeStampAntwortParams
@@ -287,6 +288,11 @@ const antwortenDao = {
           and ($aus = '' OR pdti.ausbildung_max = $aus)
           and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
           and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+          and kdta2."id_Antwort_id" in 
+          (select kdta3."id_Antwort_id" from "KorpusDB_tbl_antwortentags" kdta3 
+            where kdta3."id_Tag_id" in $$tagId
+            group by
+            kdta3."id_Antwort_id" having count(kdta3."id_Tag_id") >= $tagGroupLength)
         group by 
           kdti."ID_Erh_id" ,
           pdti.id,
@@ -340,6 +346,11 @@ const antwortenDao = {
           and ($aus = '' OR pdti.ausbildung_max = $aus)
           and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
           and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+          and kdta2."id_Antwort_id" in 
+        (select kdta3."id_Antwort_id" from "KorpusDB_tbl_antwortentags" kdta3 
+        	where kdta3."id_Tag_id" in $$tagId
+        	group by
+        	kdta3."id_Antwort_id" having count(kdta3."id_Tag_id") >= $tagGroupLength)
         group by 
           kdti."ID_Erh_id",
           pdti.id,
@@ -362,6 +373,7 @@ const antwortenDao = {
       gender: gender,
       aus: aus,
       gender_sel: gender_sel,
+      tagGroupLength: String(tagGroupLength),
     });
   },
   async getStampsFromAntwort(
@@ -428,39 +440,35 @@ const antwortenDao = {
     aus: string,
     beruf: number,
     gender: boolean,
-    gender_sel: number
+    gender_sel: number,
+    tagGroupLength: number
   ) {
     const selectAntwortenTrans = sql<
       ISelectAntwortenTransQuery & ISelectAntwortenTransParams
     >`
-    select distinct e.start_time as "start_Antwort", 
+    select e.start_time as "start_Antwort", 
           e.end_time as "stop_Antwort",
           kdtt."Tag_lang" as tag_name,
           t.ortho as "ortho", 
           kdti."Dateipfad" as dateipfad, 
           kdti."Audiofile" as "audiofile",
           t.text_in_ortho as "ortho_text",
-          pdtig.gruppe_bez, pdtt.team_bez,
-          t.token_reihung
-    from "KorpusDB_tbl_tags" kdtt       
-    join lateral (
-      select * from "KorpusDB_tbl_antwortentags" kdta2 where kdta2."id_Tag_id" = kdtt.id
-    ) kdta2 on true
-    left join lateral (
-      select * from "KorpusDB_tbl_antworten" kdta where kdta2."id_Antwort_id" = kdta.id
-    ) kdta on true
+          pdtig.gruppe_bez, pdtt.team_bez
+    from "KorpusDB_tbl_tags" kdtt      
+    join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
+    join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
     left join tokenset t4 on t4.id = kdta.ist_tokenset_id 
     left join tokentoset t2 on t2.id_tokenset_id = t4.id
-    left join token t on t.id = t2.id_token_id or t.id = kdta.ist_token_id 
-    left join event e on t.event_id_id = e.id 
-    left join transcript t3 on t3.id = t.transcript_id_id 
-    left join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
-    left join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
-    left join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
-    left join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
-    left join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
+    join token t on t.id = t2.id_token_id
+    join event e on t.event_id_id = e.id 
+    join transcript t3 on t3.id = t.transcript_id_id 
+    join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
+    join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
+    join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
+    join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
+    join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
     left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
-    left join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+    join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
       where (kdta.ist_token_id is not null or kdta.ist_tokenset_id is not null) and 
         kdtt.id in $$tagID 
         and odto.osm_id  = $osmId
@@ -471,8 +479,52 @@ const antwortenDao = {
         and ($aus = '' OR pdti.ausbildung_max = $aus)
         and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
         and ($gender_sel < 0 OR pdtp.weiblich = $gender)
-      order by 
-      	t.token_reihung 
+        and kdta2."id_Antwort_id" in 
+        (select kdta3."id_Antwort_id" 
+          from "KorpusDB_tbl_antwortentags" kdta3 
+        	where kdta3."id_Tag_id" in $$tagID
+        	group by
+        	  kdta3."id_Antwort_id" 
+              having count(kdta3."id_Tag_id") >= $tagGroupLength)
+        union 
+     select e.start_time as "start_Antwort", 
+          e.end_time as "stop_Antwort",
+          kdtt."Tag_lang" as tag_name,
+          t.ortho as "ortho", 
+          kdti."Dateipfad" as dateipfad, 
+          kdti."Audiofile" as "audiofile",
+          t.text_in_ortho as "ortho_text",
+          pdtig.gruppe_bez, pdtt.team_bez
+    from "KorpusDB_tbl_tags" kdtt      
+    join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
+    join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
+    join token t on t.id = kdta.ist_token_id 
+    join event e on t.event_id_id = e.id 
+    join transcript t3 on t3.id = t.transcript_id_id 
+    join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
+    join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
+    join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
+    join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
+    join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
+    left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
+    join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+    where (kdta.ist_token_id is not null or kdta.ist_tokenset_id is not null) and 
+        kdtt.id in $$tagID 
+        and odto.osm_id  = $osmId
+        and kdti."Dateipfad" not in ('', '0') 
+        and kdti."Audiofile" not in ('', '0')
+        and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+        and ($ageUpper < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+        and ($aus = '' OR pdti.ausbildung_max = $aus)
+        and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+        and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+        and kdta2."id_Antwort_id" in 
+        (select kdta3."id_Antwort_id" 
+          from "KorpusDB_tbl_antwortentags" kdta3 
+        	where kdta3."id_Tag_id" in $$tagID
+        	group by
+        	  kdta3."id_Antwort_id" 
+              having count(kdta3."id_Tag_id") >= $tagGroupLength)
     `;
     return await query(selectAntwortenTrans, {
       tagID: tagID,
@@ -483,6 +535,7 @@ const antwortenDao = {
       gender: gender,
       aus: aus,
       gender_sel: gender_sel,
+      tagGroupLength: String(tagGroupLength),
     });
   },
   async selectAntwortenFromAufgaben(satzid: number, aufgabeid: number) {
