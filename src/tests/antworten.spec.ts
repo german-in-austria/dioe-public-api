@@ -6,12 +6,22 @@ import { after, endsWith } from "lodash";
 import { tagDto } from "src/controller/tagController";
 import { filters } from "src/service/validate";
 import { antwortenDto } from "src/controller/antwortenController";
-import { Ausbildungsgrade } from "src/enums/enums";
+enum Ausbildungsgrade {
+  pflicht = "pflichtschule",
+  reife = "hochschulreife",
+  abschluss = "hochschulabschluss",
+  beruf = "berufsausbildung",
+  empty = "",
+}
 
 let app: Server;
 
 beforeAll(() => {
   app = server;
+  jest.setTimeout(15000);
+});
+
+beforeEach(() => {
   jest.setTimeout(15000);
 });
 
