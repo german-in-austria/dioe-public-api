@@ -1,5 +1,5 @@
-import { sql } from "@pgtyped/query";
-import query from "./connect/pg";
+import { sql } from '@pgtyped/query';
+import query from './connect/pg';
 import {
   ISelectTagsQuery,
   ISelectTagsLayersQuery,
@@ -15,7 +15,7 @@ import {
   IGetPresetOrtTagParams,
   ISelectOrtTagGroupParams,
   ISelectOrtTagGroupQuery,
-} from "./tag.queries";
+} from './tag.queries';
 
 const tagDao = {
   async getTagLayers() {
@@ -121,7 +121,7 @@ const tagDao = {
         JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
       WHERE
-        kdtt.id IN $$tagId and odto.osm_id in (
+        ($$tagId < 0 OR kdtt.id IN $$tagId) and odto.osm_id in (
 	        select osm_id from "OrteDB_tbl_orte" odto 
 	        	join "KorpusDB_tbl_inferhebung" kdti on kdti."Ort_id" = odto.id 
 	        	join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
@@ -186,7 +186,7 @@ const tagDao = {
         JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
       WHERE
-        kdtt.id IN $$tagId and odto.osm_id in (
+        ($$tagId < 0 OR kdtt.id IN $$tagId) and odto.osm_id in (
 	        select osm_id from "OrteDB_tbl_orte" odto 
 	        	join "KorpusDB_tbl_inferhebung" kdti on kdti."Ort_id" = odto.id 
 	        	join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"

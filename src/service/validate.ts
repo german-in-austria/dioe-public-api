@@ -1,8 +1,8 @@
-import _, { String } from "lodash";
-import { antwortenDto } from "src/controller/antwortenController";
-import { tagDto } from "src/controller/tagController";
-import { Antwort } from "./antworten";
-import { ausbildungGrad } from "./social";
+import _, { String } from 'lodash';
+import { antwortenDto } from 'src/controller/antwortenController';
+import { tagDto } from 'src/controller/tagController';
+import { Antwort } from './antworten';
+import { ausbildungGrad } from './social';
 
 export interface tag {
   ids: number[];
@@ -30,13 +30,17 @@ export interface filters extends ageBound {
 
 export default {
   validateTagDto(tag: tagDto): tag {
-    const aus = this.validateAusbildung(tag.ausbildung ? tag.ausbildung : "");
+    const aus = this.validateAusbildung(tag.ausbildung ? tag.ausbildung : '');
     const beruf = this.validateBeruf(tag.beruf_id ? tag.beruf_id : -1);
     let project_id = tag.project == undefined ? -1 : tag.project;
     let gender_sel = 0;
     if (tag.weiblich == undefined) {
       gender_sel = -1;
       tag.weiblich = false;
+    }
+
+    if (tag.ids.length === 0 || tag.ids[0] < 0) {
+      tag.ids = [-1];
     }
 
     if (tag.group === undefined) tag.group = false;
@@ -53,7 +57,7 @@ export default {
   },
   validateAntwortenDto(ant: antwortenDto): filters {
     const ageBound = this.validateAgeBound(ant.ageLower, ant.ageUpper);
-    const aus = this.validateAusbildung(ant.ausbildung ? ant.ausbildung : "");
+    const aus = this.validateAusbildung(ant.ausbildung ? ant.ausbildung : '');
     const beruf = this.validateBeruf(ant.beruf_id ? ant.beruf_id : -1);
     let gender_sel = 0;
     if (ant.weiblich == undefined) {
@@ -73,7 +77,7 @@ export default {
   validateAusbildung(str: string): string {
     let aus = ausbildungGrad.find((el: string) => el === str);
     if (aus == undefined) {
-      aus = "";
+      aus = '';
     }
     return aus;
   },
