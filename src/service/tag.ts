@@ -51,7 +51,7 @@ export default {
     return tagDao.getPresetOrtTag(tagId);
   },
   async getTagOrte(tag: tag): Promise<ISelectOrtTagsResult[]> {
-    if (tag.text.length > 0) {
+    if (tag.text.length > 0 || tag.ortho.length > 0) {
       return tagDao.getOrtTagToken(
         tag.ids,
         tag.erhArt,
@@ -60,7 +60,8 @@ export default {
         tag.weiblich,
         tag.gender_sel,
         tag.project_id,
-        tag.text
+        tag.text,
+        tag.ortho
       ) as any as ISelectOrtTagsResult[];
     }
     if (tag.group) {

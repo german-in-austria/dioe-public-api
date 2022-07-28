@@ -121,6 +121,7 @@ const models: TsoaRoute.Models = {
             "project": {"dataType":"double"},
             "group": {"dataType":"boolean"},
             "text": {"dataType":"array","array":{"dataType":"string"}},
+            "ortho": {"dataType":"array","array":{"dataType":"string"}},
         },
         "additionalProperties": true,
     },

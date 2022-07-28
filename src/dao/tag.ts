@@ -103,7 +103,8 @@ const tagDao = {
     gender: boolean,
     gender_sel: number,
     project_id: number,
-    text: string
+    text: string,
+    ortho: string
   ) {
     const selectOrtToken = sql<ISelectOrtTokenQuery & ISelectOrtTokenParams>`
         SELECT
@@ -135,6 +136,7 @@ const tagDao = {
           and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
           and ($gender_sel < 0 OR pdtp.weiblich = $gender)
           AND t.text SIMILAR TO $textTag
+          AND t.ortho SIMILAR TO $textOrtho
           and pdti.inf_gruppe_id in (
             select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
             where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
@@ -160,6 +162,8 @@ const tagDao = {
       project_id: project_id,
       // @ts-ignore
       textTag: text,
+      // @ts-ignore
+      textOrtho: ortho,
       /*
       text.map((el) => {
         return { val: el };

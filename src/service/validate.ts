@@ -14,6 +14,7 @@ export interface tag {
   project_id: number;
   group: boolean;
   text: string;
+  ortho: string;
 }
 
 export interface ageBound {
@@ -36,6 +37,7 @@ export default {
     let project_id = tag.project == undefined ? -1 : tag.project;
     let gender_sel = 0;
     let tags = '';
+    let ortho = '';
     if (tag.weiblich == undefined) {
       gender_sel = -1;
       tag.weiblich = false;
@@ -48,7 +50,13 @@ export default {
     if (tag.text === undefined || !tag.text || tag.text.length === 0) {
       tags = '';
     } else {
-      tags = `(${tag.text.join('|')})%`;
+      tags = this.transformToken(tag.text as string[]);
+    }
+
+    if (tag.ortho === undefined || !tag.ortho || tag.ortho.length === 0) {
+      ortho = '';
+    } else {
+      ortho = this.transformToken(tag.ortho as string[]);
     }
 
     if (tag.group === undefined) tag.group = false;
@@ -62,6 +70,7 @@ export default {
       group: tag.group,
       gender_sel: gender_sel,
       text: tags,
+      ortho: ortho,
     } as tag;
     return res;
   },
@@ -104,6 +113,9 @@ export default {
       ageLower: low,
       ageUpper: up,
     } as ageBound;
+  },
+  transformToken(token: string[]) {
+    return `(${token.join('|')})%`;
   },
   compareTimeStamps(currStamp: Antwort, currAnt: Antwort): boolean {
     const sStamp = currStamp.start;

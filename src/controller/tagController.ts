@@ -23,6 +23,7 @@ export interface tagDto {
   project?: number;
   group?: boolean;
   text?: Array<String>;
+  ortho?: Array<String>;
 }
 
 @Route('tags')

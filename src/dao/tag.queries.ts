@@ -94,6 +94,7 @@ export interface ISelectOrtTokenParams {
   gender_sel: number | null | void;
   project_id: number | null | void;
   tagId: readonly (number | null | void)[];
+  textOrtho: string | null | void;
   textTag: string | null | void;
 }
 

@@ -315,6 +315,12 @@
 							"type": "string"
 						},
 						"type": "array"
+					},
+					"ortho": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
