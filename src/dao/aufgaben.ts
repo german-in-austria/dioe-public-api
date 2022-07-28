@@ -1,5 +1,5 @@
-import { sql } from "@pgtyped/query";
-import query from "./connect/pg";
+import { sql } from '@pgtyped/query';
+import query from './connect/pg';
 import {
   ISelectAufgabenSetQuery,
   ISelectAufgabenSetParams,
@@ -11,7 +11,7 @@ import {
   ISelectOrtAufgabeQuery,
   ISelectAllTeamsQuery,
   ISelectAufgabeAudioByOrtQuery,
-} from "./aufgaben.queries";
+} from './aufgaben.queries';
 
 const aufgabenDao = {
   async getAufgabenSetPhaen(phaenID: number[]) {
@@ -56,8 +56,8 @@ const aufgabenDao = {
     kdta2."Name_Aset" as "Aset_Name",
     kdta2."Fokus" as "Aset_Fokus"
     from "KorpusDB_tbl_aufgaben" kdta 
-    join "KorpusDB_tbl_aufgabensets" kdta2 on kdta2.id = kdta."von_ASet_id" 
-    join "KorpusDB_tbl_aufgabenarten" kdta3 on kdta3.id = kdta."Aufgabenart_id" 
+    LEFT join "KorpusDB_tbl_aufgabensets" kdta2 on kdta2.id = kdta."von_ASet_id" 
+    LEFT join "KorpusDB_tbl_aufgabenarten" kdta3 on kdta3.id = kdta."Aufgabenart_id" 
     `;
     return await query(selectAllAufgaben);
   },
