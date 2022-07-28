@@ -8,8 +8,8 @@ export interface ISelectSentencesParams {
 
 /** 'SelectSentences' return type */
 export interface ISelectSentencesResult {
-  tokenids: numberArray | null;
   sentorth: string | null;
+  tokenids: numberArray | null;
 }
 
 /** 'SelectSentences' query type */
