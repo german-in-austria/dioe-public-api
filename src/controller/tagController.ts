@@ -7,12 +7,12 @@ import {
   IGetTagsByPresetResult,
   IGetPresetTagsResult,
   IGetPresetOrtTagResult,
-} from "../dao/tag.queries";
+} from '../dao/tag.queries';
 
-import { Body, Controller, Get, Path, Post, Query, Route } from "tsoa";
+import { Body, Controller, Get, Path, Post, Query, Route } from 'tsoa';
 
-import tagService, { TagTree } from "../service/tag";
-import validator from "../service/validate";
+import tagService, { TagTree } from '../service/tag';
+import validator from '../service/validate';
 
 export interface tagDto {
   ids: number[];
@@ -22,40 +22,41 @@ export interface tagDto {
   weiblich?: boolean;
   project?: number;
   group?: boolean;
+  text?: Array<String>;
 }
 
-@Route("tags")
+@Route('tags')
 export class TagController extends Controller {
   @Get()
   public async getTags(): Promise<TagTree[]> {
     return tagService.getTagTree();
   }
 
-  @Get("/id/{tagId}")
+  @Get('/id/{tagId}')
   public async getTagById(
     @Path() tagId: number
   ): Promise<ISelectTagByIdResult[]> {
     return tagService.getTagById(tagId);
   }
 
-  @Get("/gen")
+  @Get('/gen')
   public async getTagGen(
-    @Query("gen") gen: number
+    @Query('gen') gen: number
   ): Promise<ISelectSingleGenResult[]> {
     return tagService.getTagGen(gen);
   }
 
-  @Get("/layers")
+  @Get('/layers')
   public async getTagLayers(): Promise<ISelectTagsLayersResult[]> {
     return tagService.getTagLayers();
   }
 
-  @Get("/preset")
+  @Get('/preset')
   public async getPresetTags(): Promise<IGetPresetTagsResult[]> {
     return tagService.getPresetTags();
   }
 
-  @Get("/ort/{tagId}")
+  @Get('/ort/{tagId}')
   public async getTagOrte(
     @Path() tagId: number
   ): Promise<ISelectOrtTagsResult[]> {
@@ -63,28 +64,29 @@ export class TagController extends Controller {
       validator.validateTagDto({
         ids: [tagId],
         erhArt: [-1],
-        ausbildung: "",
+        ausbildung: '',
         beruf_id: undefined,
         weiblich: undefined,
       })
     );
   }
 
-  @Post("/ort")
+  @Post('/ort')
   public async getTagOrteMultiple(
     @Body() tagDto: tagDto
   ): Promise<ISelectOrtTagsResult[]> {
+    console.log(tagDto);
     return tagService.getTagOrte(validator.validateTagDto(tagDto));
   }
 
-  @Post("/preset")
+  @Post('/preset')
   public async getTagsFromPreset(
     @Body() tagDto: tagDto
   ): Promise<ISelectOrtTagsResult[]> {
     return tagService.getTagsFromPreset(validator.validateTagDto(tagDto));
   }
 
-  @Get("/preset/ort/{tagId}")
+  @Get('/preset/ort/{tagId}')
   public async getPresetOrte(
     @Path() tagId: number
   ): Promise<IGetPresetOrtTagResult[]> {
@@ -93,16 +95,16 @@ export class TagController extends Controller {
 }
 
 // demonstration of TSOA API
-@Route("test")
+@Route('test')
 export class TestController extends Controller {
-  @Post("/{something}")
+  @Post('/{something}')
   public async getControllerDemo(
     @Body() body: any,
-    @Query("query_param") query: string,
-    @Path("something") param?: string
-  ): Promise<{ test: "ok"; data: any }> {
+    @Query('query_param') query: string,
+    @Path('something') param?: string
+  ): Promise<{ test: 'ok'; data: any }> {
     return {
-      test: "ok",
+      test: 'ok',
       data: {
         body,
         query,

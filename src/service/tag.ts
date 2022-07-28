@@ -6,12 +6,12 @@ import {
   IGetTagsByPresetResult,
   IGetPresetTagsResult,
   IGetPresetOrtTagResult,
-} from "../dao/tag.queries";
-import tagDao from "../dao/tag";
-import _, { String } from "lodash";
+} from '../dao/tag.queries';
+import tagDao from '../dao/tag';
+import _, { String } from 'lodash';
 
-import { ausbildungGrad } from "./social";
-import { tag } from "./validate";
+import { ausbildungGrad } from './social';
+import { tag } from './validate';
 
 export interface TagTree extends ISelectTagsResult {
   children: TagTree[];
@@ -35,7 +35,7 @@ export default {
     const res: IGetTagsByPresetResult[] = await tagDao.getTagsByPreset(tag.ids);
     let aus = ausbildungGrad.find((el: string) => el === tag.ausbildung);
     if (aus == undefined) {
-      aus = "";
+      aus = '';
     }
     return tagDao.getOrtTag(
       res.map((val) => val.tagId),
@@ -51,6 +51,18 @@ export default {
     return tagDao.getPresetOrtTag(tagId);
   },
   async getTagOrte(tag: tag): Promise<ISelectOrtTagsResult[]> {
+    if (tag.text.length > 0) {
+      return tagDao.getOrtTagToken(
+        tag.ids,
+        tag.erhArt,
+        tag.ausbildung,
+        tag.beruf_id,
+        tag.weiblich,
+        tag.gender_sel,
+        tag.project_id,
+        tag.text
+      ) as any as ISelectOrtTagsResult[];
+    }
     if (tag.group) {
       return tagDao.getOrtTagGroup(
         tag.ids,
@@ -79,7 +91,7 @@ export default {
   },
   async getTagTree() {
     const list = await this.getTagList();
-    const listById = _.keyBy(list, "tagId");
+    const listById = _.keyBy(list, 'tagId');
     const firstLevelTags = list.filter((t) => t.parentIds === null);
     return this.buildTreeRecursive(firstLevelTags, listById);
   },

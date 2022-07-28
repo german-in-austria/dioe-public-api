@@ -23,13 +23,13 @@ export interface ISelectTagByIdParams {
 
 /** 'SelectTagById' return type */
 export interface ISelectTagByIdResult {
-  tagId: number;
-  tagAbbrev: string;
-  tagGene: number | null;
-  tagName: string | null;
-  tagComment: string | null;
-  tagOrder: number | null;
   phenomenId: number | null;
+  tagAbbrev: string;
+  tagComment: string | null;
+  tagGene: number | null;
+  tagId: number;
+  tagName: string | null;
+  tagOrder: number | null;
 }
 
 /** 'SelectTagById' query type */
@@ -43,18 +43,18 @@ export type ISelectTagsParams = void;
 
 /** 'SelectTags' return type */
 export interface ISelectTagsResult {
-  tagId: number;
-  tagAbbrev: string;
-  tagGene: number | null;
-  tagName: string | null;
-  tagComment: string | null;
-  tagOrder: number | null;
-  phenomenId: number | null;
-  phenomenName: string;
-  tagEbeneName: string;
-  tagEbeneId: number;
   childrenIds: numberArray | null;
   parentIds: numberArray | null;
+  phenomenId: number | null;
+  phenomenName: string;
+  tagAbbrev: string;
+  tagComment: string | null;
+  tagEbeneId: number;
+  tagEbeneName: string;
+  tagGene: number | null;
+  tagId: number;
+  tagName: string | null;
+  tagOrder: number | null;
 }
 
 /** 'SelectTags' query type */
@@ -70,13 +70,13 @@ export interface ISelectSingleGenParams {
 
 /** 'SelectSingleGen' return type */
 export interface ISelectSingleGenResult {
-  tagId: number;
-  tagAbbrev: string;
-  tagGene: number | null;
-  tagName: string | null;
-  tagComment: string | null;
-  tagOrder: number | null;
   phenomenId: number | null;
+  tagAbbrev: string;
+  tagComment: string | null;
+  tagGene: number | null;
+  tagId: number;
+  tagName: string | null;
+  tagOrder: number | null;
 }
 
 /** 'SelectSingleGen' query type */
@@ -85,27 +85,57 @@ export interface ISelectSingleGenQuery {
   result: ISelectSingleGenResult;
 }
 
-/** 'SelectOrtTags' parameters type */
-export interface ISelectOrtTagsParams {
-  tagId: readonly (number | null | void)[];
-  erhArt: readonly (number | null | void)[];
+/** 'SelectOrtToken' parameters type */
+export interface ISelectOrtTokenParams {
   aus: string | null | void;
   beruf: number | null | void;
-  gender_sel: number | null | void;
+  erhArt: readonly (number | null | void)[];
   gender: boolean | null | void;
+  gender_sel: number | null | void;
   project_id: number | null | void;
+  tagId: readonly (number | null | void)[];
+  textTag: string | null | void;
+}
+
+/** 'SelectOrtToken' return type */
+export interface ISelectOrtTokenResult {
+  lat: string | null;
+  lon: string | null;
+  numTag: string | null;
+  ortNamelang: string;
+  osmId: string | null;
+  tagId: number;
+  tagLang: string | null;
+  tagName: string;
+}
+
+/** 'SelectOrtToken' query type */
+export interface ISelectOrtTokenQuery {
+  params: ISelectOrtTokenParams;
+  result: ISelectOrtTokenResult;
+}
+
+/** 'SelectOrtTags' parameters type */
+export interface ISelectOrtTagsParams {
+  aus: string | null | void;
+  beruf: number | null | void;
+  erhArt: readonly (number | null | void)[];
+  gender: boolean | null | void;
+  gender_sel: number | null | void;
+  project_id: number | null | void;
+  tagId: readonly (number | null | void)[];
 }
 
 /** 'SelectOrtTags' return type */
 export interface ISelectOrtTagsResult {
-  numTag: string | null;
-  tagName: string;
-  tagLang: string | null;
-  tagId: number;
-  osmId: string | null;
-  ortNamelang: string;
   lat: string | null;
   lon: string | null;
+  numTag: string | null;
+  ortNamelang: string;
+  osmId: string | null;
+  tagId: number;
+  tagLang: string | null;
+  tagName: string;
 }
 
 /** 'SelectOrtTags' query type */
@@ -116,26 +146,26 @@ export interface ISelectOrtTagsQuery {
 
 /** 'SelectOrtTagGroup' parameters type */
 export interface ISelectOrtTagGroupParams {
-  tagId: readonly (number | null | void)[];
-  erhArt: readonly (number | null | void)[];
   aus: string | null | void;
   beruf: number | null | void;
-  gender_sel: number | null | void;
+  erhArt: readonly (number | null | void)[];
   gender: boolean | null | void;
-  tagGroupLength: string | null | void;
+  gender_sel: number | null | void;
   project_id: number | null | void;
+  tagGroupLength: string | null | void;
+  tagId: readonly (number | null | void)[];
 }
 
 /** 'SelectOrtTagGroup' return type */
 export interface ISelectOrtTagGroupResult {
-  numTag: string | null;
-  tagName: string;
-  tagLang: string | null;
-  tagId: number;
-  osmId: string | null;
-  ortNamelang: string;
   lat: string | null;
   lon: string | null;
+  numTag: string | null;
+  ortNamelang: string;
+  osmId: string | null;
+  tagId: number;
+  tagLang: string | null;
+  tagName: string;
 }
 
 /** 'SelectOrtTagGroup' query type */
@@ -151,13 +181,13 @@ export interface IGetPresetOrtTagParams {
 
 /** 'GetPresetOrtTag' return type */
 export interface IGetPresetOrtTagResult {
-  numTag: string | null;
-  presetId: number;
-  presetName: string;
-  osmId: string | null;
-  ortNamelang: string;
   lat: string | null;
   lon: string | null;
+  numTag: string | null;
+  ortNamelang: string;
+  osmId: string | null;
+  presetId: number;
+  presetName: string;
 }
 
 /** 'GetPresetOrtTag' query type */
@@ -171,8 +201,8 @@ export type IGetPresetTagsParams = void;
 
 /** 'GetPresetTags' return type */
 export interface IGetPresetTagsResult {
-  id: number;
   bezeichnung: string;
+  id: number;
   kommentar: string | null;
 }
 
@@ -189,12 +219,12 @@ export interface IGetTagsByPresetParams {
 
 /** 'GetTagsByPreset' return type */
 export interface IGetTagsByPresetResult {
-  presetId: number;
   bezeichnung: string;
-  tagId: number;
-  tag: string;
-  tagLang: string | null;
   generation: number | null;
+  presetId: number;
+  tag: string;
+  tagId: number;
+  tagLang: string | null;
 }
 
 /** 'GetTagsByPreset' query type */

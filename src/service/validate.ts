@@ -13,6 +13,7 @@ export interface tag {
   gender_sel: number;
   project_id: number;
   group: boolean;
+  text: string;
 }
 
 export interface ageBound {
@@ -34,6 +35,7 @@ export default {
     const beruf = this.validateBeruf(tag.beruf_id ? tag.beruf_id : -1);
     let project_id = tag.project == undefined ? -1 : tag.project;
     let gender_sel = 0;
+    let tags = '';
     if (tag.weiblich == undefined) {
       gender_sel = -1;
       tag.weiblich = false;
@@ -41,6 +43,12 @@ export default {
 
     if (tag.ids.length === 0 || tag.ids[0] < 0) {
       tag.ids = [-1];
+    }
+
+    if (tag.text === undefined || !tag.text || tag.text.length === 0) {
+      tags = '';
+    } else {
+      tags = `%(${tag.text.join('|')})%`;
     }
 
     if (tag.group === undefined) tag.group = false;
@@ -52,6 +60,8 @@ export default {
       weiblich: tag.weiblich,
       project_id: project_id,
       group: tag.group,
+      gender_sel: gender_sel,
+      text: tags,
     } as tag;
     return res;
   },
