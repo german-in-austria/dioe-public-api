@@ -75,7 +75,6 @@ export class TagController extends Controller {
   public async getTagOrteMultiple(
     @Body() tagDto: tagDto
   ): Promise<ISelectOrtTagsResult[]> {
-    console.log(tagDto);
     return tagService.getTagOrte(validator.validateTagDto(tagDto));
   }
 
