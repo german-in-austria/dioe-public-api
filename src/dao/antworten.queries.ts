@@ -2,28 +2,28 @@
 
 /** 'SelectAntworten' parameters type */
 export interface ISelectAntwortenParams {
-  tagID: readonly (number | null | void)[];
-  osmId: string | null | void;
   ageLower: number | null | void;
   ageUpper: number | null | void;
   aus: string | null | void;
   beruf: number | null | void;
-  gender_sel: number | null | void;
   gender: boolean | null | void;
+  gender_sel: number | null | void;
+  osmId: string | null | void;
+  tagID: readonly (number | null | void)[];
 }
 
 /** 'SelectAntworten' return type */
 export interface ISelectAntwortenResult {
+  audiofile: string | null;
+  dateipfad: string | null;
+  gruppeBez: string | null;
+  idErhId: number | null;
+  osmid: string | null;
   startAntwort: string | null;
   stopAntwort: string | null;
-  dateipfad: string | null;
-  audiofile: string | null;
   tagId: number | null;
-  osmid: string | null;
   tagName: string | null;
-  gruppeBez: string | null;
   teamBez: string | null;
-  idErhId: number | null;
 }
 
 /** 'SelectAntworten' query type */
@@ -40,8 +40,8 @@ export interface ISelectSatzParams {
 /** 'SelectSatz' return type */
 export interface ISelectSatzResult {
   id: number;
-  transkript: string | null;
   ipa: string | null;
+  transkript: string | null;
 }
 
 /** 'SelectSatz' query type */
@@ -100,29 +100,29 @@ export interface ICheckIfAufgabeQuery {
 
 /** 'GetTimeStampAntwort' parameters type */
 export interface IGetTimeStampAntwortParams {
-  tagId: readonly (number | null | void)[];
-  osmId: string | null | void;
   ageLower: number | null | void;
   ageUpper: number | null | void;
   aus: string | null | void;
   beruf: number | null | void;
-  gender_sel: number | null | void;
   gender: boolean | null | void;
+  gender_sel: number | null | void;
+  osmId: string | null | void;
   tagGroupLength: string | null | void;
+  tagId: readonly (number | null | void)[];
 }
 
 /** 'GetTimeStampAntwort' return type */
 export interface IGetTimeStampAntwortResult {
+  audiofile: string | null;
+  dateipfad: string | null;
+  gruppeBez: string | null;
+  idErhId: number | null;
+  osmid: string | null;
   startAntwort: string | null;
   stopAntwort: string | null;
-  dateipfad: string | null;
-  audiofile: string | null;
   tagId: number | null;
-  osmid: string | null;
   tagName: string | null;
-  gruppeBez: string | null;
   teamBez: string | null;
-  idErhId: number | null;
 }
 
 /** 'GetTimeStampAntwort' query type */
@@ -133,26 +133,26 @@ export interface IGetTimeStampAntwortQuery {
 
 /** 'GetStampsFromAntwort' parameters type */
 export interface IGetStampsFromAntwortParams {
-  tagId: readonly (number | null | void)[];
-  osmId: string | null | void;
   ageLower: number | null | void;
   ageUpper: number | null | void;
   aus: string | null | void;
   beruf: number | null | void;
-  gender_sel: number | null | void;
   gender: boolean | null | void;
+  gender_sel: number | null | void;
+  osmId: string | null | void;
+  tagId: readonly (number | null | void)[];
 }
 
 /** 'GetStampsFromAntwort' return type */
 export interface IGetStampsFromAntwortResult {
+  audiofile: string | null;
+  dateipfad: string | null;
+  gruppeBez: string | null;
+  osmid: string | null;
   startAntwort: string;
   stopAntwort: string;
-  dateipfad: string | null;
-  audiofile: string | null;
   tagId: number;
-  osmid: string | null;
   tagName: string | null;
-  gruppeBez: string | null;
   teamBez: string | null;
 }
 
@@ -164,27 +164,27 @@ export interface IGetStampsFromAntwortQuery {
 
 /** 'SelectAntwortenTrans' parameters type */
 export interface ISelectAntwortenTransParams {
-  tagID: readonly (number | null | void)[];
-  osmId: string | null | void;
   ageLower: number | null | void;
   ageUpper: number | null | void;
   aus: string | null | void;
   beruf: number | null | void;
-  gender_sel: number | null | void;
   gender: boolean | null | void;
+  gender_sel: number | null | void;
+  osmId: string | null | void;
   tagGroupLength: string | null | void;
+  tagID: readonly (number | null | void)[];
 }
 
 /** 'SelectAntwortenTrans' return type */
 export interface ISelectAntwortenTransResult {
+  audiofile: string | null;
+  dateipfad: string | null;
+  gruppeBez: string | null;
+  ortho: string | null;
+  orthoText: string | null;
   startAntwort: string | null;
   stopAntwort: string | null;
   tagName: string | null;
-  ortho: string | null;
-  dateipfad: string | null;
-  audiofile: string | null;
-  orthoText: string | null;
-  gruppeBez: string | null;
   teamBez: string | null;
 }
 
@@ -196,26 +196,26 @@ export interface ISelectAntwortenTransQuery {
 
 /** 'SelectAntwortFromAufgabe' parameters type */
 export interface ISelectAntwortFromAufgabeParams {
-  satzid: number | null | void;
   aufgabeid: number | null | void;
+  satzid: number | null | void;
 }
 
 /** 'SelectAntwortFromAufgabe' return type */
 export interface ISelectAntwortFromAufgabeResult {
-  startAntwort: string;
-  stopAntwort: string;
-  kommentar: string | null;
-  dateipfad: string | null;
   audiofile: string | null;
-  tagId: number;
-  osmid: string | null;
+  aufgabeId: number;
+  dateipfad: string | null;
+  gruppeBez: string | null;
+  kommentar: string | null;
   lat: string | null;
   lon: string | null;
-  tagName: string | null;
-  gruppeBez: string | null;
-  teamBez: string | null;
+  osmid: string | null;
   satzId: number | null;
-  aufgabeId: number;
+  startAntwort: string;
+  stopAntwort: string;
+  tagId: number;
+  tagName: string | null;
+  teamBez: string | null;
 }
 
 /** 'SelectAntwortFromAufgabe' query type */
@@ -226,17 +226,17 @@ export interface ISelectAntwortFromAufgabeQuery {
 
 /** 'SelectMatchingTokens' parameters type */
 export interface ISelectMatchingTokensParams {
+  lemma: string | null | void;
   ortho: string | null | void;
   phon: string | null | void;
-  lemma: string | null | void;
 }
 
 /** 'SelectMatchingTokens' return type */
 export interface ISelectMatchingTokensResult {
   id: number;
   ortho: string | null;
-  textInOrtho: string | null;
   splemma: string | null;
+  textInOrtho: string | null;
 }
 
 /** 'SelectMatchingTokens' query type */
@@ -250,8 +250,8 @@ export type ISelectErhebungsartenParams = void;
 
 /** 'SelectErhebungsarten' return type */
 export interface ISelectErhebungsartenResult {
-  id: number;
   bezeichnung: string;
+  id: number;
 }
 
 /** 'SelectErhebungsarten' query type */

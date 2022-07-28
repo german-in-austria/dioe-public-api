@@ -5,8 +5,8 @@ export type ISelectPhaenBerParams = void;
 
 /** 'SelectPhaenBer' return type */
 export interface ISelectPhaenBerResult {
-  id: number;
   bezPhaenber: string;
+  id: number;
 }
 
 /** 'SelectPhaenBer' query type */
@@ -20,10 +20,10 @@ export type ISelectPhaenParams = void;
 
 /** 'SelectPhaen' return type */
 export interface ISelectPhaenResult {
-  id: number;
-  bezPhaenomen: string;
   beschrPhaenomen: string | null;
   bezPhaenber: string;
+  bezPhaenomen: string;
+  id: number;
 }
 
 /** 'SelectPhaen' query type */
@@ -39,10 +39,10 @@ export interface ISelectSinglePhaenParams {
 
 /** 'SelectSinglePhaen' return type */
 export interface ISelectSinglePhaenResult {
-  id: number;
-  bezPhaenomen: string;
   beschrPhaenomen: string | null;
   bezPhaenber: string;
+  bezPhaenomen: string;
+  id: number;
 }
 
 /** 'SelectSinglePhaen' query type */

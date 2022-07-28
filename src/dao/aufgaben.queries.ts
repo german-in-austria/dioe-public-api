@@ -7,11 +7,11 @@ export interface ISelectAufgabenSetParams {
 
 /** 'SelectAufgabenSet' return type */
 export interface ISelectAufgabenSetResult {
+  fokus: string | null;
   id: number;
+  kommentar: string | null;
   kuerzel: string;
   nameAset: string | null;
-  fokus: string | null;
-  kommentar: string | null;
 }
 
 /** 'SelectAufgabenSet' query type */
@@ -27,9 +27,9 @@ export interface ISelectAufgabenParams {
 
 /** 'SelectAufgaben' return type */
 export interface ISelectAufgabenResult {
-  id: number;
-  beschreibungAufgabe: string | null;
   aufgabenstellung: string | null;
+  beschreibungAufgabe: string | null;
+  id: number;
 }
 
 /** 'SelectAufgaben' query type */
@@ -45,16 +45,16 @@ export interface ISelectAufgabenFromSetParams {
 
 /** 'SelectAufgabenFromSet' return type */
 export interface ISelectAufgabenFromSetResult {
-  id: number;
-  variante: number;
-  beschreibungAufgabe: string | null;
-  beschreibungAufgabe: string | null;
   aufgabenstellung: string | null;
-  kuerzel: string;
-  nameAset: string | null;
-  id: number;
+  beschreibungAufgabe: string | null;
+  beschreibungAufgabe: string | null;
   bezPhaenomen: string;
   id: number;
+  id: number;
+  id: number;
+  kuerzel: string;
+  nameAset: string | null;
+  variante: number;
 }
 
 /** 'SelectAufgabenFromSet' query type */
@@ -68,13 +68,13 @@ export type ISelectAllAufgabenParams = void;
 
 /** 'SelectAllAufgaben' return type */
 export interface ISelectAllAufgabenResult {
+  artBezeichnung: string;
+  asetFokus: string | null;
+  asetName: string | null;
+  aufgabenstellung: string | null;
   aufId: number;
   beschreibung: string | null;
-  aufgabenstellung: string | null;
   kontext: string | null;
-  artBezeichnung: string;
-  asetName: string | null;
-  asetFokus: string | null;
 }
 
 /** 'SelectAllAufgaben' query type */
@@ -90,12 +90,12 @@ export interface ISelectOrtAufgabeParams {
 
 /** 'SelectOrtAufgabe' return type */
 export interface ISelectOrtAufgabeResult {
-  numAufg: string | null;
-  id: number;
   aufgabenstellung: string | null;
-  ortNamelang: string;
+  id: number;
   lat: string | null;
   lon: string | null;
+  numAufg: string | null;
+  ortNamelang: string;
   osmId: string | null;
 }
 
@@ -110,8 +110,8 @@ export type ISelectAllTeamsParams = void;
 
 /** 'SelectAllTeams' return type */
 export interface ISelectAllTeamsResult {
-  teamId: number;
   team: string | null;
+  teamId: number;
 }
 
 /** 'SelectAllTeams' query type */
@@ -122,21 +122,21 @@ export interface ISelectAllTeamsQuery {
 
 /** 'SelectAufgabeAudioByOrt' parameters type */
 export interface ISelectAufgabeAudioByOrtParams {
-  aufIDs: readonly (number | null | void)[];
-  osmId: string | null | void;
   ageLower: number | null | void;
   ageUpper: number | null | void;
+  aufIDs: readonly (number | null | void)[];
+  osmId: string | null | void;
 }
 
 /** 'SelectAufgabeAudioByOrt' return type */
 export interface ISelectAufgabeAudioByOrtResult {
-  id: number | null;
+  audiofile: string | null;
   aufgabe: string | null;
   dateipfad: string | null;
-  audiofile: string | null;
+  gruppeBez: string | null;
+  id: number | null;
   startAufgabe: string | null;
   stopAufgabe: string | null;
-  gruppeBez: string | null;
   teamBez: string | null;
 }
 
