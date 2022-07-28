@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, HttpStatusCodeLiteral, TsoaResponse } from '@tsoa/runtime';
+import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, HttpStatusCodeLiteral, TsoaResponse, fetchMiddlewares } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { TagController } from './controller/tagController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -17,6 +17,7 @@ import { SocialController } from './controller/socialController';
 import { expressAuthentication } from './authentication';
 // @ts-ignore - no great way to install types from subpackage
 const promiseAny = require('promise.any');
+import type { RequestHandler } from 'express';
 import * as express from 'express';
 
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -25,18 +26,18 @@ const models: TsoaRoute.Models = {
     "TagTree": {
         "dataType": "refObject",
         "properties": {
-            "tagId": {"dataType":"double","required":true},
-            "tagAbbrev": {"dataType":"string","required":true},
-            "tagGene": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
-            "tagName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "tagComment": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "tagOrder": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
-            "phenomenId": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
-            "phenomenName": {"dataType":"string","required":true},
-            "tagEbeneName": {"dataType":"string","required":true},
-            "tagEbeneId": {"dataType":"double","required":true},
             "childrenIds": {"dataType":"union","subSchemas":[{"ref":"numberArray"},{"dataType":"enum","enums":[null]}],"required":true},
             "parentIds": {"dataType":"union","subSchemas":[{"ref":"numberArray"},{"dataType":"enum","enums":[null]}],"required":true},
+            "phenomenId": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
+            "phenomenName": {"dataType":"string","required":true},
+            "tagAbbrev": {"dataType":"string","required":true},
+            "tagComment": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagEbeneId": {"dataType":"double","required":true},
+            "tagEbeneName": {"dataType":"string","required":true},
+            "tagGene": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagId": {"dataType":"double","required":true},
+            "tagName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagOrder": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
             "children": {"dataType":"array","array":{"dataType":"refObject","ref":"TagTree"},"required":true},
         },
         "additionalProperties": true,
@@ -50,13 +51,13 @@ const models: TsoaRoute.Models = {
     "ISelectTagByIdResult": {
         "dataType": "refObject",
         "properties": {
-            "tagId": {"dataType":"double","required":true},
-            "tagAbbrev": {"dataType":"string","required":true},
-            "tagGene": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
-            "tagName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "tagComment": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "tagOrder": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
             "phenomenId": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagAbbrev": {"dataType":"string","required":true},
+            "tagComment": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagGene": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagId": {"dataType":"double","required":true},
+            "tagName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagOrder": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": true,
     },
@@ -64,13 +65,13 @@ const models: TsoaRoute.Models = {
     "ISelectSingleGenResult": {
         "dataType": "refObject",
         "properties": {
-            "tagId": {"dataType":"double","required":true},
-            "tagAbbrev": {"dataType":"string","required":true},
-            "tagGene": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
-            "tagName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "tagComment": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "tagOrder": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
             "phenomenId": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagAbbrev": {"dataType":"string","required":true},
+            "tagComment": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagGene": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagId": {"dataType":"double","required":true},
+            "tagName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagOrder": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": true,
     },
@@ -87,8 +88,8 @@ const models: TsoaRoute.Models = {
     "IGetPresetTagsResult": {
         "dataType": "refObject",
         "properties": {
-            "id": {"dataType":"double","required":true},
             "bezeichnung": {"dataType":"string","required":true},
+            "id": {"dataType":"double","required":true},
             "kommentar": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": true,
@@ -97,14 +98,14 @@ const models: TsoaRoute.Models = {
     "ISelectOrtTagsResult": {
         "dataType": "refObject",
         "properties": {
-            "numTag": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "tagName": {"dataType":"string","required":true},
-            "tagLang": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "tagId": {"dataType":"double","required":true},
-            "osmId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "ortNamelang": {"dataType":"string","required":true},
             "lat": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "lon": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "numTag": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "ortNamelang": {"dataType":"string","required":true},
+            "osmId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagId": {"dataType":"double","required":true},
+            "tagLang": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagName": {"dataType":"string","required":true},
         },
         "additionalProperties": true,
     },
@@ -119,6 +120,7 @@ const models: TsoaRoute.Models = {
             "weiblich": {"dataType":"boolean"},
             "project": {"dataType":"double"},
             "group": {"dataType":"boolean"},
+            "text": {"dataType":"array","array":{"dataType":"string"}},
         },
         "additionalProperties": true,
     },
@@ -126,13 +128,13 @@ const models: TsoaRoute.Models = {
     "IGetPresetOrtTagResult": {
         "dataType": "refObject",
         "properties": {
-            "numTag": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "presetId": {"dataType":"double","required":true},
-            "presetName": {"dataType":"string","required":true},
-            "osmId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "ortNamelang": {"dataType":"string","required":true},
             "lat": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "lon": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "numTag": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "ortNamelang": {"dataType":"string","required":true},
+            "osmId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "presetId": {"dataType":"double","required":true},
+            "presetName": {"dataType":"string","required":true},
         },
         "additionalProperties": true,
     },
@@ -140,8 +142,8 @@ const models: TsoaRoute.Models = {
     "ISelectPhaenBerResult": {
         "dataType": "refObject",
         "properties": {
-            "id": {"dataType":"double","required":true},
             "bezPhaenber": {"dataType":"string","required":true},
+            "id": {"dataType":"double","required":true},
         },
         "additionalProperties": true,
     },
@@ -149,10 +151,10 @@ const models: TsoaRoute.Models = {
     "ISelectPhaenResult": {
         "dataType": "refObject",
         "properties": {
-            "id": {"dataType":"double","required":true},
-            "bezPhaenomen": {"dataType":"string","required":true},
             "beschrPhaenomen": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "bezPhaenber": {"dataType":"string","required":true},
+            "bezPhaenomen": {"dataType":"string","required":true},
+            "id": {"dataType":"double","required":true},
         },
         "additionalProperties": true,
     },
@@ -160,10 +162,10 @@ const models: TsoaRoute.Models = {
     "ISelectSinglePhaenResult": {
         "dataType": "refObject",
         "properties": {
-            "id": {"dataType":"double","required":true},
-            "bezPhaenomen": {"dataType":"string","required":true},
             "beschrPhaenomen": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "bezPhaenber": {"dataType":"string","required":true},
+            "bezPhaenomen": {"dataType":"string","required":true},
+            "id": {"dataType":"double","required":true},
         },
         "additionalProperties": true,
     },
@@ -246,8 +248,8 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "id": {"dataType":"double","required":true},
-            "transkript": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "ipa": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "transkript": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": true,
     },
@@ -257,8 +259,8 @@ const models: TsoaRoute.Models = {
         "properties": {
             "id": {"dataType":"double","required":true},
             "ortho": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "textInOrtho": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "splemma": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "textInOrtho": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": true,
     },
@@ -266,8 +268,8 @@ const models: TsoaRoute.Models = {
     "ISelectErhebungsartenResult": {
         "dataType": "refObject",
         "properties": {
-            "id": {"dataType":"double","required":true},
             "bezeichnung": {"dataType":"string","required":true},
+            "id": {"dataType":"double","required":true},
         },
         "additionalProperties": true,
     },
@@ -275,13 +277,13 @@ const models: TsoaRoute.Models = {
     "ISelectAllAufgabenResult": {
         "dataType": "refObject",
         "properties": {
+            "artBezeichnung": {"dataType":"string","required":true},
+            "asetFokus": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "asetName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "aufgabenstellung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "aufId": {"dataType":"double","required":true},
             "beschreibung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "aufgabenstellung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "kontext": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "artBezeichnung": {"dataType":"string","required":true},
-            "asetName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "asetFokus": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": true,
     },
@@ -289,8 +291,8 @@ const models: TsoaRoute.Models = {
     "ISelectAllTeamsResult": {
         "dataType": "refObject",
         "properties": {
-            "teamId": {"dataType":"double","required":true},
             "team": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "teamId": {"dataType":"double","required":true},
         },
         "additionalProperties": true,
     },
@@ -298,12 +300,12 @@ const models: TsoaRoute.Models = {
     "ISelectOrtAufgabeResult": {
         "dataType": "refObject",
         "properties": {
-            "numAufg": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "id": {"dataType":"double","required":true},
             "aufgabenstellung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "ortNamelang": {"dataType":"string","required":true},
+            "id": {"dataType":"double","required":true},
             "lat": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "lon": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "numAufg": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "ortNamelang": {"dataType":"string","required":true},
             "osmId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": true,
@@ -320,11 +322,11 @@ const models: TsoaRoute.Models = {
     "ISelectAufgabenSetResult": {
         "dataType": "refObject",
         "properties": {
+            "fokus": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "id": {"dataType":"double","required":true},
+            "kommentar": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "kuerzel": {"dataType":"string","required":true},
             "nameAset": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "fokus": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "kommentar": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": true,
     },
@@ -332,9 +334,9 @@ const models: TsoaRoute.Models = {
     "ISelectAufgabenResult": {
         "dataType": "refObject",
         "properties": {
-            "id": {"dataType":"double","required":true},
-            "beschreibungAufgabe": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "aufgabenstellung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "beschreibungAufgabe": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "id": {"dataType":"double","required":true},
         },
         "additionalProperties": true,
     },
@@ -342,13 +344,13 @@ const models: TsoaRoute.Models = {
     "ISelectAufgabenFromSetResult": {
         "dataType": "refObject",
         "properties": {
-            "id": {"dataType":"double","required":true},
-            "variante": {"dataType":"double","required":true},
-            "beschreibungAufgabe": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "aufgabenstellung": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "beschreibungAufgabe": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "bezPhaenomen": {"dataType":"string","required":true},
+            "id": {"dataType":"double","required":true},
             "kuerzel": {"dataType":"string","required":true},
             "nameAset": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "bezPhaenomen": {"dataType":"string","required":true},
+            "variante": {"dataType":"double","required":true},
         },
         "additionalProperties": true,
     },
@@ -395,6 +397,8 @@ export function RegisterRoutes(app: express.Router) {
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
         app.get('/api/tags',
+            ...(fetchMiddlewares<RequestHandler>(TagController)),
+            ...(fetchMiddlewares<RequestHandler>(TagController.prototype.getTags)),
 
             function TagController_getTags(request: any, response: any, next: any) {
             const args = {
@@ -417,6 +421,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/tags/id/:tagId',
+            ...(fetchMiddlewares<RequestHandler>(TagController)),
+            ...(fetchMiddlewares<RequestHandler>(TagController.prototype.getTagById)),
 
             function TagController_getTagById(request: any, response: any, next: any) {
             const args = {
@@ -440,6 +446,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/tags/gen',
+            ...(fetchMiddlewares<RequestHandler>(TagController)),
+            ...(fetchMiddlewares<RequestHandler>(TagController.prototype.getTagGen)),
 
             function TagController_getTagGen(request: any, response: any, next: any) {
             const args = {
@@ -463,6 +471,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/tags/layers',
+            ...(fetchMiddlewares<RequestHandler>(TagController)),
+            ...(fetchMiddlewares<RequestHandler>(TagController.prototype.getTagLayers)),
 
             function TagController_getTagLayers(request: any, response: any, next: any) {
             const args = {
@@ -485,6 +495,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/tags/preset',
+            ...(fetchMiddlewares<RequestHandler>(TagController)),
+            ...(fetchMiddlewares<RequestHandler>(TagController.prototype.getPresetTags)),
 
             function TagController_getPresetTags(request: any, response: any, next: any) {
             const args = {
@@ -507,6 +519,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/tags/ort/:tagId',
+            ...(fetchMiddlewares<RequestHandler>(TagController)),
+            ...(fetchMiddlewares<RequestHandler>(TagController.prototype.getTagOrte)),
 
             function TagController_getTagOrte(request: any, response: any, next: any) {
             const args = {
@@ -530,6 +544,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/tags/ort',
+            ...(fetchMiddlewares<RequestHandler>(TagController)),
+            ...(fetchMiddlewares<RequestHandler>(TagController.prototype.getTagOrteMultiple)),
 
             function TagController_getTagOrteMultiple(request: any, response: any, next: any) {
             const args = {
@@ -553,6 +569,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/tags/preset',
+            ...(fetchMiddlewares<RequestHandler>(TagController)),
+            ...(fetchMiddlewares<RequestHandler>(TagController.prototype.getTagsFromPreset)),
 
             function TagController_getTagsFromPreset(request: any, response: any, next: any) {
             const args = {
@@ -576,6 +594,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/tags/preset/ort/:tagId',
+            ...(fetchMiddlewares<RequestHandler>(TagController)),
+            ...(fetchMiddlewares<RequestHandler>(TagController.prototype.getPresetOrte)),
 
             function TagController_getPresetOrte(request: any, response: any, next: any) {
             const args = {
@@ -599,6 +619,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/test/:something',
+            ...(fetchMiddlewares<RequestHandler>(TestController)),
+            ...(fetchMiddlewares<RequestHandler>(TestController.prototype.getControllerDemo)),
 
             function TestController_getControllerDemo(request: any, response: any, next: any) {
             const args = {
@@ -624,6 +646,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/phaen/ber',
+            ...(fetchMiddlewares<RequestHandler>(PhaenController)),
+            ...(fetchMiddlewares<RequestHandler>(PhaenController.prototype.getPhaenBer)),
 
             function PhaenController_getPhaenBer(request: any, response: any, next: any) {
             const args = {
@@ -646,6 +670,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/phaen',
+            ...(fetchMiddlewares<RequestHandler>(PhaenController)),
+            ...(fetchMiddlewares<RequestHandler>(PhaenController.prototype.getPhaen)),
 
             function PhaenController_getPhaen(request: any, response: any, next: any) {
             const args = {
@@ -668,6 +694,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/phaen/:berId',
+            ...(fetchMiddlewares<RequestHandler>(PhaenController)),
+            ...(fetchMiddlewares<RequestHandler>(PhaenController.prototype.getSinglePhaen)),
 
             function PhaenController_getSinglePhaen(request: any, response: any, next: any) {
             const args = {
@@ -691,6 +719,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/antworten',
+            ...(fetchMiddlewares<RequestHandler>(AntwortenController)),
+            ...(fetchMiddlewares<RequestHandler>(AntwortenController.prototype.getAntbyAufgaben)),
 
             function AntwortenController_getAntbyAufgaben(request: any, response: any, next: any) {
             const args = {
@@ -715,6 +745,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/antworten/tags',
+            ...(fetchMiddlewares<RequestHandler>(AntwortenController)),
+            ...(fetchMiddlewares<RequestHandler>(AntwortenController.prototype.getAntByTags)),
 
             function AntwortenController_getAntByTags(request: any, response: any, next: any) {
             const args = {
@@ -738,6 +770,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/antworten/saetze',
+            ...(fetchMiddlewares<RequestHandler>(AntwortenController)),
+            ...(fetchMiddlewares<RequestHandler>(AntwortenController.prototype.getSatz)),
 
             function AntwortenController_getSatz(request: any, response: any, next: any) {
             const args = {
@@ -761,6 +795,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/antworten/token',
+            ...(fetchMiddlewares<RequestHandler>(AntwortenController)),
+            ...(fetchMiddlewares<RequestHandler>(AntwortenController.prototype.getMatchingTokens)),
 
             function AntwortenController_getMatchingTokens(request: any, response: any, next: any) {
             const args = {
@@ -786,6 +822,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/antworten/arten',
+            ...(fetchMiddlewares<RequestHandler>(AntwortenController)),
+            ...(fetchMiddlewares<RequestHandler>(AntwortenController.prototype.getErhebungsArten)),
 
             function AntwortenController_getErhebungsArten(request: any, response: any, next: any) {
             const args = {
@@ -808,6 +846,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/aufgaben',
+            ...(fetchMiddlewares<RequestHandler>(AufgabenController)),
+            ...(fetchMiddlewares<RequestHandler>(AufgabenController.prototype.getAllAufgaben)),
 
             function AufgabenController_getAllAufgaben(request: any, response: any, next: any) {
             const args = {
@@ -830,6 +870,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/aufgaben/teams',
+            ...(fetchMiddlewares<RequestHandler>(AufgabenController)),
+            ...(fetchMiddlewares<RequestHandler>(AufgabenController.prototype.getAllTeams)),
 
             function AufgabenController_getAllTeams(request: any, response: any, next: any) {
             const args = {
@@ -852,6 +894,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/aufgaben/orte',
+            ...(fetchMiddlewares<RequestHandler>(AufgabenController)),
+            ...(fetchMiddlewares<RequestHandler>(AufgabenController.prototype.getAufgabenOrte)),
 
             function AufgabenController_getAufgabenOrte(request: any, response: any, next: any) {
             const args = {
@@ -875,6 +919,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/aufgaben/sets',
+            ...(fetchMiddlewares<RequestHandler>(AufgabenController)),
+            ...(fetchMiddlewares<RequestHandler>(AufgabenController.prototype.getAufgabenSets)),
 
             function AufgabenController_getAufgabenSets(request: any, response: any, next: any) {
             const args = {
@@ -898,6 +944,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/aufgaben',
+            ...(fetchMiddlewares<RequestHandler>(AufgabenController)),
+            ...(fetchMiddlewares<RequestHandler>(AufgabenController.prototype.getAufgabenPhaen)),
 
             function AufgabenController_getAufgabenPhaen(request: any, response: any, next: any) {
             const args = {
@@ -921,6 +969,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/aufgaben/setaufgabe',
+            ...(fetchMiddlewares<RequestHandler>(AufgabenController)),
+            ...(fetchMiddlewares<RequestHandler>(AufgabenController.prototype.getTagOrte)),
 
             function AufgabenController_getTagOrte(request: any, response: any, next: any) {
             const args = {
@@ -944,6 +994,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/aufgaben/audio',
+            ...(fetchMiddlewares<RequestHandler>(AufgabenController)),
+            ...(fetchMiddlewares<RequestHandler>(AufgabenController.prototype.getAntAudioByOrt)),
 
             function AufgabenController_getAntAudioByOrt(request: any, response: any, next: any) {
             const args = {
@@ -967,6 +1019,8 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/social/berufe',
+            ...(fetchMiddlewares<RequestHandler>(SocialController)),
+            ...(fetchMiddlewares<RequestHandler>(SocialController.prototype.getAllAusbildung)),
 
             function SocialController_getAllAusbildung(request: any, response: any, next: any) {
             const args = {
