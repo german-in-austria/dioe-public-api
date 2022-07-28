@@ -48,7 +48,7 @@ export default {
     if (tag.text === undefined || !tag.text || tag.text.length === 0) {
       tags = '';
     } else {
-      tags = `%(${tag.text.join('|')})%`;
+      tags = `(${tag.text.join('|')})%`;
     }
 
     if (tag.group === undefined) tag.group = false;
