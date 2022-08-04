@@ -303,17 +303,17 @@ export default {
     lemma: string | undefined | null
   ): Promise<ISelectMatchingTokensResult[]> {
     if (ortho && ortho.length > 0) {
-      ortho = `%${ortho}%`;
+      ortho = `${ortho}%`;
     } else {
       ortho = '';
     }
     if (phon && phon.length > 0) {
-      phon = `%${phon}%`;
+      phon = `${phon}%`;
     } else {
       phon = '';
     }
     if (lemma && lemma.length > 0) {
-      lemma = `%${lemma}%`;
+      lemma = `${lemma}%`;
     } else {
       lemma = '';
     }
