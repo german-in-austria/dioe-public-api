@@ -7,13 +7,14 @@ import {
   Query,
   Route,
   BodyProp,
-} from "tsoa";
+} from 'tsoa';
 
 import {
   ISelectSatzResult,
   ISelectMatchingTokensResult,
   ISelectErhebungsartenResult,
-} from "../dao/antworten.queries";
+  ISelectInfErhebungenResult,
+} from '../dao/antworten.queries';
 
 export interface ISelectAntwortenResult {
   startAntwort: string;
@@ -29,9 +30,9 @@ export interface ISelectAntwortenResult {
 import antwortenService, {
   AntwortenFromAufgabe,
   AntwortTokenStamp,
-} from "../service/antworten";
+} from '../service/antworten';
 
-import validator from "../service/validate";
+import validator from '../service/validate';
 
 export interface antwortenDto {
   ids: number[];
@@ -44,18 +45,18 @@ export interface antwortenDto {
   group?: boolean;
 }
 
-@Route("antworten")
+@Route('antworten')
 export class AntwortenController extends Controller {
   @Get()
   public async getAntbyAufgaben(
-    @Query("sid") sid?: number,
-    @Query("aid") aid?: number
+    @Query('sid') sid?: number,
+    @Query('aid') aid?: number
   ): Promise<AntwortenFromAufgabe[]> {
     // TODO Optimize Request for aufgabe
     return antwortenService.getAntFromAufgabe(sid, aid);
   }
 
-  @Post("/tags")
+  @Post('/tags')
   public async getAntByTags(
     @Body() antwortenDto: antwortenDto
   ): Promise<AntwortTokenStamp[]> {
@@ -66,24 +67,32 @@ export class AntwortenController extends Controller {
     );
   }
 
-  @Get("/saetze")
+  @Get('/saetze')
   public async getSatz(
-    @Query("q") query: string
+    @Query('q') query: string
   ): Promise<ISelectSatzResult[]> {
     return antwortenService.getAntSatz(`%${query}%`);
   }
 
-  @Get("/token")
+  @Get('/token')
   public async getMatchingTokens(
-    @Query("o") ortho?: string,
-    @Query("p") phon?: string,
-    @Query("l") lemma?: string
+    @Query('o') ortho?: string,
+    @Query('p') phon?: string,
+    @Query('l') lemma?: string
   ): Promise<ISelectMatchingTokensResult[]> {
     return antwortenService.getMatchingTokens(ortho, phon, lemma);
   }
 
-  @Get("/arten")
+  @Get('/arten')
   public async getErhebungsArten(): Promise<ISelectErhebungsartenResult[]> {
     return antwortenService.getErhebungsarten();
+  }
+
+  @Get('/inferh')
+  public async getInfErhebungen(
+    @Query('erh') erhId: number,
+    @Query('osm') osm: number
+  ): Promise<ISelectInfErhebungenResult[]> {
+    return antwortenService.getInfErhebungen(osm, erhId);
   }
 }

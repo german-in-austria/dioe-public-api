@@ -1,9 +1,9 @@
-import antwortenDao from "../dao/antworten";
-import _, { filter } from "lodash";
+import antwortenDao from '../dao/antworten';
+import _, { filter } from 'lodash';
 
-import { ISelectOrtTagsResult } from "src/dao/tag.queries";
+import { ISelectOrtTagsResult } from 'src/dao/tag.queries';
 
-import validator, { filters, tag } from "../service/validate";
+import validator, { filters, tag } from '../service/validate';
 
 import {
   ISelectSatzResult,
@@ -13,7 +13,8 @@ import {
   ISelectErhebungsartenResult,
   ICheckIfTransResult,
   IGetTimeStampAntwortResult,
-} from "../dao/antworten.queries";
+  ISelectInfErhebungenResult,
+} from '../dao/antworten.queries';
 
 export interface Antwort {
   start: any;
@@ -304,29 +305,35 @@ export default {
     if (ortho && ortho.length > 0) {
       ortho = `%${ortho}%`;
     } else {
-      ortho = "";
+      ortho = '';
     }
     if (phon && phon.length > 0) {
       phon = `%${phon}%`;
     } else {
-      phon = "";
+      phon = '';
     }
     if (lemma && lemma.length > 0) {
       lemma = `%${lemma}%`;
     } else {
-      lemma = "";
+      lemma = '';
     }
     let results = await antwortenDao.selectMatchingTokens(ortho, phon, lemma);
     // Extract unique results from results
     results = [
       ...new Map(
         results.map((v) => [
-          JSON.stringify([v["ortho"], v["textInOrtho"], v["splemma"]]),
+          JSON.stringify([v['ortho'], v['textInOrtho'], v['splemma']]),
           v,
         ])
       ).values(),
     ];
     return results;
+  },
+  async getInfErhebungen(
+    osmId: number,
+    erhId: number
+  ): Promise<ISelectInfErhebungenResult[]> {
+    return await antwortenDao.getErhebungsart(osmId.toString(), erhId);
   },
   mergeTagNum(
     antworten: Array<{ tagId: number; osmid: string }>,

@@ -275,6 +275,21 @@ const models: TsoaRoute.Models = {
         "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ISelectInfErhebungenResult": {
+        "dataType": "refObject",
+        "properties": {
+            "audiofile": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "besonderheiten": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "dateipfad": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "datum": {"dataType":"datetime","required":true},
+            "idErhId": {"dataType":"double","required":true},
+            "idTranscriptId": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
+            "kommentar": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "osmId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ISelectAllAufgabenResult": {
         "dataType": "refObject",
         "properties": {
@@ -840,6 +855,32 @@ export function RegisterRoutes(app: express.Router) {
 
 
               const promise = controller.getErhebungsArten.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/api/antworten/inferh',
+            ...(fetchMiddlewares<RequestHandler>(AntwortenController)),
+            ...(fetchMiddlewares<RequestHandler>(AntwortenController.prototype.getInfErhebungen)),
+
+            function AntwortenController_getInfErhebungen(request: any, response: any, next: any) {
+            const args = {
+                    erhId: {"in":"query","name":"erh","required":true,"dataType":"double"},
+                    osm: {"in":"query","name":"osm","required":true,"dataType":"double"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new AntwortenController();
+
+
+              const promise = controller.getInfErhebungen.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

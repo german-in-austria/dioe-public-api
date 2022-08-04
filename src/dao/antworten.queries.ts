@@ -260,3 +260,27 @@ export interface ISelectErhebungsartenQuery {
   result: ISelectErhebungsartenResult;
 }
 
+/** 'SelectInfErhebungen' parameters type */
+export interface ISelectInfErhebungenParams {
+  erhId: number | null | void;
+  osmId: string | null | void;
+}
+
+/** 'SelectInfErhebungen' return type */
+export interface ISelectInfErhebungenResult {
+  audiofile: string | null;
+  besonderheiten: string | null;
+  dateipfad: string | null;
+  datum: Date;
+  idErhId: number;
+  idTranscriptId: number | null;
+  kommentar: string | null;
+  osmId: string | null;
+}
+
+/** 'SelectInfErhebungen' query type */
+export interface ISelectInfErhebungenQuery {
+  params: ISelectInfErhebungenParams;
+  result: ISelectInfErhebungenResult;
+}
+

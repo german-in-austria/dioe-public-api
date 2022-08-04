@@ -1,5 +1,5 @@
-import { sql } from "@pgtyped/query";
-import query from "./connect/pg";
+import { sql } from '@pgtyped/query';
+import query from './connect/pg';
 
 import {
   ISelectAntwortenParams,
@@ -22,7 +22,8 @@ import {
   ISelectErhebungsartenQuery,
   IGetTimeStampAntwortQuery,
   IGetTimeStampAntwortParams,
-} from "src/dao/antworten.queries";
+  ISelectInfErhebungenQuery,
+} from 'src/dao/antworten.queries';
 
 const antwortenDao = {
   async selectAntwortenAudio(
@@ -600,6 +601,18 @@ const antwortenDao = {
   async selectErhebungsarten() {
     const selectErhebungsarten = sql<ISelectErhebungsartenQuery>`select kdte.id, kdte."Bezeichnung" from "KorpusDB_tbl_erhebungsarten" kdte;`;
     return await query(selectErhebungsarten);
+  },
+  async getErhebungsart(osm_id: string, erhId: number) {
+    const selectInfErhebungen = sql<ISelectInfErhebungenQuery>`select distinct kdti."Datum", kdti."Kommentar", kdti."Dateipfad", kdti."Audiofile", kdti."Besonderheiten", kdti."ID_Erh_id", kdti."id_Transcript_id", odto.osm_id  from "KorpusDB_tbl_inferhebung" kdti 
+    join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize.id_inferhebung_id = kdti.id
+    join "PersonenDB_tbl_informanten" pdti on pdti.id = kdtize."ID_Inf_id" 
+    join "OrteDB_tbl_orte" odto ON odto.id = pdti.inf_ort_id 
+    where kdti."ID_Erh_id" = $erhId and odto.osm_id = $osmId;`;
+
+    return await query(selectInfErhebungen, {
+      erhId,
+      osmId: osm_id,
+    });
   },
 };
 
