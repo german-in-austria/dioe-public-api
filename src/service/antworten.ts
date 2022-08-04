@@ -68,6 +68,7 @@ export default {
     );
     let resTrans: ISelectAntwortenTransResult[] = [];
     if (transCheck.length > 0) {
+      console.log('tags');
       resTrans = await antwortenDao.selectAntwortenTrans(
         transCheck.map((el) => el.id),
         osmId.toString(),
@@ -80,8 +81,11 @@ export default {
         filters.group ? transCheck.map((el) => el.id).length : 0
       );
     }
+    const end = Date.now() - start;
+    console.log(`Execution time: ${end} ms`);
     let resAntAuf: IGetTimeStampAntwortResult[] = [];
     if (transCheck.length - tagIDs.length != 0) {
+      console.log('timestamp');
       resAntAuf = await antwortenDao.getTimeStampAntwort(
         tagIDs,
         osmId.toString(),
