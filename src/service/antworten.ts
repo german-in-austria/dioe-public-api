@@ -68,7 +68,6 @@ export default {
     );
     let resTrans: ISelectAntwortenTransResult[] = [];
     if (transCheck.length > 0) {
-      console.log('tags');
       resTrans = await antwortenDao.selectAntwortenTrans(
         transCheck.map((el) => el.id),
         osmId.toString(),
@@ -78,6 +77,8 @@ export default {
         filters.beruf_id,
         filters.weiblich,
         filters.gender_sel,
+        filters.text,
+        filters.ortho,
         filters.group ? transCheck.map((el) => el.id).length : 0
       );
     }

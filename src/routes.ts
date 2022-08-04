@@ -241,6 +241,8 @@ const models: TsoaRoute.Models = {
             "beruf_id": {"dataType":"double"},
             "weiblich": {"dataType":"boolean"},
             "group": {"dataType":"boolean"},
+            "text": {"dataType":"array","array":{"dataType":"string"}},
+            "ortho": {"dataType":"array","array":{"dataType":"string"}},
         },
         "additionalProperties": true,
     },

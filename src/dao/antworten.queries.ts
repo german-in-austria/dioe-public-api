@@ -170,9 +170,11 @@ export interface ISelectAntwortenTransParams {
   beruf: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
+  orthoTag: string | null | void;
   osmId: string | null | void;
   tagGroupLength: string | null | void;
   tagID: readonly (number | null | void)[];
+  textTag: string | null | void;
 }
 
 /** 'SelectAntwortenTrans' return type */

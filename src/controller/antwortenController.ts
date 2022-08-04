@@ -43,6 +43,8 @@ export interface antwortenDto {
   beruf_id?: number;
   weiblich?: boolean;
   group?: boolean;
+  text?: Array<String>;
+  ortho?: Array<String>;
 }
 
 @Route('antworten')

@@ -637,6 +637,18 @@
 					},
 					"group": {
 						"type": "boolean"
+					},
+					"text": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"ortho": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
 					}
 				},
 				"required": [

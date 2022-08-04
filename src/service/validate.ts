@@ -28,6 +28,8 @@ export interface filters extends ageBound {
   weiblich: boolean;
   gender_sel: number;
   group: boolean;
+  text: string;
+  ortho: string;
 }
 
 export default {
@@ -79,10 +81,25 @@ export default {
     const aus = this.validateAusbildung(ant.ausbildung ? ant.ausbildung : '');
     const beruf = this.validateBeruf(ant.beruf_id ? ant.beruf_id : -1);
     let gender_sel = 0;
+    let text = '';
+    let ortho = '';
     if (ant.weiblich == undefined) {
       gender_sel = -1;
       ant.weiblich = false;
     }
+
+    if (ant.text === undefined || !ant.text || ant.text.length === 0) {
+      text = '';
+    } else {
+      text = this.transformToken(ant.text as string[]);
+    }
+
+    if (ant.ortho === undefined || !ant.ortho || ant.ortho.length === 0) {
+      ortho = '';
+    } else {
+      ortho = this.transformToken(ant.ortho as string[]);
+    }
+
     return {
       ausbildung: aus,
       beruf_id: beruf,
@@ -91,6 +108,8 @@ export default {
       ageLower: ageBound.ageLower,
       ageUpper: ageBound.ageUpper,
       group: ant.group === undefined ? false : ant.group,
+      text: text,
+      ortho: ortho,
     } as filters;
   },
   validateAusbildung(str: string): string {

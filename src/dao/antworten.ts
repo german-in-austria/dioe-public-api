@@ -441,6 +441,8 @@ const antwortenDao = {
     beruf: number,
     gender: boolean,
     gender_sel: number,
+    textTag: string,
+    orthoTag: string,
     tagGroupLength: number
   ) {
     const selectAntwortenTrans = sql<
@@ -461,7 +463,9 @@ const antwortenDao = {
 		    join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
 		      where (kdta.ist_token_id is not null or kdta.ist_tokenset_id is not null) and 
 		        kdtt.id in $$tagID) tags
-    join token t on t.id = tags.ist_token_id
+    join token t on t.id = tags.ist_token_id 
+      and ($textTag = '' OR t.text SIMILAR TO $textTag)
+      and ($orthoTag = '' OR t.text SIMILAR TO $orthoTag)
     join event e on t.event_id_id = e.id 
     join transcript t3 on t3.id = t.transcript_id_id
     join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
@@ -504,7 +508,9 @@ const antwortenDao = {
                 kdtt.id in $$tagID) tags
       join tokenset t4 on t4.id = tags.ist_tokenset_id
         join tokentoset t2 on t2.id_tokenset_id = t4.id
-        join token t on t.id = t2.id_token_id
+        join token t on t.id = t2.id_token_id 
+          and ($textTag = '' OR t.text SIMILAR TO $textTag)
+          and ($orthoTag = '' OR t.text SIMILAR TO $orthoTag)
         join event e on t.event_id_id = e.id 
         join transcript t3 on t3.id = t.transcript_id_id
         join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
@@ -539,6 +545,8 @@ const antwortenDao = {
       gender: gender,
       aus: aus,
       gender_sel: gender_sel,
+      textTag: textTag,
+      orthoTag: orthoTag,
       tagGroupLength: String(tagGroupLength),
     });
   },
