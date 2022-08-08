@@ -150,6 +150,7 @@ export interface ISelectOrtTagGroupParams {
   aus: string | null | void;
   beruf: number | null | void;
   erhArt: readonly (number | null | void)[];
+  firstTag: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
   project_id: number | null | void;

@@ -247,7 +247,7 @@ const tagDao = {
       ISelectOrtTagGroupParams & ISelectOrtTagGroupQuery
     >`
       SELECT
-        count(*) AS num_tag,
+        count(1) AS num_tag,
         kdtt. "Tag" AS tag_name,
         kdtt. "Tag_lang" AS tag_lang,
         kdtt.id as tag_id,
@@ -264,7 +264,7 @@ const tagDao = {
         JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
       WHERE
-        ($$tagId < 0 OR kdtt.id IN $$tagId) and odto.osm_id in (
+        ($firstTag < 0 OR kdtt.id IN $$tagId) and odto.osm_id in (
 	        select osm_id from "OrteDB_tbl_orte" odto 
 	        	join "KorpusDB_tbl_inferhebung" kdti on kdti."Ort_id" = odto.id 
 	        	join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
@@ -293,6 +293,7 @@ const tagDao = {
       num_tag DESC;
     `;
     return await query(selectOrtTagGroup, {
+      firstTag: tagId[0],
       tagId: tagId,
       beruf: beruf,
       gender: gender,
