@@ -122,6 +122,7 @@ export interface IGetTimeStampAntwortResult {
   stopAntwort: string | null;
   tagId: number | null;
   tagName: string | null;
+  tagShort: string | null;
   teamBez: string | null;
 }
 
@@ -187,6 +188,7 @@ export interface ISelectAntwortenTransResult {
   startAntwort: string | null;
   stopAntwort: string | null;
   tagName: string | null;
+  tagShort: string | null;
   teamBez: string | null;
 }
 

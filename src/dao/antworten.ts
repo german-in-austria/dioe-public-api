@@ -220,6 +220,7 @@ const antwortenDao = {
           kdtt.id as tag_id, 
           odto.osm_id as osmId, 
           kdtt."Tag_lang" as tag_name,
+          kdtt."Tag" as tag_short,
           pdtig.gruppe_bez, pdtt.team_bez,
           kdti."ID_Erh_id"
        	from "KorpusDB_tbl_tags" kdtt       
@@ -254,6 +255,7 @@ const antwortenDao = {
           kdtt.id as tag_id, 
           odto.osm_id as osmId, 
           kdtt."Tag_lang" as tag_name,
+          kdtt."Tag" as tag_short,
           pdtig.gruppe_bez, pdtt.team_bez,
           kdti."ID_Erh_id"
         from "KorpusDB_tbl_tags" kdtt      
@@ -303,6 +305,7 @@ const antwortenDao = {
           kdtt.id, 
           odto.osm_id, 
           kdtt."Tag_lang",
+          kdtt."Tag",
           pdtig.gruppe_bez, pdtt.team_bez
           having count(pdti.id) > 2 and count(kdti."ID_Erh_id") > 2  
         UNION
@@ -314,6 +317,7 @@ const antwortenDao = {
             kdtt.id as tag_id, 
             odto.osm_id as osmId, 
             kdtt."Tag_lang" as tag_name,
+            kdtt."Tag" as tag_short,
             pdtig.gruppe_bez, pdtt.team_bez,
             kdti."ID_Erh_id"
         from "KorpusDB_tbl_tags" kdtt      
@@ -361,6 +365,7 @@ const antwortenDao = {
           kdtt.id, 
           odto.osm_id, 
           kdtt."Tag_lang",
+          kdtt."Tag",
           pdtig.gruppe_bez, pdtt.team_bez
           having count(pdti.id) > 2 and count(kdti."ID_Erh_id") > 2      
     `;
@@ -451,13 +456,14 @@ const antwortenDao = {
     select e.start_time as "start_Antwort", 
           e.end_time as "stop_Antwort",
           tags."Tag_lang" as tag_name,
+          tags."Tag" as tag_short,
           t.ortho as "ortho", 
           kdti."Dateipfad" as dateipfad, 
           kdti."Audiofile" as "audiofile",
           t.text_in_ortho as "ortho_text",
           pdtig.gruppe_bez, pdtt.team_bez
     from (
-    	select kdtt."Tag_lang", kdta.ist_token_id, kdta.ist_tokenset_id, kdta2."id_Antwort_id"
+    	select kdtt."Tag_lang", kdtt."Tag", kdta.ist_token_id, kdta.ist_tokenset_id, kdta2."id_Antwort_id"
 		    from "KorpusDB_tbl_tags" kdtt      
 		    join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
 		    join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
@@ -494,13 +500,14 @@ const antwortenDao = {
         select e.start_time as "start_Antwort", 
         e.end_time as "stop_Antwort",
         tags."Tag_lang" as tag_name,
+        tags."Tag" as tag_short,
         t.ortho as "ortho", 
         kdti."Dateipfad" as dateipfad, 
         kdti."Audiofile" as "audiofile",
         t.text_in_ortho as "ortho_text",
         pdtig.gruppe_bez, pdtt.team_bez
         from (
-          select kdtt."Tag_lang", kdta.ist_tokenset_id, kdta2."id_Antwort_id"
+          select kdtt."Tag_lang", kdtt."Tag", kdta.ist_tokenset_id, kdta2."id_Antwort_id"
             from "KorpusDB_tbl_tags" kdtt      
             join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
             join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id

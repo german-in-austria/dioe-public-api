@@ -454,13 +454,18 @@
 					"tagName": {
 						"type": "string",
 						"nullable": true
+					},
+					"tagShort": {
+						"type": "string",
+						"nullable": true
 					}
 				},
 				"required": [
 					"start",
 					"stop",
 					"tagId",
-					"tagName"
+					"tagName",
+					"tagShort"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -542,6 +547,10 @@
 						"type": "string",
 						"nullable": true
 					},
+					"tagShort": {
+						"type": "string",
+						"nullable": true
+					},
 					"ortho": {
 						"type": "string",
 						"nullable": true
@@ -556,6 +565,7 @@
 					"stop",
 					"tagId",
 					"tagName",
+					"tagShort",
 					"ortho",
 					"orthoText"
 				],
