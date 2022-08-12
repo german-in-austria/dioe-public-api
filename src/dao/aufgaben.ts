@@ -37,8 +37,8 @@ const aufgabenDao = {
     const selectAufgabenFromSet = sql<
       ISelectAufgabenFromSetParams & ISelectAufgabenFromSetQuery
     >`
-      select kdta.id, kdta."Variante", kdta."Beschreibung_Aufgabe", kdta."Beschreibung_Aufgabe", kdta."Aufgabenstellung",
-      kdta2."Kuerzel", kdta2."Name_Aset", kdta2.id ,kdtp."Bez_Phaenomen", kdtp.id 
+      select kdta.id, kdta."Variante", kdta."Beschreibung_Aufgabe", kdta."Aufgabenstellung",
+      kdta2."Kuerzel", kdta2."Name_Aset", kdta2.id as "set_id" ,kdtp."Bez_Phaenomen", kdtp.id as "phaen_id"
       from "KorpusDB_tbl_aufgaben" kdta 
       join "KorpusDB_tbl_aufgabensets" kdta2 ON kdta."von_ASet_id" = kdta2.id 
       join "KorpusDB_tbl_phaenomene" kdtp on kdta2."zu_Phaenomen_id" = kdtp.id
@@ -48,13 +48,13 @@ const aufgabenDao = {
   },
   async getAllAufgaben() {
     const selectAllAufgaben = sql<ISelectAllAufgabenQuery>`
-    select kdta.id as "Auf_id",
-    kdta."Beschreibung_Aufgabe" as "Beschreibung",
-    kdta."Aufgabenstellung",
-    kdta."Kontext",
-    kdta3."Bezeichnung" as "Art_Bezeichnung",
-    kdta2."Name_Aset" as "Aset_Name",
-    kdta2."Fokus" as "Aset_Fokus"
+    select kdta.id as "auf_id",
+    kdta."Beschreibung_Aufgabe" as "beschreibung",
+    kdta."Aufgabenstellung" as "aufgabenstellung",
+    kdta."Kontext" as "kontext",
+    kdta3."Bezeichnung" as "art_bezeichnung",
+    kdta2."Name_Aset" as "aset_name",
+    kdta2."Fokus" as "aset_fokus"
     from "KorpusDB_tbl_aufgaben" kdta 
     LEFT join "KorpusDB_tbl_aufgabensets" kdta2 on kdta2.id = kdta."von_ASet_id" 
     LEFT join "KorpusDB_tbl_aufgabenarten" kdta3 on kdta3.id = kdta."Aufgabenart_id" 

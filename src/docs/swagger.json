@@ -992,6 +992,14 @@
 						"type": "string",
 						"nullable": true
 					},
+					"phaenId": {
+						"type": "number",
+						"format": "double"
+					},
+					"setId": {
+						"type": "number",
+						"format": "double"
+					},
 					"variante": {
 						"type": "number",
 						"format": "double"
@@ -1004,6 +1012,8 @@
 					"id",
 					"kuerzel",
 					"nameAset",
+					"phaenId",
+					"setId",
 					"variante"
 				],
 				"type": "object",

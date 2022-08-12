@@ -47,13 +47,12 @@ export interface ISelectAufgabenFromSetParams {
 export interface ISelectAufgabenFromSetResult {
   aufgabenstellung: string | null;
   beschreibungAufgabe: string | null;
-  beschreibungAufgabe: string | null;
   bezPhaenomen: string;
-  id: number;
-  id: number;
   id: number;
   kuerzel: string;
   nameAset: string | null;
+  phaenId: number;
+  setId: number;
   variante: number;
 }
 

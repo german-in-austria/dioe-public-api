@@ -370,6 +370,8 @@ const models: TsoaRoute.Models = {
             "id": {"dataType":"double","required":true},
             "kuerzel": {"dataType":"string","required":true},
             "nameAset": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "phaenId": {"dataType":"double","required":true},
+            "setId": {"dataType":"double","required":true},
             "variante": {"dataType":"double","required":true},
         },
         "additionalProperties": true,
