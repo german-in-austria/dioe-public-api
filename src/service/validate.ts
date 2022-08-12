@@ -143,6 +143,16 @@ export default {
     const sAnt = currAnt.start;
     const eAnt = currAnt.stop;
 
+    if (
+      sStamp.hours &&
+      sAnt.hours &&
+      eStamp.hours &&
+      eAnt.hours &&
+      (sStamp.hours !== sAnt.hours || eStamp.hours !== eAnt.hours)
+    ) {
+      return false;
+    }
+
     return (
       sStamp.minutes === sAnt.minutes &&
       sStamp.seconds === sAnt.seconds &&
