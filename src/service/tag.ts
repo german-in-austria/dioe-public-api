@@ -52,6 +52,18 @@ export default {
   },
   async getTagOrte(tag: tag): Promise<ISelectOrtTagsResult[]> {
     if (tag.text.length > 0 || tag.ortho.length > 0) {
+      if (tag.ids[0] == -1) {
+        return tagDao.getOrtToken(
+          tag.erhArt,
+          tag.ausbildung,
+          tag.beruf_id,
+          tag.weiblich,
+          tag.gender_sel,
+          tag.project_id,
+          tag.text,
+          tag.ortho
+        ) as unknown as ISelectOrtTagsResult[];
+      }
       return tagDao.getOrtTagToken(
         tag.ids,
         tag.erhArt,

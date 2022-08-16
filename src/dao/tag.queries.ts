@@ -116,6 +116,33 @@ export interface ISelectOrtTokenQuery {
   result: ISelectOrtTokenResult;
 }
 
+/** 'SelectOrtTokenSingle' parameters type */
+export interface ISelectOrtTokenSingleParams {
+  aus: string | null | void;
+  beruf: number | null | void;
+  erhArt: readonly (number | null | void)[];
+  gender: boolean | null | void;
+  gender_sel: number | null | void;
+  project_id: number | null | void;
+  textOrtho: string | null | void;
+  textTag: string | null | void;
+}
+
+/** 'SelectOrtTokenSingle' return type */
+export interface ISelectOrtTokenSingleResult {
+  lat: string | null;
+  lon: string | null;
+  numTag: string | null;
+  ortNamelang: string;
+  osmId: string | null;
+}
+
+/** 'SelectOrtTokenSingle' query type */
+export interface ISelectOrtTokenSingleQuery {
+  params: ISelectOrtTokenSingleParams;
+  result: ISelectOrtTokenSingleResult;
+}
+
 /** 'SelectOrtTags' parameters type */
 export interface ISelectOrtTagsParams {
   aus: string | null | void;

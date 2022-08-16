@@ -45,6 +45,7 @@ export interface antwortenDto {
   group?: boolean;
   text?: Array<String>;
   ortho?: Array<String>;
+  textInOrtho?: Array<String>;
 }
 
 @Route('antworten')

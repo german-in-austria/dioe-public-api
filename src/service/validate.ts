@@ -30,6 +30,7 @@ export interface filters extends ageBound {
   group: boolean;
   text: string;
   ortho: string;
+  textInOrtho: string;
 }
 
 export default {
@@ -83,6 +84,7 @@ export default {
     let gender_sel = 0;
     let text = '';
     let ortho = '';
+    let textInOrtho = '';
     if (ant.weiblich == undefined) {
       gender_sel = -1;
       ant.weiblich = false;
@@ -92,12 +94,30 @@ export default {
       text = '';
     } else {
       text = this.transformToken(ant.text as string[]);
+      ortho = textInOrtho = text;
     }
 
-    if (ant.ortho === undefined || !ant.ortho || ant.ortho.length === 0) {
-      ortho = '';
-    } else {
+    if (!(ant.ortho === undefined || !ant.ortho || ant.ortho.length === 0)) {
       ortho = this.transformToken(ant.ortho as string[]);
+      if (ortho === '') {
+        text = ortho;
+      }
+    }
+
+    if (
+      !(
+        ant.textInOrtho === undefined ||
+        !ant.textInOrtho ||
+        ant.textInOrtho.length === 0
+      )
+    ) {
+      textInOrtho = this.transformToken(ant.textInOrtho as string[]);
+      if (text === '') {
+        text = textInOrtho;
+      }
+      if (ortho === '') {
+        ortho = textInOrtho;
+      }
     }
 
     return {
@@ -110,6 +130,7 @@ export default {
       group: ant.group === undefined ? false : ant.group,
       text: text,
       ortho: ortho,
+      textInOrtho: textInOrtho,
     } as filters;
   },
   validateAusbildung(str: string): string {

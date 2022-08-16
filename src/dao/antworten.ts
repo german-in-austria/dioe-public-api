@@ -23,6 +23,8 @@ import {
   IGetTimeStampAntwortQuery,
   IGetTimeStampAntwortParams,
   ISelectInfErhebungenQuery,
+  ISelectAntwortenTokenParams,
+  ISelectAntwortenTokenQuery,
 } from 'src/dao/antworten.queries';
 
 const antwortenDao = {
@@ -444,6 +446,99 @@ const antwortenDao = {
       gender_sel: gender_sel,
     });
   },
+  async selectAntwortenToken(
+    osmId: string,
+    ageLower: number,
+    ageUpper: number,
+    aus: string,
+    beruf: number,
+    gender: boolean,
+    gender_sel: number,
+    textTag: string,
+    textOrtho: string,
+    textInOrtho: string
+  ) {
+    const selectAntwortenToken = sql<
+      ISelectAntwortenTokenParams & ISelectAntwortenTokenQuery
+    >`
+        select e.start_time as "start_Antwort", 
+          e.end_time as "stop_Antwort",
+          t.text as "text",
+          t.ortho as "ortho",
+          DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age, 
+          kdti."Dateipfad" as dateipfad, 
+          kdti."Audiofile" as "audiofile",
+          t.text_in_ortho as "ortho_text",
+          pdtig.gruppe_bez, pdtt.team_bez,
+          odto.osm_id
+    from token t
+	    join event e on t.event_id_id = e.id 
+	    join transcript t3 on t3.id = t.transcript_id_id
+	    join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
+	    join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
+	    join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
+	    join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
+	    join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
+	    left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
+	    join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+      where odto.osm_id  = $osmId
+      and (t.text SIMILAR TO $textTag or t.ortho SIMILAR TO $textOrtho or t.text_in_ortho SIMILAR TO $textInOrtho)
+      and kdti."Dateipfad" not in ('', '0') 
+        and kdti."Audiofile" not in ('', '0')
+        and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+        and ($ageUpper < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+        and ($aus = '' OR pdti.ausbildung_max = $aus)
+        and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+        and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+     union 
+        select e.start_time as "start_Antwort", 
+        e.end_time as "stop_Antwort",
+        t.ortho as "ortho",
+        t.text as "text",
+        DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
+        kdti."Dateipfad" as dateipfad, 
+        kdti."Audiofile" as "audiofile",
+        t.text_in_ortho as "ortho_text",
+        pdtig.gruppe_bez, pdtt.team_bez,
+        odto.osm_id
+        from tokenset t4
+        join tokentoset t2 on t2.id_tokenset_id = t4.id
+        join token t on t.id = t2.id_token_id 
+        join event e on t.event_id_id = e.id 
+        join transcript t3 on t3.id = t.transcript_id_id
+        join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
+        join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
+        join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
+        join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
+        join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
+        left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
+        join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+      where odto.osm_id  = $osmId
+        and kdti."Dateipfad" not in ('', '0') 
+        and kdti."Audiofile" not in ('', '0')
+        and (t.text SIMILAR TO $textTag or t.ortho SIMILAR TO $textOrtho or t.text_in_ortho SIMILAR TO $textInOrtho)
+        and kdti."Dateipfad" not in ('', '0') 
+        and kdti."Audiofile" not in ('', '0')
+        and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+        and ($ageUpper < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+        and ($aus = '' OR pdti.ausbildung_max = $aus)
+        and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+        and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+    `;
+
+    return await query(selectAntwortenToken, {
+      osmId: osmId,
+      ageLower: ageLower,
+      ageUpper: ageUpper,
+      beruf: beruf,
+      gender: gender,
+      aus: aus,
+      gender_sel: gender_sel,
+      textTag: textTag,
+      textOrtho: textOrtho,
+      textInOrtho: textInOrtho,
+    });
+  },
   async selectAntwortenTrans(
     tagID: number[],
     osmId: string,
@@ -522,7 +617,7 @@ const antwortenDao = {
             join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
               where kdta.ist_tokenset_id is not null and 
                 kdtt.id in $$tagID) tags
-      join tokenset t4 on t4.id = tags.ist_tokenset_id
+        join tokenset t4 on t4.id = tags.ist_tokenset_id
         join tokentoset t2 on t2.id_tokenset_id = t4.id
         join token t on t.id = t2.id_token_id 
           and ($textTag = '' OR t.text SIMILAR TO $textTag)
@@ -536,7 +631,7 @@ const antwortenDao = {
         join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
         left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
-    where odto.osm_id  = $osmId
+      where odto.osm_id  = $osmId
         and kdti."Dateipfad" not in ('', '0') 
         and kdti."Audiofile" not in ('', '0')
         and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)

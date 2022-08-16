@@ -164,6 +164,41 @@ export interface IGetStampsFromAntwortQuery {
   result: IGetStampsFromAntwortResult;
 }
 
+/** 'SelectAntwortenToken' parameters type */
+export interface ISelectAntwortenTokenParams {
+  ageLower: number | null | void;
+  ageUpper: number | null | void;
+  aus: string | null | void;
+  beruf: number | null | void;
+  gender: boolean | null | void;
+  gender_sel: number | null | void;
+  osmId: string | null | void;
+  textInOrtho: string | null | void;
+  textOrtho: string | null | void;
+  textTag: string | null | void;
+}
+
+/** 'SelectAntwortenToken' return type */
+export interface ISelectAntwortenTokenResult {
+  age: number | null;
+  audiofile: string | null;
+  dateipfad: string | null;
+  gruppeBez: string | null;
+  ortho: string | null;
+  orthoText: string | null;
+  osmId: string | null;
+  startAntwort: string | null;
+  stopAntwort: string | null;
+  teamBez: string | null;
+  text: string | null;
+}
+
+/** 'SelectAntwortenToken' query type */
+export interface ISelectAntwortenTokenQuery {
+  params: ISelectAntwortenTokenParams;
+  result: ISelectAntwortenTokenResult;
+}
+
 /** 'SelectAntwortenTrans' parameters type */
 export interface ISelectAntwortenTransParams {
   ageLower: number | null | void;

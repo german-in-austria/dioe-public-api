@@ -65,13 +65,10 @@ export default {
     filters: filters
   ): Promise<AntwortTokenStamp[]> {
     const start = Date.now();
-    const transCheck: ICheckIfTransResult[] = await antwortenDao.checkIfTrans(
-      tagIDs
-    );
-    let resTrans: ISelectAntwortenTransResult[] = [];
-    if (transCheck.length > 0) {
-      resTrans = await antwortenDao.selectAntwortenTrans(
-        transCheck.map((el) => el.id),
+    let mergeArr: any = [];
+    console.log(filters);
+    if (tagIDs.length < 0 || tagIDs[0] < 0) {
+      const resTrans = await antwortenDao.selectAntwortenToken(
         osmId.toString(),
         filters.ageLower,
         filters.ageUpper,
@@ -81,24 +78,47 @@ export default {
         filters.gender_sel,
         filters.text,
         filters.ortho,
-        filters.group ? transCheck.map((el) => el.id).length : 0
+        filters.textInOrtho
       );
-    }
-    const end = Date.now() - start;
-    console.log(`Execution time: ${end} ms`);
-    let resAntAuf: IGetTimeStampAntwortResult[] = [];
-    if (transCheck.length - tagIDs.length != 0) {
-      resAntAuf = await antwortenDao.getTimeStampAntwort(
-        tagIDs,
-        osmId.toString(),
-        filters.ageLower,
-        filters.ageUpper,
-        filters.ausbildung,
-        filters.beruf_id,
-        filters.weiblich,
-        filters.gender_sel,
-        filters.group ? tagIDs.length : 0
+      mergeArr = resTrans;
+    } else {
+      const transCheck: ICheckIfTransResult[] = await antwortenDao.checkIfTrans(
+        tagIDs
       );
+      let resTrans: ISelectAntwortenTransResult[] = [];
+      if (transCheck.length > 0) {
+        resTrans = await antwortenDao.selectAntwortenTrans(
+          transCheck.map((el) => el.id),
+          osmId.toString(),
+          filters.ageLower,
+          filters.ageUpper,
+          filters.ausbildung,
+          filters.beruf_id,
+          filters.weiblich,
+          filters.gender_sel,
+          filters.text,
+          filters.ortho,
+          filters.group ? transCheck.map((el) => el.id).length : 0
+        );
+      }
+      const end = Date.now() - start;
+      console.log(`Execution time: ${end} ms`);
+      let resAntAuf: IGetTimeStampAntwortResult[] = [];
+      if (transCheck.length - tagIDs.length != 0) {
+        resAntAuf = await antwortenDao.getTimeStampAntwort(
+          tagIDs,
+          osmId.toString(),
+          filters.ageLower,
+          filters.ageUpper,
+          filters.ausbildung,
+          filters.beruf_id,
+          filters.weiblich,
+          filters.gender_sel,
+          filters.group ? tagIDs.length : 0
+        );
+      }
+      mergeArr = resTrans;
+      mergeArr = mergeArr.concat(resAntAuf);
     }
     /*
     const aufgabeCheck: ICheckIfAufgabeResult[] =
@@ -167,8 +187,7 @@ export default {
     // const tagNum = await tagService.getTagOrte(tagIDs);
 
     // let mergeArr: Array<{ tagId: number; osmid: string }> = resTrans;
-    let mergeArr: any = resTrans;
-    mergeArr = mergeArr.concat(resAntAuf);
+
     /*
     mergeArr = [
       ...new Map(
@@ -182,15 +201,15 @@ export default {
     mergeArr.forEach((el: any) => {
       // const cont = el.content;
       let ant: Antwort | AntwortToken = {} as Antwort;
-      if (el.ortho) {
+      if (el.ortho || el.text || el.orthoText) {
         ant = {
           start: el.startAntwort,
           stop: el.stopAntwort,
           tagId: el.tagId,
           tagName: el.tagName,
-          ortho: el.ortho,
-          orthoText: el.orthoText,
           tagShort: el.tagShort,
+          ortho: el.text,
+          orthoText: el.orthoText,
         } as AntwortToken;
       } else {
         ant = {
@@ -242,8 +261,10 @@ export default {
                 (<AntwortToken>curr).ortho = `${currStr}, ${antStr}`;
                 (<AntwortToken>curr).orthoText = `${currStr}, ${antStr}`;
               }
-              curr.tagName = `${curr.tagName}, ${ant.tagName}`;
-              curr.tagShort = `${curr.tagShort}, ${ant.tagShort}`;
+              if (curr.tagName || curr.tagShort) {
+                curr.tagName = `${curr.tagName}, ${ant.tagName}`;
+                curr.tagShort = `${curr.tagShort}, ${ant.tagShort}`;
+              }
             }
           } else {
             // Is Antwort

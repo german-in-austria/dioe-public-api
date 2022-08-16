@@ -664,6 +664,12 @@
 							"type": "string"
 						},
 						"type": "array"
+					},
+					"textInOrtho": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
