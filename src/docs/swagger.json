@@ -590,6 +590,10 @@
 						"type": "string",
 						"nullable": true
 					},
+					"age": {
+						"type": "number",
+						"format": "double"
+					},
 					"data": {
 						"items": {
 							"anyOf": [
@@ -609,6 +613,7 @@
 					"audiofile",
 					"gruppeBez",
 					"teamBez",
+					"age",
 					"data"
 				],
 				"type": "object",

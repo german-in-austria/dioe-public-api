@@ -39,6 +39,7 @@ export interface AntwortTokenStamp {
   audiofile: string | null;
   gruppeBez: string | null;
   teamBez: string | null;
+  age: number;
   data: (Antwort | AntwortToken)[];
 }
 
@@ -205,6 +206,7 @@ export default {
         audiofile: el.audiofile,
         gruppeBez: el.gruppeBez,
         teamBez: el.teamBez,
+        age: el.age,
         data: [ant],
       };
       const dataIdx = antworten.findIndex(

@@ -113,6 +113,7 @@ export interface IGetTimeStampAntwortParams {
 
 /** 'GetTimeStampAntwort' return type */
 export interface IGetTimeStampAntwortResult {
+  age: number | null;
   audiofile: string | null;
   dateipfad: string | null;
   gruppeBez: string | null;
@@ -180,6 +181,7 @@ export interface ISelectAntwortenTransParams {
 
 /** 'SelectAntwortenTrans' return type */
 export interface ISelectAntwortenTransResult {
+  age: number | null;
   audiofile: string | null;
   dateipfad: string | null;
   gruppeBez: string | null;
