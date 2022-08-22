@@ -155,7 +155,7 @@ export default {
     } as ageBound;
   },
   transformToken(token: string[]) {
-    return `(${token.join('|')})%`;
+    return `(${token.join('|')}).*`;
   },
   compareTimeStamps(currStamp: Antwort, currAnt: Antwort): boolean {
     const sStamp = currStamp.start;
