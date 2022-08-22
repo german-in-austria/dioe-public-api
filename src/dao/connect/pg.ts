@@ -1,11 +1,11 @@
-import { TaggedQuery } from "@pgtyped/query";
-import pg, { Pool, types } from "pg";
-import pgCamelCase from "pg-camelcase";
+import { TaggedQuery } from '@pgtyped/query';
+import pg, { Pool, types } from 'pg';
+import pgCamelCase from 'pg-camelcase';
 
 // convert all column names to camel case
 pgCamelCase.inject(pg);
 // set type parser for numeric types since pg connect would parse numeric (float) as string
-types.setTypeParser(1700, "text", parseFloat);
+types.setTypeParser(1700, 'text', parseFloat);
 
 const slowDuration = process.env.PG_SLOW_DURATION || 250; // milliseconds
 console.log(`slow query duration: ${slowDuration}ms`);
@@ -20,7 +20,7 @@ const pool = new Pool({
 
 export default async function <T extends { params: any; result: any }>(
   q: TaggedQuery<T>,
-  params?: T["params"]
+  params?: T['params']
 ) {
   const start = Date.now();
   const response = q.run(params || void 0, pool);

@@ -53,6 +53,8 @@ export default {
   async getTagOrte(tag: tag): Promise<ISelectOrtTagsResult[]> {
     if (tag.text.length > 0 || tag.ortho.length > 0) {
       if (tag.ids[0] == -1) {
+        console.log('here');
+        console.log(tag);
         return tagDao.getOrtToken(
           tag.erhArt,
           tag.ausbildung,

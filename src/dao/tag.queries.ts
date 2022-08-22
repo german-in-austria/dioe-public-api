@@ -120,11 +120,9 @@ export interface ISelectOrtTokenQuery {
 export interface ISelectOrtTokenSingleParams {
   aus: string | null | void;
   beruf: number | null | void;
-  erhArt: readonly (number | null | void)[];
   gender: boolean | null | void;
   gender_sel: number | null | void;
   project_id: number | null | void;
-  textOrtho: string | null | void;
   textTag: string | null | void;
 }
 

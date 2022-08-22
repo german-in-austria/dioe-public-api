@@ -321,6 +321,9 @@
 							"type": "string"
 						},
 						"type": "array"
+					},
+					"case": {
+						"type": "boolean"
 					}
 				},
 				"required": [
