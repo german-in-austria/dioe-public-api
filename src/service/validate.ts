@@ -68,7 +68,7 @@ export default {
     if (tag.lemma === undefined || !tag.lemma || tag.lemma.length === 0) {
       lemma = '';
     } else {
-      lemma = `^${this.transformToken(tag.lemma as string[])}`;
+      lemma = `^${this.transformTextToMatch(tag.lemma as string[], false)}`;
     }
 
     if (tag.group === undefined) tag.group = false;
@@ -135,7 +135,7 @@ export default {
     if (ant.lemma === undefined || !ant.lemma || ant.lemma.length === 0) {
       lemma = '';
     } else {
-      lemma = `^${this.transformToken(ant.lemma as string[])}`;
+      lemma = `^${this.transformTextToMatch(ant.lemma as string[], false)}`;
     }
 
     return {
@@ -173,8 +173,11 @@ export default {
       ageUpper: up,
     } as ageBound;
   },
+  transformTextToMatch(token: string[], matchAll: boolean) {
+    return `(${token.join('|')})${matchAll ? '.*' : ''}`;
+  },
   transformToken(token: string[]) {
-    return `(${token.join('|')}).*`;
+    return this.transformTextToMatch(token, true);
   },
   compareTimeStamps(currStamp: Antwort, currAnt: Antwort): boolean {
     const sStamp = currStamp.start;
