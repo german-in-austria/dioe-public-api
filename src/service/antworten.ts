@@ -67,7 +67,6 @@ export default {
     const start = Date.now();
     let mergeArr: any = [];
     if (tagIDs.length === 0 || tagIDs[0] < 0) {
-      console.log(filters);
       const resTrans = await antwortenDao.selectAntwortenToken(
         osmId.toString(),
         filters.ageLower,
