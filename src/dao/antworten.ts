@@ -482,7 +482,7 @@ const antwortenDao = {
 	    left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
 	    join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
       where odto.osm_id  = $osmId
-      and (t.text SIMILAR TO $textTag or t.ortho SIMILAR TO $textOrtho or t.text_in_ortho SIMILAR TO $textInOrtho)
+      and (t.text ~* $textTag or t.ortho ~* $textOrtho or t.text_in_ortho ~* $textInOrtho)
       and kdti."Dateipfad" not in ('', '0') 
         and kdti."Audiofile" not in ('', '0')
         and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
@@ -516,7 +516,7 @@ const antwortenDao = {
       where odto.osm_id  = $osmId
         and kdti."Dateipfad" not in ('', '0') 
         and kdti."Audiofile" not in ('', '0')
-        and (t.text SIMILAR TO $textTag or t.ortho SIMILAR TO $textOrtho or t.text_in_ortho SIMILAR TO $textInOrtho)
+        and (t.text ~* $textTag or t.ortho ~* $textOrtho or t.text_in_ortho ~* $textInOrtho)
         and kdti."Dateipfad" not in ('', '0') 
         and kdti."Audiofile" not in ('', '0')
         and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
