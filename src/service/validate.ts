@@ -1,6 +1,6 @@
 import _, { String } from 'lodash';
 import { antwortenDto } from 'src/controller/antwortenController';
-import { tagDto } from 'src/controller/tagController';
+import { selectionObject, tagDto } from 'src/controller/tagController';
 import { Antwort } from './antworten';
 import { ausbildungGrad } from './social';
 
@@ -56,19 +56,19 @@ export default {
     if (tag.text === undefined || !tag.text || tag.text.length === 0) {
       tags = '';
     } else {
-      tags = this.transformToken(tag.text as string[]);
+      tags = this.transformToken(tag.text);
     }
 
     if (tag.ortho === undefined || !tag.ortho || tag.ortho.length === 0) {
       ortho = '';
     } else {
-      ortho = this.transformToken(tag.ortho as string[]);
+      ortho = this.transformToken(tag.ortho);
     }
 
     if (tag.lemma === undefined || !tag.lemma || tag.lemma.length === 0) {
       lemma = '';
     } else {
-      lemma = `^${this.transformTextToMatch(tag.lemma as string[], false)}`;
+      lemma = `^${this.transformTextToMatch(tag.lemma, false)}`;
     }
 
     if (tag.group === undefined) tag.group = false;
@@ -105,12 +105,12 @@ export default {
     if (ant.text === undefined || !ant.text || ant.text.length === 0) {
       text = '';
     } else {
-      text = this.transformToken(ant.text as string[]);
+      text = this.transformToken(ant.text);
       ortho = textInOrtho = text;
     }
 
     if (!(ant.ortho === undefined || !ant.ortho || ant.ortho.length === 0)) {
-      ortho = this.transformToken(ant.ortho as string[]);
+      ortho = this.transformToken(ant.ortho);
       if (ortho === '') {
         text = ortho;
       }
@@ -123,7 +123,7 @@ export default {
         ant.textInOrtho.length === 0
       )
     ) {
-      textInOrtho = this.transformToken(ant.textInOrtho as string[]);
+      textInOrtho = this.transformToken(ant.textInOrtho);
       if (text === '') {
         text = textInOrtho;
       }
@@ -135,7 +135,7 @@ export default {
     if (ant.lemma === undefined || !ant.lemma || ant.lemma.length === 0) {
       lemma = '';
     } else {
-      lemma = `^${this.transformTextToMatch(ant.lemma as string[], false)}`;
+      lemma = `^${this.transformTextToMatch(ant.lemma, false)}`;
     }
 
     return {
@@ -173,10 +173,13 @@ export default {
       ageUpper: up,
     } as ageBound;
   },
-  transformTextToMatch(token: string[], matchAll: boolean) {
-    return `(${token.join('|')})${matchAll ? '.*' : ''}`;
+  transformTextToMatch(token: selectionObject[], matchAll: boolean) {
+    const t: string[] = token.map(
+      (el: selectionObject) => `${el.state === 'nicht' ? '?!' : ''}${el.val}`
+    );
+    return `(${t.join('|')})${matchAll ? '.*' : ''}`;
   },
-  transformToken(token: string[]) {
+  transformToken(token: selectionObject[]) {
     return this.transformTextToMatch(token, true);
   },
   compareTimeStamps(currStamp: Antwort, currAnt: Antwort): boolean {
