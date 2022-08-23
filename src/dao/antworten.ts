@@ -574,7 +574,7 @@ const antwortenDao = {
 		        kdtt.id in $$tagID) tags
     join token t on t.id = tags.ist_token_id 
       and ($textTag = '' OR t.text SIMILAR TO $textTag)
-      and ($orthoTag = '' OR t.text SIMILAR TO $orthoTag)
+      and ($orthoTag = '' OR t.ortho SIMILAR TO $orthoTag)
     join event e on t.event_id_id = e.id 
     join transcript t3 on t3.id = t.transcript_id_id
     join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
@@ -621,7 +621,7 @@ const antwortenDao = {
         join tokentoset t2 on t2.id_tokenset_id = t4.id
         join token t on t.id = t2.id_token_id 
           and ($textTag = '' OR t.text SIMILAR TO $textTag)
-          and ($orthoTag = '' OR t.text SIMILAR TO $orthoTag)
+          and ($orthoTag = '' OR t.ortho SIMILAR TO $orthoTag)
         join event e on t.event_id_id = e.id 
         join transcript t3 on t3.id = t.transcript_id_id
         join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
