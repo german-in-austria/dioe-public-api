@@ -32,6 +32,7 @@ export interface filters extends ageBound {
   text: string;
   ortho: string;
   textInOrtho: string;
+  lemma: string;
 }
 
 export default {
@@ -67,7 +68,7 @@ export default {
     if (tag.lemma === undefined || !tag.lemma || tag.lemma.length === 0) {
       lemma = '';
     } else {
-      lemma = this.transformToken(tag.lemma as string[]);
+      lemma = `^${this.transformToken(tag.lemma as string[])}`;
     }
 
     if (tag.group === undefined) tag.group = false;
@@ -94,6 +95,8 @@ export default {
     let text = '';
     let ortho = '';
     let textInOrtho = '';
+    let lemma = '';
+
     if (ant.weiblich == undefined) {
       gender_sel = -1;
       ant.weiblich = false;
@@ -129,6 +132,12 @@ export default {
       }
     }
 
+    if (ant.lemma === undefined || !ant.lemma || ant.lemma.length === 0) {
+      lemma = '';
+    } else {
+      lemma = `^${this.transformToken(ant.lemma as string[])}`;
+    }
+
     return {
       ausbildung: aus,
       beruf_id: beruf,
@@ -140,6 +149,7 @@ export default {
       text: text,
       ortho: ortho,
       textInOrtho: textInOrtho,
+      lemma: lemma,
     } as filters;
   },
   validateAusbildung(str: string): string {
