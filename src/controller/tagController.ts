@@ -14,6 +14,11 @@ import { Body, Controller, Get, Path, Post, Query, Route } from 'tsoa';
 import tagService, { TagTree } from '../service/tag';
 import validator from '../service/validate';
 
+export interface selectionObject {
+  val: string;
+  state: string;
+  case: string;
+}
 export interface tagDto {
   ids: number[];
   erhArt?: number[];
@@ -22,10 +27,10 @@ export interface tagDto {
   weiblich?: boolean;
   project?: number;
   group?: boolean;
-  text?: Array<String>;
-  ortho?: Array<String>;
+  text?: Array<selectionObject>;
+  ortho?: Array<selectionObject>;
   case?: boolean;
-  lemma?: Array<String>;
+  lemma?: Array<selectionObject>;
 }
 
 @Route('tags')

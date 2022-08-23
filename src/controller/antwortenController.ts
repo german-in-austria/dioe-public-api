@@ -33,6 +33,7 @@ import antwortenService, {
 } from '../service/antworten';
 
 import validator from '../service/validate';
+import { selectionObject } from './tagController';
 
 export interface antwortenDto {
   ids: number[];
@@ -43,10 +44,10 @@ export interface antwortenDto {
   beruf_id?: number;
   weiblich?: boolean;
   group?: boolean;
-  text?: Array<String>;
-  ortho?: Array<String>;
-  textInOrtho?: Array<String>;
-  lemma?: Array<String>;
+  text?: Array<selectionObject>;
+  ortho?: Array<selectionObject>;
+  textInOrtho?: Array<selectionObject>;
+  lemma?: Array<selectionObject>;
 }
 
 @Route('antworten')

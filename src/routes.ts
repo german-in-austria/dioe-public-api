@@ -110,6 +110,16 @@ const models: TsoaRoute.Models = {
         "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "selectionObject": {
+        "dataType": "refObject",
+        "properties": {
+            "val": {"dataType":"string","required":true},
+            "state": {"dataType":"string","required":true},
+            "case": {"dataType":"string","required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "tagDto": {
         "dataType": "refObject",
         "properties": {
@@ -120,10 +130,10 @@ const models: TsoaRoute.Models = {
             "weiblich": {"dataType":"boolean"},
             "project": {"dataType":"double"},
             "group": {"dataType":"boolean"},
-            "text": {"dataType":"array","array":{"dataType":"string"}},
-            "ortho": {"dataType":"array","array":{"dataType":"string"}},
+            "text": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},
+            "ortho": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},
             "case": {"dataType":"boolean"},
-            "lemma": {"dataType":"array","array":{"dataType":"string"}},
+            "lemma": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},
         },
         "additionalProperties": true,
     },
@@ -246,10 +256,10 @@ const models: TsoaRoute.Models = {
             "beruf_id": {"dataType":"double"},
             "weiblich": {"dataType":"boolean"},
             "group": {"dataType":"boolean"},
-            "text": {"dataType":"array","array":{"dataType":"string"}},
-            "ortho": {"dataType":"array","array":{"dataType":"string"}},
-            "textInOrtho": {"dataType":"array","array":{"dataType":"string"}},
-            "lemma": {"dataType":"array","array":{"dataType":"string"}},
+            "text": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},
+            "ortho": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},
+            "textInOrtho": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},
+            "lemma": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},
         },
         "additionalProperties": true,
     },

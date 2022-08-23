@@ -277,6 +277,26 @@
 				"type": "object",
 				"additionalProperties": true
 			},
+			"selectionObject": {
+				"properties": {
+					"val": {
+						"type": "string"
+					},
+					"state": {
+						"type": "string"
+					},
+					"case": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"val",
+					"state",
+					"case"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
 			"tagDto": {
 				"properties": {
 					"ids": {
@@ -312,13 +332,13 @@
 					},
 					"text": {
 						"items": {
-							"type": "string"
+							"$ref": "#/components/schemas/selectionObject"
 						},
 						"type": "array"
 					},
 					"ortho": {
 						"items": {
-							"type": "string"
+							"$ref": "#/components/schemas/selectionObject"
 						},
 						"type": "array"
 					},
@@ -327,7 +347,7 @@
 					},
 					"lemma": {
 						"items": {
-							"type": "string"
+							"$ref": "#/components/schemas/selectionObject"
 						},
 						"type": "array"
 					}
@@ -664,25 +684,25 @@
 					},
 					"text": {
 						"items": {
-							"type": "string"
+							"$ref": "#/components/schemas/selectionObject"
 						},
 						"type": "array"
 					},
 					"ortho": {
 						"items": {
-							"type": "string"
+							"$ref": "#/components/schemas/selectionObject"
 						},
 						"type": "array"
 					},
 					"textInOrtho": {
 						"items": {
-							"type": "string"
+							"$ref": "#/components/schemas/selectionObject"
 						},
 						"type": "array"
 					},
 					"lemma": {
 						"items": {
-							"type": "string"
+							"$ref": "#/components/schemas/selectionObject"
 						},
 						"type": "array"
 					}
