@@ -324,6 +324,12 @@
 					},
 					"case": {
 						"type": "boolean"
+					},
+					"lemma": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
 					}
 				},
 				"required": [

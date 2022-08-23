@@ -61,7 +61,8 @@ export default {
           tag.gender_sel,
           tag.project_id,
           tag.text,
-          tag.ortho
+          tag.ortho,
+          tag.lemma
         ) as unknown as ISelectOrtTagsResult[];
       }
       return tagDao.getOrtTagToken(

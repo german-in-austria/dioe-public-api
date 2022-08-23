@@ -517,8 +517,6 @@ const antwortenDao = {
         and kdti."Dateipfad" not in ('', '0') 
         and kdti."Audiofile" not in ('', '0')
         and (t.text ~* $textTag or t.ortho ~* $textOrtho or t.text_in_ortho ~* $textInOrtho)
-        and kdti."Dateipfad" not in ('', '0') 
-        and kdti."Audiofile" not in ('', '0')
         and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
         and ($ageUpper < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
         and ($aus = '' OR pdti.ausbildung_max = $aus)

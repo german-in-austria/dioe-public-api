@@ -15,6 +15,7 @@ export interface tag {
   group: boolean;
   text: string;
   ortho: string;
+  lemma: string;
 }
 
 export interface ageBound {
@@ -41,6 +42,7 @@ export default {
     let gender_sel = 0;
     let tags = '';
     let ortho = '';
+    let lemma = '';
     if (tag.weiblich == undefined) {
       gender_sel = -1;
       tag.weiblich = false;
@@ -62,6 +64,12 @@ export default {
       ortho = this.transformToken(tag.ortho as string[]);
     }
 
+    if (tag.lemma === undefined || !tag.lemma || tag.lemma.length === 0) {
+      lemma = '';
+    } else {
+      lemma = this.transformToken(tag.lemma as string[]);
+    }
+
     if (tag.group === undefined) tag.group = false;
     const res = {
       ids: tag.ids,
@@ -74,6 +82,7 @@ export default {
       gender_sel: gender_sel,
       text: tags,
       ortho: ortho,
+      lemma: lemma,
     } as tag;
     return res;
   },

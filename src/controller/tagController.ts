@@ -25,6 +25,7 @@ export interface tagDto {
   text?: Array<String>;
   ortho?: Array<String>;
   case?: boolean;
+  lemma?: Array<String>;
 }
 
 @Route('tags')

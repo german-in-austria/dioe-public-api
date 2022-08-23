@@ -181,7 +181,8 @@ const tagDao = {
     gender_sel: number,
     project_id: number,
     text: string,
-    ortho: string
+    ortho: string,
+    lemma: string
   ) {
     const selectOrtTokenSingle = sql<
       ISelectOrtTokenSingleParams & ISelectOrtTokenSingleQuery
@@ -199,6 +200,7 @@ const tagDao = {
       LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
       where 
         (t.ortho ~* $textTag)
+        AND ($tokenLemma = '' OR t.splemma ~* $tokenLemma)
         and ($aus = '' OR pdti.ausbildung_max = $aus)
         and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
                   and ($gender_sel < 0 OR pdtp.weiblich = $gender)
@@ -218,6 +220,7 @@ const tagDao = {
       aus: aus,
       project_id: project_id,
       textTag: text,
+      tokenLemma: lemma,
     });
   },
   async getOrtTag(
