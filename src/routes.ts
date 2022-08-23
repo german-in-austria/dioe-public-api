@@ -249,6 +249,7 @@ const models: TsoaRoute.Models = {
             "text": {"dataType":"array","array":{"dataType":"string"}},
             "ortho": {"dataType":"array","array":{"dataType":"string"}},
             "textInOrtho": {"dataType":"array","array":{"dataType":"string"}},
+            "lemma": {"dataType":"array","array":{"dataType":"string"}},
         },
         "additionalProperties": true,
     },

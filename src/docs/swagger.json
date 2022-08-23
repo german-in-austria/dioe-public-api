@@ -679,6 +679,12 @@
 							"type": "string"
 						},
 						"type": "array"
+					},
+					"lemma": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
 					}
 				},
 				"required": [

@@ -66,7 +66,12 @@ export default {
   ): Promise<AntwortTokenStamp[]> {
     const start = Date.now();
     let mergeArr: any = [];
-    if (tagIDs.length === 0 || tagIDs[0] < 0) {
+    if (
+      tagIDs.length === 0 ||
+      tagIDs[0] < 0 ||
+      filters.lemma.length > 0 ||
+      filters.text.length > 0
+    ) {
       const resTrans = await antwortenDao.selectAntwortenToken(
         osmId.toString(),
         filters.ageLower,
@@ -77,7 +82,8 @@ export default {
         filters.gender_sel,
         filters.text,
         filters.ortho,
-        filters.textInOrtho
+        filters.textInOrtho,
+        filters.lemma
       );
       mergeArr = resTrans;
     } else {

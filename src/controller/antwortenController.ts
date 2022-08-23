@@ -46,6 +46,7 @@ export interface antwortenDto {
   text?: Array<String>;
   ortho?: Array<String>;
   textInOrtho?: Array<String>;
+  lemma?: Array<String>;
 }
 
 @Route('antworten')

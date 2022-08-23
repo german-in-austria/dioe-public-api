@@ -172,6 +172,7 @@ export interface ISelectAntwortenTokenParams {
   beruf: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
+  lemmaToken: string | null | void;
   osmId: string | null | void;
   textInOrtho: string | null | void;
   textOrtho: string | null | void;
