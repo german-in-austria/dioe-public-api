@@ -13,9 +13,9 @@ export interface tag {
   gender_sel: number;
   project_id: number;
   group: boolean;
-  text: string;
-  ortho: string;
-  lemma: string;
+  text: searchToken;
+  ortho: searchToken;
+  lemma: searchToken;
 }
 
 export interface ageBound {
@@ -29,10 +29,16 @@ export interface filters extends ageBound {
   weiblich: boolean;
   gender_sel: number;
   group: boolean;
-  text: string;
-  ortho: string;
-  textInOrtho: string;
-  lemma: string;
+  text: searchToken;
+  ortho: searchToken;
+  textInOrtho: searchToken;
+  lemma: searchToken;
+}
+
+export interface searchToken {
+  case: string;
+  cI: string;
+  overall: string;
 }
 
 export default {
@@ -41,9 +47,9 @@ export default {
     const beruf = this.validateBeruf(tag.beruf_id ? tag.beruf_id : -1);
     let project_id = tag.project == undefined ? -1 : tag.project;
     let gender_sel = 0;
-    let tags = '';
-    let ortho = '';
-    let lemma = '';
+    let tags: searchToken = this.constructSearchToken();
+    let ortho: searchToken = this.constructSearchToken();
+    let lemma: searchToken = this.constructSearchToken();
     if (tag.weiblich == undefined) {
       gender_sel = -1;
       tag.weiblich = false;
@@ -53,22 +59,20 @@ export default {
       tag.ids = [-1];
     }
 
-    if (tag.text === undefined || !tag.text || tag.text.length === 0) {
-      tags = '';
-    } else {
+    if (!(tag.text === undefined || !tag.text || tag.text.length === 0)) {
       tags = this.transformToken(tag.text);
+      ortho = tags;
     }
 
-    if (tag.ortho === undefined || !tag.ortho || tag.ortho.length === 0) {
-      ortho = '';
-    } else {
+    if (!(tag.ortho === undefined || !tag.ortho || tag.ortho.length === 0)) {
       ortho = this.transformToken(tag.ortho);
+      if (ortho.overall === '') {
+        tags = ortho;
+      }
     }
 
-    if (tag.lemma === undefined || !tag.lemma || tag.lemma.length === 0) {
-      lemma = '';
-    } else {
-      lemma = `^${this.transformTextToMatch(tag.lemma, false)}`;
+    if (!(tag.lemma === undefined || !tag.lemma || tag.lemma.length === 0)) {
+      lemma = this.transformTextToMatch(tag.lemma, false);
     }
 
     if (tag.group === undefined) tag.group = false;
@@ -92,26 +96,24 @@ export default {
     const aus = this.validateAusbildung(ant.ausbildung ? ant.ausbildung : '');
     const beruf = this.validateBeruf(ant.beruf_id ? ant.beruf_id : -1);
     let gender_sel = 0;
-    let text = '';
-    let ortho = '';
-    let textInOrtho = '';
-    let lemma = '';
+    let text: searchToken = this.constructSearchToken();
+    let ortho: searchToken = this.constructSearchToken();
+    let textInOrtho: searchToken = this.constructSearchToken();
+    let lemma: searchToken = this.constructSearchToken();
 
     if (ant.weiblich == undefined) {
       gender_sel = -1;
       ant.weiblich = false;
     }
 
-    if (ant.text === undefined || !ant.text || ant.text.length === 0) {
-      text = '';
-    } else {
+    if (!(ant.text === undefined || !ant.text || ant.text.length === 0)) {
       text = this.transformToken(ant.text);
       ortho = textInOrtho = text;
     }
 
     if (!(ant.ortho === undefined || !ant.ortho || ant.ortho.length === 0)) {
       ortho = this.transformToken(ant.ortho);
-      if (ortho === '') {
+      if (ortho.overall === '') {
         text = ortho;
       }
     }
@@ -124,18 +126,16 @@ export default {
       )
     ) {
       textInOrtho = this.transformToken(ant.textInOrtho);
-      if (text === '') {
+      if (text.overall === '') {
         text = textInOrtho;
       }
-      if (ortho === '') {
+      if (ortho.overall === '') {
         ortho = textInOrtho;
       }
     }
 
-    if (ant.lemma === undefined || !ant.lemma || ant.lemma.length === 0) {
-      lemma = '';
-    } else {
-      lemma = `^${this.transformTextToMatch(ant.lemma, false)}`;
+    if (!(ant.lemma === undefined || !ant.lemma || ant.lemma.length === 0)) {
+      lemma = this.transformTextToMatch(ant.lemma, false);
     }
 
     return {
@@ -162,6 +162,13 @@ export default {
   validateBeruf(nr: number) {
     return nr < 0 ? -1 : nr;
   },
+  constructSearchToken(): searchToken {
+    return {
+      case: '',
+      cI: '',
+      overall: '',
+    };
+  },
   validateAgeBound(
     lower: number | undefined,
     upper: number | undefined
@@ -173,13 +180,37 @@ export default {
       ageUpper: up,
     } as ageBound;
   },
-  transformTextToMatch(token: selectionObject[], matchAll: boolean) {
-    const t: string[] = token.map(
-      (el: selectionObject) => `${el.state === 'nicht' ? '?!' : ''}${el.val}`
-    );
-    return `(${t.join('|')})${matchAll ? '.*' : ''}`;
+  transformTextToMatch(
+    token: selectionObject[],
+    matchAll: boolean
+  ): searchToken {
+    const c: string[] = [];
+    const cI: string[] = [];
+
+    token.forEach((el: selectionObject) => {
+      const token =
+        el.case.toLowerCase() !== 'regexp'
+          ? `${el.state === 'nicht' ? '?!' : ''}${el.val}`
+          : el.val.substring(1, el.val.lastIndexOf('/'));
+      if (el.case === 'case-sensitive') {
+        c.push(token);
+      } else if (el.case === 'case-insensitive') {
+        cI.push(token);
+      }
+    });
+    return {
+      case: `${this.createGroup(c)}${matchAll ? '.*' : ''}`,
+      cI: `${this.createGroup(cI)}${matchAll ? '.*' : ''}`,
+      overall: `${this.createGroup(c.concat(cI))}}${matchAll ? '.*' : ''}`,
+    } as searchToken;
   },
-  transformToken(token: selectionObject[]) {
+  createGroup(val: string[]) {
+    if (val.length > 0) {
+      return `(${val.join('|')})`;
+    }
+    return '';
+  },
+  transformToken(token: selectionObject[]): searchToken {
     return this.transformTextToMatch(token, true);
   },
   compareTimeStamps(currStamp: Antwort, currAnt: Antwort): boolean {
