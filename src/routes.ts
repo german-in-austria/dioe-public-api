@@ -132,7 +132,6 @@ const models: TsoaRoute.Models = {
             "group": {"dataType":"boolean"},
             "text": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},
             "ortho": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},
-            "case": {"dataType":"boolean"},
             "lemma": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},
         },
         "additionalProperties": true,

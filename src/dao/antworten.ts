@@ -454,10 +454,14 @@ const antwortenDao = {
     beruf: number,
     gender: boolean,
     gender_sel: number,
-    textTag: string,
-    textOrtho: string,
-    textInOrtho: string,
-    textLemma: string
+    textTagC: string,
+    textOrthoC: string,
+    textInOrthoC: string,
+    textLemmaC: string,
+    textTagCI: string,
+    textOrthoCI: string,
+    textInOrthoCI: string,
+    textLemmaCI: string
   ) {
     const selectAntwortenToken = sql<
       ISelectAntwortenTokenParams & ISelectAntwortenTokenQuery
@@ -483,17 +487,21 @@ const antwortenDao = {
         left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
       where odto.osm_id  = $osmId
-        and (t.text ~* $textTag or 
-          t.ortho ~* $textOrtho or 
-          t.text_in_ortho ~* $textInOrtho)
-        and kdti."Dateipfad" not in ('', '0') 
-        and kdti."Audiofile" not in ('', '0')
-        and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
-        and ($ageUpper < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
-        and ($aus = '' OR pdti.ausbildung_max = $aus)
-        and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
-        and ($gender_sel < 0 OR pdtp.weiblich = $gender)
-        and ($lemmaToken = '' or t.splemma ~* $lemmaToken)
+        and (t.text ~* $textTagCI or 
+          t.ortho ~* $textOrthoCI or 
+          t.text_in_ortho ~* $textInOrthoCI)
+          and kdti."Dateipfad" not in ('', '0') 
+          and kdti."Audiofile" not in ('', '0')
+          and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+          and ($ageUpper < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+          and ($aus = '' OR pdti.ausbildung_max = $aus)
+          and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+          and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+          and ($lemmaTokenC = '' or t.splemma ~ $lemmaTokenC)
+          and ($lemmaTokenCI = '' or t.splemma ~* $lemmaTokenCI)
+          and (t.text ~ $textTagC or 
+            t.ortho ~ $textOrthoC or 
+            t.text_in_ortho ~ $textInOrthoC)
      union 
         select e.start_time as "start_Antwort", 
         e.end_time as "stop_Antwort",
@@ -520,15 +528,19 @@ const antwortenDao = {
       where odto.osm_id = $osmId
         and kdti."Dateipfad" not in ('', '0') 
         and kdti."Audiofile" not in ('', '0')
-        and (t.text ~* $textTag or 
-          t.ortho ~* $textOrtho or 
-          t.text_in_ortho ~* $textInOrtho)
+        and (t.text ~* $textTagCI or 
+          t.ortho ~* $textOrthoCI or 
+          t.text_in_ortho ~* $textInOrthoCI)
         and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
         and ($ageUpper < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
         and ($aus = '' OR pdti.ausbildung_max = $aus)
         and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
         and ($gender_sel < 0 OR pdtp.weiblich = $gender)
-        and ($lemmaToken = '' or t.splemma ~* $lemmaToken)
+        and ($lemmaTokenC = '' or t.splemma ~ $lemmaTokenC)
+        and ($lemmaTokenCI = '' or t.splemma ~* $lemmaTokenCI)
+        and (t.text ~ $textTagC or 
+          t.ortho ~ $textOrthoC or 
+          t.text_in_ortho ~ $textInOrthoC)
     `;
     return await query(selectAntwortenToken, {
       osmId: osmId,
@@ -538,10 +550,14 @@ const antwortenDao = {
       gender: gender,
       aus: aus,
       gender_sel: gender_sel,
-      textTag: textTag,
-      textOrtho: textOrtho,
-      textInOrtho: textInOrtho,
-      lemmaToken: textLemma,
+      textTagC: textTagC,
+      textOrthoC: textOrthoC,
+      textInOrthoC: textInOrthoC,
+      lemmaTokenC: textLemmaC,
+      textTagCI: textTagCI,
+      textOrthoCI: textOrthoCI,
+      textInOrthoCI: textInOrthoCI,
+      lemmaTokenCI: textLemmaCI,
     });
   },
   async selectAntwortenTrans(

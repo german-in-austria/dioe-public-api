@@ -342,9 +342,6 @@
 						},
 						"type": "array"
 					},
-					"case": {
-						"type": "boolean"
-					},
 					"lemma": {
 						"items": {
 							"$ref": "#/components/schemas/selectionObject"

@@ -172,11 +172,15 @@ export interface ISelectAntwortenTokenParams {
   beruf: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
-  lemmaToken: string | null | void;
+  lemmaTokenC: string | null | void;
+  lemmaTokenCI: string | null | void;
   osmId: string | null | void;
-  textInOrtho: string | null | void;
-  textOrtho: string | null | void;
-  textTag: string | null | void;
+  textInOrthoC: string | null | void;
+  textInOrthoCI: string | null | void;
+  textOrthoC: string | null | void;
+  textOrthoCI: string | null | void;
+  textTagC: string | null | void;
+  textTagCI: string | null | void;
 }
 
 /** 'SelectAntwortenToken' return type */

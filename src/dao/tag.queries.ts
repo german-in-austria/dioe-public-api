@@ -123,8 +123,10 @@ export interface ISelectOrtTokenSingleParams {
   gender: boolean | null | void;
   gender_sel: number | null | void;
   project_id: number | null | void;
-  textTag: string | null | void;
-  tokenLemma: string | null | void;
+  textTagC: string | null | void;
+  textTagCI: string | null | void;
+  tokenLemmaC: string | null | void;
+  tokenLemmaCI: string | null | void;
 }
 
 /** 'SelectOrtTokenSingle' return type */

@@ -51,7 +51,11 @@ export default {
     return tagDao.getPresetOrtTag(tagId);
   },
   async getTagOrte(tag: tag): Promise<ISelectOrtTagsResult[]> {
-    if (tag.text.length > 0 || tag.ortho.length > 0 || tag.lemma.length > 0) {
+    if (
+      tag.text.overall.length > 0 ||
+      tag.ortho.overall.length > 0 ||
+      tag.lemma.overall.length > 0
+    ) {
       if (tag.ids[0] == -1) {
         return tagDao.getOrtToken(
           tag.erhArt,
@@ -60,9 +64,10 @@ export default {
           tag.weiblich,
           tag.gender_sel,
           tag.project_id,
-          tag.text,
-          tag.ortho,
-          tag.lemma
+          tag.text.case,
+          tag.text.cI,
+          tag.lemma.case,
+          tag.lemma.cI
         ) as unknown as ISelectOrtTagsResult[];
       }
       return tagDao.getOrtTagToken(
@@ -73,8 +78,8 @@ export default {
         tag.weiblich,
         tag.gender_sel,
         tag.project_id,
-        tag.text,
-        tag.ortho
+        tag.text.overall,
+        tag.ortho.overall
       ) as any as ISelectOrtTagsResult[];
     }
     if (tag.group) {

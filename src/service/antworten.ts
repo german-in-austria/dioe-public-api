@@ -69,8 +69,8 @@ export default {
     if (
       tagIDs.length === 0 ||
       tagIDs[0] < 0 ||
-      filters.lemma.length > 0 ||
-      filters.text.length > 0
+      filters.lemma.overall.length > 0 ||
+      filters.text.overall.length > 0
     ) {
       const resTrans = await antwortenDao.selectAntwortenToken(
         osmId.toString(),
@@ -80,10 +80,14 @@ export default {
         filters.beruf_id,
         filters.weiblich,
         filters.gender_sel,
-        filters.text,
-        filters.ortho,
-        filters.textInOrtho,
-        filters.lemma
+        filters.text.case,
+        filters.ortho.case,
+        filters.textInOrtho.case,
+        filters.lemma.case,
+        filters.text.cI,
+        filters.ortho.cI,
+        filters.textInOrtho.cI,
+        filters.lemma.cI
       );
       mergeArr = resTrans;
     } else {
@@ -101,8 +105,8 @@ export default {
           filters.beruf_id,
           filters.weiblich,
           filters.gender_sel,
-          filters.text,
-          filters.ortho,
+          filters.text.case,
+          filters.ortho.case,
           filters.group ? transCheck.map((el) => el.id).length : 0
         );
       }
