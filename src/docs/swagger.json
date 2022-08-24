@@ -469,6 +469,55 @@
 				"type": "object",
 				"additionalProperties": true
 			},
+			"ISelectTagByPhaenResult": {
+				"description": "'SelectTagByPhaen' return type",
+				"properties": {
+					"generation": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"phaen": {
+						"type": "string"
+					},
+					"tagId": {
+						"type": "number",
+						"format": "double"
+					},
+					"tagLang": {
+						"type": "string",
+						"nullable": true
+					},
+					"tagName": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"generation",
+					"phaen",
+					"tagId",
+					"tagLang",
+					"tagName"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"phaenDto": {
+				"properties": {
+					"ids": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"ids"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
 			"Antwort": {
 				"properties": {
 					"start": {},
@@ -1543,6 +1592,38 @@
 						}
 					}
 				]
+			}
+		},
+		"/phaen/tags": {
+			"post": {
+				"operationId": "GetTagsByPhaen",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ISelectTagByPhaenResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/phaenDto"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/antworten": {

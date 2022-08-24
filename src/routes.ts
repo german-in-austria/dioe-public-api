@@ -182,6 +182,26 @@ const models: TsoaRoute.Models = {
         "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ISelectTagByPhaenResult": {
+        "dataType": "refObject",
+        "properties": {
+            "generation": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
+            "phaen": {"dataType":"string","required":true},
+            "tagId": {"dataType":"double","required":true},
+            "tagLang": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "tagName": {"dataType":"string","required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "phaenDto": {
+        "dataType": "refObject",
+        "properties": {
+            "ids": {"dataType":"array","array":{"dataType":"double"},"required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Antwort": {
         "dataType": "refObject",
         "properties": {
@@ -748,6 +768,31 @@ export function RegisterRoutes(app: express.Router) {
 
 
               const promise = controller.getSinglePhaen.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/api/phaen/tags',
+            ...(fetchMiddlewares<RequestHandler>(PhaenController)),
+            ...(fetchMiddlewares<RequestHandler>(PhaenController.prototype.getTagsByPhaen)),
+
+            function PhaenController_getTagsByPhaen(request: any, response: any, next: any) {
+            const args = {
+                    phaenDto: {"in":"body","name":"phaenDto","required":true,"ref":"phaenDto"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new PhaenController();
+
+
+              const promise = controller.getTagsByPhaen.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

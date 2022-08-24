@@ -2,9 +2,10 @@ import {
   ISelectPhaenBerResult,
   ISelectPhaenResult,
   ISelectSinglePhaenResult,
-} from "../dao/phaen.queries";
-import phaenDao from "../dao/phaen";
-import _ from "lodash";
+  ISelectTagByPhaenResult,
+} from '../dao/phaen.queries';
+import phaenDao from '../dao/phaen';
+import _ from 'lodash';
 
 export default {
   async getPhaenBer(): Promise<ISelectPhaenBerResult[]> {
@@ -17,5 +18,8 @@ export default {
 
   async getSinglePhaen(berId: number): Promise<ISelectSinglePhaenResult[]> {
     return phaenDao.getPhaenSingleBer(berId);
+  },
+  async getTagByPhaen(ids: number[]): Promise<ISelectTagByPhaenResult[]> {
+    return phaenDao.getTagsToPhaen(ids);
   },
 };

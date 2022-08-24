@@ -1,11 +1,13 @@
-import { sql } from "@pgtyped/query";
-import query from "./connect/pg";
+import { sql } from '@pgtyped/query';
+import query from './connect/pg';
 import {
   ISelectPhaenBerQuery,
   ISelectPhaenQuery,
   ISelectSinglePhaenQuery,
   ISelectSinglePhaenParams,
-} from "./phaen.queries";
+  ISelectTagByPhaenParams,
+  ISelectTagByPhaenQuery,
+} from './phaen.queries';
 
 const phaenDao = {
   async getPhaenBer() {
@@ -36,6 +38,21 @@ const phaenDao = {
         kdtp."zu_PhaenBer_id" = $berId
       `;
     return await query(selectSinglePhaen, { berId: berId });
+  },
+  async getTagsToPhaen(ids: number[]) {
+    const selectTagByPhaen = sql<
+      ISelectTagByPhaenParams & ISelectTagByPhaenQuery
+    >`select 
+        kdtt.id as tag_id, 
+        kdtt."Tag"  as tag_name,
+        kdtt."Tag_lang" as tag_lang,
+        kdtt."Generation" as generation,
+        kdtp."Bez_Phaenomen" as phaen
+      from "KorpusDB_tbl_phaenomene" kdtp 
+        join "KorpusDB_tbl_tags" kdtt on kdtp.id = kdtt."zu_Phaenomen_id" 
+	      where kdtt."zu_Phaenomen_id" IN $$ids
+    `;
+    return await query(selectTagByPhaen, { ids: ids });
   },
 };
 

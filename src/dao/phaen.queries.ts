@@ -51,3 +51,23 @@ export interface ISelectSinglePhaenQuery {
   result: ISelectSinglePhaenResult;
 }
 
+/** 'SelectTagByPhaen' parameters type */
+export interface ISelectTagByPhaenParams {
+  ids: readonly (number | null | void)[];
+}
+
+/** 'SelectTagByPhaen' return type */
+export interface ISelectTagByPhaenResult {
+  generation: number | null;
+  phaen: string;
+  tagId: number;
+  tagLang: string | null;
+  tagName: string;
+}
+
+/** 'SelectTagByPhaen' query type */
+export interface ISelectTagByPhaenQuery {
+  params: ISelectTagByPhaenParams;
+  result: ISelectTagByPhaenResult;
+}
+
