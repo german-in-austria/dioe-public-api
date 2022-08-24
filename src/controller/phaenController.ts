@@ -2,15 +2,15 @@ import {
   ISelectPhaenBerResult,
   ISelectPhaenResult,
   ISelectSinglePhaenResult,
-} from "../dao/phaen.queries";
+} from '../dao/phaen.queries';
 
-import { Body, Controller, Get, Path, Post, Query, Route } from "tsoa";
+import { Body, Controller, Get, Path, Post, Query, Route } from 'tsoa';
 
-import phaenService from "../service/phaen";
+import phaenService from '../service/phaen';
 
-@Route("phaen")
+@Route('phaen')
 export class PhaenController extends Controller {
-  @Get("/ber")
+  @Get('/ber')
   public async getPhaenBer(): Promise<ISelectPhaenBerResult[]> {
     return phaenService.getPhaenBer();
   }
@@ -19,18 +19,10 @@ export class PhaenController extends Controller {
   public async getPhaen(): Promise<ISelectPhaenResult[]> {
     return phaenService.getPhaenResult();
   }
-  @Get("/{berId}")
+  @Get('/{berId}')
   public async getSinglePhaen(
     @Path() berId: number
   ): Promise<ISelectSinglePhaenResult[]> {
     return phaenService.getSinglePhaen(berId);
   }
-  /*
-  @Get("/ort/{tagId}")
-  public async getTagOrte(
-    @Path() tagId: number
-  ): Promise<ISelectOrtTagsResult[]> {
-    return tagService.getTagOrte(tagId);
-  }
-  */
 }
