@@ -84,7 +84,10 @@ export interface ISelectAllAufgabenQuery {
 
 /** 'SelectOrtAufgabe' parameters type */
 export interface ISelectOrtAufgabeParams {
+  asetId: readonly (number | null | void)[];
+  asetSinId: number | null | void;
   aufgID: readonly (number | null | void)[];
+  aufId: number | null | void;
 }
 
 /** 'SelectOrtAufgabe' return type */

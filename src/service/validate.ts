@@ -1,5 +1,6 @@
 import _, { String } from 'lodash';
 import { antwortenDto } from 'src/controller/antwortenController';
+import { aufgabenDto } from 'src/controller/aufgabenController';
 import { selectionObject, tagDto } from 'src/controller/tagController';
 import { Antwort } from './antworten';
 import { ausbildungGrad } from './social';
@@ -90,6 +91,18 @@ export default {
       lemma: lemma,
     } as tag;
     return res;
+  },
+  validateAufgabenDto(auf: aufgabenDto) {
+    let aufIds = auf.ids;
+    let asetIds = auf.asetIds;
+    if (auf.ids.length === 0 || auf.ids[0] === -1) {
+      aufIds = [-1];
+    }
+
+    if (!asetIds || asetIds === undefined || auf.asetIds?.length === 0)
+      asetIds = [-1];
+
+    return { ids: aufIds, asetIds: asetIds };
   },
   validateAntwortenDto(ant: antwortenDto): filters {
     const ageBound = this.validateAgeBound(ant.ageLower, ant.ageUpper);

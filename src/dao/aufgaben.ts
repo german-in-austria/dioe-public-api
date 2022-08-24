@@ -61,7 +61,7 @@ const aufgabenDao = {
     `;
     return await query(selectAllAufgaben);
   },
-  async getOrtAufgabe(aufgID: number[]) {
+  async getOrtAufgabe(aufgID: number[], asetIds: number[]) {
     const selectOrtAufgabe = sql<ISelectOrtAufgabeQuery>`
     select count(*) as num_aufg, 
     kdta.id,
@@ -72,7 +72,9 @@ const aufgabenDao = {
       join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_Aufgabe_id" = kdta.id
       join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdte."id_InfErh_id" 
       join "OrteDB_tbl_orte" odto on odto.id = kdti."Ort_id" 
-      where kdta.id IN $$aufgID
+      where 
+        ($aufId < 0 OR kdta.id IN $$aufgID)
+        AND ($asetSinId < 0 OR kdta."von_ASet_id" IN $$asetId)
       group by 
         odto.osm_id,
         odto.ort_namelang,
@@ -80,10 +82,13 @@ const aufgabenDao = {
         kdta."Aufgabenstellung",
         odto.lat,
         odto.lon
-      order by
-        odto.osm_id
     `;
-    return await query(selectOrtAufgabe, { aufgID: aufgID });
+    return await query(selectOrtAufgabe, {
+      aufgID: aufgID,
+      aufId: aufgID[0],
+      asetSinId: asetIds[0],
+      asetId: asetIds,
+    });
   },
   async getTeams() {
     const selectAllTeams = sql<ISelectAllTeamsQuery>`

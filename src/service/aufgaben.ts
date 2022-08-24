@@ -6,9 +6,9 @@ import {
   ISelectOrtAufgabeResult,
   ISelectAllTeamsResult,
   ISelectAufgabeAudioByOrtResult,
-} from "src/dao/aufgaben.queries";
-import aufgabenDao from "../dao/aufgaben";
-import _ from "lodash";
+} from 'src/dao/aufgaben.queries';
+import aufgabenDao from '../dao/aufgaben';
+import _ from 'lodash';
 
 interface Aufgabe {
   start: string;
@@ -45,8 +45,11 @@ export default {
   async getAllAufgaben(): Promise<ISelectAllAufgabenResult[]> {
     return aufgabenDao.getAllAufgaben();
   },
-  async getOrtAufgabe(ids: number[]): Promise<ISelectOrtAufgabeResult[]> {
-    return aufgabenDao.getOrtAufgabe(ids);
+  async getOrtAufgabe(arg: {
+    ids: number[];
+    asetIds: number[];
+  }): Promise<ISelectOrtAufgabeResult[]> {
+    return aufgabenDao.getOrtAufgabe(arg.ids, arg.asetIds);
   },
   async getAufgabeAudioByOrt(
     aufIDs: number[],
