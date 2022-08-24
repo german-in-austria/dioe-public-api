@@ -71,3 +71,25 @@ export interface ISelectTagByPhaenQuery {
   result: ISelectTagByPhaenResult;
 }
 
+/** 'SelectASetByPhaen' parameters type */
+export interface ISelectASetByPhaenParams {
+  ids: readonly (number | null | void)[];
+}
+
+/** 'SelectASetByPhaen' return type */
+export interface ISelectASetByPhaenResult {
+  asetId: number;
+  aufId: number;
+  beschreibungAufgabe: string | null;
+  bezPhaenomen: string;
+  fokus: string | null;
+  kuerzel: string;
+  nameAset: string | null;
+}
+
+/** 'SelectASetByPhaen' query type */
+export interface ISelectASetByPhaenQuery {
+  params: ISelectASetByPhaenParams;
+  result: ISelectASetByPhaenResult;
+}
+

@@ -7,6 +7,8 @@ import {
   ISelectSinglePhaenParams,
   ISelectTagByPhaenParams,
   ISelectTagByPhaenQuery,
+  ISelectASetByPhaenParams,
+  ISelectASetByPhaenQuery,
 } from './phaen.queries';
 
 const phaenDao = {
@@ -53,6 +55,19 @@ const phaenDao = {
 	      where kdtt."zu_Phaenomen_id" IN $$ids
     `;
     return await query(selectTagByPhaen, { ids: ids });
+  },
+  async getASetPhaen(ids: number[]) {
+    const selectASetByPhaen = sql<
+      ISelectASetByPhaenParams & ISelectASetByPhaenQuery
+    >`
+      select kdta.id as aset_id, kdta."Kuerzel", kdta."Name_Aset", kdta."Fokus", kdtp."Bez_Phaenomen", kdta2."Beschreibung_Aufgabe", kdta2.id as auf_id
+    from "KorpusDB_tbl_aufgabensets" kdta 
+      join "KorpusDB_tbl_phaenomene" kdtp on kdtp.id = kdta."zu_Phaenomen_id" 
+      join "KorpusDB_tbl_aufgaben" kdta2 on kdta2."von_ASet_id" = kdtp.id
+    where kdtp.id IN $$ids
+    `;
+
+    return await query(selectASetByPhaen, { ids: ids });
   },
 };
 

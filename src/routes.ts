@@ -202,6 +202,28 @@ const models: TsoaRoute.Models = {
         "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Aufgabe": {
+        "dataType": "refObject",
+        "properties": {
+            "beschreibung": {"dataType":"string","required":true},
+            "id": {"dataType":"double","required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Aset": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"double","required":true},
+            "kuerzel": {"dataType":"string","required":true},
+            "name": {"dataType":"string","required":true},
+            "fokus": {"dataType":"string","required":true},
+            "phaen": {"dataType":"string","required":true},
+            "aufgaben": {"dataType":"array","array":{"dataType":"refObject","ref":"Aufgabe"},"required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Antwort": {
         "dataType": "refObject",
         "properties": {
@@ -407,17 +429,6 @@ const models: TsoaRoute.Models = {
             "phaenId": {"dataType":"double","required":true},
             "setId": {"dataType":"double","required":true},
             "variante": {"dataType":"double","required":true},
-        },
-        "additionalProperties": true,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Aufgabe": {
-        "dataType": "refObject",
-        "properties": {
-            "start": {"dataType":"string","required":true},
-            "stop": {"dataType":"string","required":true},
-            "aufgabe": {"dataType":"string","required":true},
-            "aufgabeId": {"dataType":"double","required":true},
         },
         "additionalProperties": true,
     },
@@ -793,6 +804,31 @@ export function RegisterRoutes(app: express.Router) {
 
 
               const promise = controller.getTagsByPhaen.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/api/phaen/aset',
+            ...(fetchMiddlewares<RequestHandler>(PhaenController)),
+            ...(fetchMiddlewares<RequestHandler>(PhaenController.prototype.getASetByPhaen)),
+
+            function PhaenController_getASetByPhaen(request: any, response: any, next: any) {
+            const args = {
+                    phaenDto: {"in":"body","name":"phaenDto","required":true,"ref":"phaenDto"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new PhaenController();
+
+
+              const promise = controller.getASetByPhaen.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

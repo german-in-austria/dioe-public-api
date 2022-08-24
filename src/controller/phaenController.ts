@@ -7,7 +7,7 @@ import {
 
 import { Body, Controller, Get, Path, Post, Query, Route } from 'tsoa';
 
-import phaenService from '../service/phaen';
+import phaenService, { Aset } from '../service/phaen';
 
 export interface phaenDto {
   ids: number[];
@@ -37,5 +37,10 @@ export class PhaenController extends Controller {
     @Body() phaenDto: phaenDto
   ): Promise<ISelectTagByPhaenResult[]> {
     return phaenService.getTagByPhaen(phaenDto.ids);
+  }
+
+  @Post('/aset')
+  public async getASetByPhaen(@Body() phaenDto: phaenDto): Promise<Aset[]> {
+    return phaenService.getASetByPhaen(phaenDto.ids);
   }
 }
