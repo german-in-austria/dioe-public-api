@@ -75,8 +75,6 @@ export default {
       filters.text.overall.length > 0 ||
       filters.ortho.overall.length > 0
     ) {
-      console.log(filters);
-      console.log(tagIDs);
       const resTrans = await antwortenDao.selectAntwortenToken(
         tagIDs,
         osmId.toString(),
