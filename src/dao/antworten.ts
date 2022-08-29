@@ -447,6 +447,7 @@ const antwortenDao = {
     });
   },
   async selectAntwortenToken(
+    tagId: number[],
     osmId: string,
     ageLower: number,
     ageUpper: number,
@@ -502,6 +503,15 @@ const antwortenDao = {
           and (t.text ~ $textTagC or 
             t.ortho ~ $textOrthoC or 
             t.text_in_ortho ~ $textInOrthoC)
+          and ($firstTag < -1 or t.id in 
+            (select kdta.ist_token_id
+              from "KorpusDB_tbl_antwortentags" kdta3 
+              join "KorpusDB_tbl_antworten" kdta on kdta.id = kdta3."id_Antwort_id"
+              where kdta3."id_Tag_id" in $$tagID
+              and kdta.ist_token_id is not null
+              group by
+                kdta.ist_token_id
+                  having count(kdta3."id_Tag_id") >= $len))
      union 
         select e.start_time as "start_Antwort", 
         e.end_time as "stop_Antwort",
@@ -541,6 +551,15 @@ const antwortenDao = {
         and (t.text ~ $textTagC or 
           t.ortho ~ $textOrthoC or 
           t.text_in_ortho ~ $textInOrthoC)
+          and ($firstTag < -1 or t4.id in 
+            (select kdta.ist_tokenset_id
+              from "KorpusDB_tbl_antwortentags" kdta3 
+              join "KorpusDB_tbl_antworten" kdta on kdta.id = kdta3."id_Antwort_id"
+              where kdta3."id_Tag_id" in $$tagID
+              and kdta.ist_tokenset_id is not null
+              group by
+                kdta.ist_tokenset_id
+                  having count(kdta3."id_Tag_id") >= $len))
     `;
     return await query(selectAntwortenToken, {
       osmId: osmId,
@@ -558,6 +577,9 @@ const antwortenDao = {
       textOrthoCI: textOrthoCI,
       textInOrthoCI: textInOrthoCI,
       lemmaTokenCI: textLemmaCI,
+      tagID: tagId,
+      len: tagId.length.toString(),
+      firstTag: tagId[0],
     });
   },
   async selectAntwortenTrans(

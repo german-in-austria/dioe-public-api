@@ -170,11 +170,14 @@ export interface ISelectAntwortenTokenParams {
   ageUpper: number | null | void;
   aus: string | null | void;
   beruf: number | null | void;
+  firstTag: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
   lemmaTokenC: string | null | void;
   lemmaTokenCI: string | null | void;
+  len: string | null | void;
   osmId: string | null | void;
+  tagID: readonly (number | null | void)[];
   textInOrthoC: string | null | void;
   textInOrthoCI: string | null | void;
   textOrthoC: string | null | void;
