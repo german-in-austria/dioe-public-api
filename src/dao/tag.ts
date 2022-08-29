@@ -106,7 +106,9 @@ const tagDao = {
     gender_sel: number,
     project_id: number,
     text: string,
-    ortho: string
+    ortho: string,
+    lemmaCI: string,
+    lemmaC: string
   ) {
     const selectOrtToken = sql<ISelectOrtTokenQuery & ISelectOrtTokenParams>`
         SELECT
@@ -124,13 +126,21 @@ const tagDao = {
           JOIN "KorpusDB_tbl_antworten" kdta2 ON kdta. "id_Antwort_id" = kdta2.id
           JOIN "PersonenDB_tbl_informanten" pdti ON kdta2. "von_Inf_id" = pdti.id
           JOIN "token" t on t."ID_Inf_id" = pdti.id 
-            and ($textTag = '' OR t.text SIMILAR TO $textTag)
-            and ($textOrtho = '' OR t.ortho SIMILAR TO $textOrtho)
+            and ($textTag = '' OR t.text ~* $textTag)
+            and ($textOrtho = '' OR t.ortho ~* $textOrtho)
           LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
           JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
           join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
         WHERE
-          ($$tagId < 0 OR kdtt.id IN $$tagId) and odto.osm_id in (
+          ($firstTagId < 0 OR (kdtt.id IN $$tagId 
+            AND kdta2.id in 
+            (select kdta3."id_Antwort_id"
+              from "KorpusDB_tbl_antwortentags" kdta3 
+              where kdta3."id_Tag_id" in $$tagId
+              group by
+                kdta3."id_Antwort_id"
+                  having count(kdta3."id_Tag_id") >= $tagLen)
+          )) and odto.osm_id in (
             select osm_id from "OrteDB_tbl_orte" odto 
               join "KorpusDB_tbl_inferhebung" kdti on kdti."Ort_id" = odto.id 
               join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
@@ -142,6 +152,9 @@ const tagDao = {
           and pdti.inf_gruppe_id in (
             select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
             where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
+          
+            and ($lemmaTokenC = '' or t.splemma ~ $lemmaTokenC)
+            and ($lemmaTokenCI = '' or t.splemma ~* $lemmaTokenCI)
         GROUP BY
           odto.osm_id,
           odto.ort_namelang,
@@ -156,6 +169,10 @@ const tagDao = {
       `;
     return await query(selectOrtToken, {
       tagId: tagId,
+      firstTagId: tagId[0],
+      tagLen: tagId.length.toString(),
+      lemmaTokenC: lemmaC,
+      lemmaTokenCI: lemmaCI,
       beruf: beruf,
       gender: gender,
       erhArt: erhArt,

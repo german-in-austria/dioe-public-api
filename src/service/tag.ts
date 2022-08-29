@@ -79,7 +79,9 @@ export default {
         tag.gender_sel,
         tag.project_id,
         tag.text.overall,
-        tag.ortho.overall
+        tag.ortho.overall,
+        tag.lemma.cI,
+        tag.lemma.case
       ) as any as ISelectOrtTagsResult[];
     }
     if (tag.group) {

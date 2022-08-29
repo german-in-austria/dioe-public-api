@@ -90,10 +90,14 @@ export interface ISelectOrtTokenParams {
   aus: string | null | void;
   beruf: number | null | void;
   erhArt: readonly (number | null | void)[];
+  firstTagId: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
+  lemmaTokenC: string | null | void;
+  lemmaTokenCI: string | null | void;
   project_id: number | null | void;
   tagId: readonly (number | null | void)[];
+  tagLen: string | null | void;
   textOrtho: string | null | void;
   textTag: string | null | void;
 }
