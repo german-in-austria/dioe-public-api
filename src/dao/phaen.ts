@@ -66,7 +66,6 @@ const phaenDao = {
       join "KorpusDB_tbl_aufgaben" kdta2 on kdta2."von_ASet_id" = kdtp.id
     where kdtp.id IN $$ids
     `;
-
     return await query(selectASetByPhaen, { ids: ids });
   },
 };
