@@ -17,6 +17,10 @@ export interface TagTree extends ISelectTagsResult {
   children: TagTree[];
 }
 
+export interface numDto extends ISelectOrtTagsResult {
+  para: string | null;
+}
+
 export default {
   async getTagLayers() {
     return tagDao.getTagLayers();
@@ -111,7 +115,8 @@ export default {
           );
         }
       }
-      result.forEach((e: ISelectOrtTagsResult, idx: number, array) => {
+      result = result as numDto[];
+      result.forEach((e: numDto, idx: number, array) => {
         array[idx].para = el.para;
         if (e.tagName && e.tagName.startsWith('{'))
           array[idx].tagName = e.tagName.substring(1, e.tagName.length - 1);

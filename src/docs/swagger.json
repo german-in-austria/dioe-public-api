@@ -252,9 +252,6 @@
 						"type": "string",
 						"nullable": true
 					},
-					"para": {
-						"nullable": true
-					},
 					"tagName": {
 						"type": "string",
 						"nullable": true
@@ -266,7 +263,6 @@
 					"numTag",
 					"ortNamelang",
 					"osmId",
-					"para",
 					"tagName"
 				],
 				"type": "object",

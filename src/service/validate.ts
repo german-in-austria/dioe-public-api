@@ -208,12 +208,15 @@ export default {
   ): searchToken {
     const c: string[] = [];
     const cI: string[] = [];
-
     token.forEach((el: selectionObject) => {
-      const token =
+      let token =
         el.case.toLowerCase() !== 'regexp'
           ? `${el.state === 'nicht' ? '?!' : ''}${el.val}`
           : el.val.substring(1, el.val.lastIndexOf('/'));
+      if (el.state === 'genau') {
+        token = `^${token}$`;
+        matchAll = false;
+      }
       if (el.case === 'case-sensitive') {
         c.push(token);
       } else if (el.case === 'case-insensitive') {
