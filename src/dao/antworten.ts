@@ -504,14 +504,16 @@ const antwortenDao = {
             t.ortho ~ $textOrthoC or 
             t.text_in_ortho ~ $textInOrthoC)
           and ($firstTag < 0 or t.id in 
-            (select kdta.ist_token_id
+            (select DISTINCT 
+              kdta.ist_token_id
               from "KorpusDB_tbl_antwortentags" kdta3 
               join "KorpusDB_tbl_antworten" kdta on kdta.id = kdta3."id_Antwort_id"
-              where kdta3."id_Tag_id" in $$tagID
-              and kdta.ist_token_id is not null
-              group by
-                kdta.ist_token_id
-                  having count(kdta3."id_Tag_id") >= $len))
+              where kdta3."id_Tag_id" IN $$tagID
+              group by kdta3."id_Antwort_id", kdta3."id_Tag_id", kdta.ist_token_id
+                having (select count(*) from (select distinct kdta2."id_Antwort_id", kdta2."id_Tag_id" 
+                  from "KorpusDB_tbl_antwortentags" kdta2
+                  where kdta2."id_Antwort_id" = kdta3."id_Antwort_id"  
+                  and kdta2."id_Tag_id" IN $$tagID) as sub) >= $len))
      union 
         select e.start_time as "start_Antwort", 
         e.end_time as "stop_Antwort",
@@ -552,14 +554,16 @@ const antwortenDao = {
           t.ortho ~ $textOrthoC or 
           t.text_in_ortho ~ $textInOrthoC)
           and ($firstTag < 0 or t4.id in 
-            (select kdta.ist_tokenset_id
+            (select DISTINCT 
+              kdta.ist_tokenset_id
               from "KorpusDB_tbl_antwortentags" kdta3 
               join "KorpusDB_tbl_antworten" kdta on kdta.id = kdta3."id_Antwort_id"
-              where kdta3."id_Tag_id" in $$tagID
-              and kdta.ist_tokenset_id is not null
-              group by
-                kdta.ist_tokenset_id
-                  having count(kdta3."id_Tag_id") >= $len))
+              where kdta3."id_Tag_id" IN $$tagID
+              group by kdta3."id_Antwort_id", kdta3."id_Tag_id", kdta.ist_tokenset_id
+                having (select count(*) from (select distinct kdta2."id_Antwort_id", kdta2."id_Tag_id" 
+                  from "KorpusDB_tbl_antwortentags" kdta2
+                  where kdta2."id_Antwort_id" = kdta3."id_Antwort_id"  
+                  and kdta2."id_Tag_id" IN $$tagID) as sub) >= $len))
     `;
     return await query(selectAntwortenToken, {
       osmId: osmId,
