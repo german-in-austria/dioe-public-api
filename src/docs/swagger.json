@@ -1456,7 +1456,10 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/tagDto"
+								"items": {
+									"$ref": "#/components/schemas/tagDto"
+								},
+								"type": "array"
 							}
 						}
 					}

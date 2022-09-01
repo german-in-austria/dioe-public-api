@@ -67,20 +67,20 @@ export class TagController extends Controller {
   public async getTagOrte(
     @Path() tagId: number
   ): Promise<ISelectOrtTagsResult[]> {
-    return tagService.getTagOrte(
-      validator.validateTagDto({
+    return tagService.getTagOrte([
+      validator.validateSingleTagDto({
         ids: [tagId],
         erhArt: [-1],
         ausbildung: '',
         beruf_id: undefined,
         weiblich: undefined,
-      })
-    );
+      }),
+    ]);
   }
 
   @Post('/ort')
   public async getTagOrteMultiple(
-    @Body() tagDto: tagDto
+    @Body() tagDto: tagDto[]
   ): Promise<ISelectOrtTagsResult[]> {
     return tagService.getTagOrte(validator.validateTagDto(tagDto));
   }
@@ -89,7 +89,7 @@ export class TagController extends Controller {
   public async getTagsFromPreset(
     @Body() tagDto: tagDto
   ): Promise<ISelectOrtTagsResult[]> {
-    return tagService.getTagsFromPreset(validator.validateTagDto(tagDto));
+    return tagService.getTagsFromPreset(validator.validateSingleTagDto(tagDto));
   }
 
   @Get('/preset/ort/{tagId}')

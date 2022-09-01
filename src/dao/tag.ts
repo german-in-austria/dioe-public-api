@@ -113,9 +113,7 @@ const tagDao = {
     const selectOrtToken = sql<ISelectOrtTokenQuery & ISelectOrtTokenParams>`
         SELECT
           count(1) AS num_tag,
-          kdtt. "Tag" AS tag_name,
-          kdtt. "Tag_lang" AS tag_lang,
-          kdtt.id as tag_id,
+          CONCAT(ARRAY_AGG(distinct kdtt."Tag")) AS tag_name,
           odto. "osm_id" AS osm_id,
           odto. "ort_namelang" AS ort_namelang,
           odto. "lat" AS lat,
@@ -134,12 +132,15 @@ const tagDao = {
         WHERE
           ($firstTagId < 0 OR (kdtt.id IN $$tagId 
             AND kdta2.id in 
-            (select kdta3."id_Antwort_id"
-              from "KorpusDB_tbl_antwortentags" kdta3 
-              where kdta3."id_Tag_id" in $$tagId
-              group by
-                kdta3."id_Antwort_id"
-                  having count(kdta3."id_Tag_id") >= $tagLen)
+            (select DISTINCT 
+              kdta."id_Antwort_id"
+              from "KorpusDB_tbl_antwortentags" kdta 
+              where kdta."id_Tag_id" IN $$tagId
+              group by kdta."id_Antwort_id", kdta."id_Tag_id" 
+                having (select count(*) from (select distinct kdta2."id_Antwort_id", kdta2."id_Tag_id" 
+                  from "KorpusDB_tbl_antwortentags" kdta2
+                  where kdta2."id_Antwort_id" = kdta."id_Antwort_id"  
+                  and kdta2."id_Tag_id" IN $$tagId) as sub) >= $tagLen)
           )) and odto.osm_id in (
             select osm_id from "OrteDB_tbl_orte" odto 
               join "KorpusDB_tbl_inferhebung" kdti on kdti."Ort_id" = odto.id 
@@ -158,14 +159,8 @@ const tagDao = {
         GROUP BY
           odto.osm_id,
           odto.ort_namelang,
-          kdtt. "Tag",
-          kdtt. "Tag_lang",
-          kdtt.id,
           odto.lat,
-          odto.lon
-        ORDER BY
-        num_tag DESC;
-        
+          odto.lon        
       `;
     return await query(selectOrtToken, {
       tagId: tagId,
@@ -257,9 +252,7 @@ const tagDao = {
     const selectOrtTags = sql<ISelectOrtTagsQuery & ISelectOrtTagsParams>`
         SELECT
           count(1) AS num_tag,
-          kdtt. "Tag" AS tag_name,
-          kdtt. "Tag_lang" AS tag_lang,
-          kdtt.id as tag_id,
+          CONCAT(ARRAY_AGG(distinct kdtt."Tag")) AS tag_name,
           odto. "osm_id" AS osm_id,
           odto. "ort_namelang" AS ort_namelang,
           odto. "lat" AS lat,
@@ -288,14 +281,8 @@ const tagDao = {
         GROUP BY
           odto.osm_id,
           odto.ort_namelang,
-          kdtt. "Tag",
-          kdtt. "Tag_lang",
-          kdtt.id,
           odto.lat,
-          odto.lon
-        ORDER BY
-        num_tag DESC;
-        
+          odto.lon        
       `;
     return await query(selectOrtTags, {
       tagId: tagId,
@@ -322,9 +309,7 @@ const tagDao = {
     >`
       SELECT
         count(1) AS num_tag,
-        kdtt. "Tag" AS tag_name,
-        kdtt. "Tag_lang" AS tag_lang,
-        kdtt.id as tag_id,
+        CONCAT(ARRAY_AGG(distinct kdtt."Tag")) AS tag_name,
         odto. "osm_id" AS osm_id,
         odto. "ort_namelang" AS ort_namelang,
         odto. "lat" AS lat,
@@ -358,13 +343,8 @@ const tagDao = {
       GROUP BY
         odto.osm_id,
         odto.ort_namelang,
-        kdtt. "Tag",
-        kdtt. "Tag_lang",
-        kdtt.id,
         odto.lat,
         odto.lon
-      ORDER BY
-      num_tag DESC;
     `;
     return await query(selectOrtTagGroup, {
       firstTag: tagId[0],

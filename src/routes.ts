@@ -617,7 +617,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function TagController_getTagOrteMultiple(request: any, response: any, next: any) {
             const args = {
-                    tagDto: {"in":"body","name":"tagDto","required":true,"ref":"tagDto"},
+                    tagDto: {"in":"body","name":"tagDto","required":true,"dataType":"array","array":{"dataType":"refObject","ref":"tagDto"}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

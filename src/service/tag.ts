@@ -50,62 +50,74 @@ export default {
   async getPresetOrtTags(tagId: number[]): Promise<IGetPresetOrtTagResult[]> {
     return tagDao.getPresetOrtTag(tagId);
   },
-  async getTagOrte(tag: tag): Promise<ISelectOrtTagsResult[]> {
-    if (
-      tag.text.overall.length > 0 ||
-      tag.ortho.overall.length > 0 ||
-      tag.lemma.overall.length > 0
-    ) {
-      if (tag.ids[0] == -1) {
-        return tagDao.getOrtToken(
-          tag.erhArt,
-          tag.ausbildung,
-          tag.beruf_id,
-          tag.weiblich,
-          tag.gender_sel,
-          tag.project_id,
-          tag.text.case,
-          tag.text.cI,
-          tag.lemma.case,
-          tag.lemma.cI
-        ) as unknown as ISelectOrtTagsResult[];
+  async getTagOrte(tag: tag[]): Promise<ISelectOrtTagsResult[]> {
+    let res: ISelectOrtTagsResult[] = [];
+    for (const el of tag) {
+      let result;
+      if (
+        el.text.overall.length > 0 ||
+        el.ortho.overall.length > 0 ||
+        el.lemma.overall.length > 0
+      ) {
+        if (el.ids[0] == -1) {
+          result = (await tagDao.getOrtToken(
+            el.erhArt,
+            el.ausbildung,
+            el.beruf_id,
+            el.weiblich,
+            el.gender_sel,
+            el.project_id,
+            el.text.case,
+            el.text.cI,
+            el.lemma.case,
+            el.lemma.cI
+          )) as unknown as ISelectOrtTagsResult[];
+        } else {
+          result = (await tagDao.getOrtTagToken(
+            el.ids,
+            el.erhArt,
+            el.ausbildung,
+            el.beruf_id,
+            el.weiblich,
+            el.gender_sel,
+            el.project_id,
+            el.text.overall,
+            el.ortho.overall,
+            el.lemma.cI,
+            el.lemma.case
+          )) as any as ISelectOrtTagsResult[];
+        }
+      } else {
+        if (el.group) {
+          result = (await tagDao.getOrtTagGroup(
+            el.ids,
+            el.erhArt,
+            el.ausbildung,
+            el.beruf_id,
+            el.weiblich,
+            el.gender_sel,
+            el.project_id,
+            el.ids.length
+          )) as any as ISelectOrtTagsResult[];
+        } else {
+          result = await tagDao.getOrtTag(
+            el.ids,
+            el.erhArt,
+            el.ausbildung,
+            el.beruf_id,
+            el.weiblich,
+            el.gender_sel,
+            el.project_id
+          );
+        }
       }
-      return tagDao.getOrtTagToken(
-        tag.ids,
-        tag.erhArt,
-        tag.ausbildung,
-        tag.beruf_id,
-        tag.weiblich,
-        tag.gender_sel,
-        tag.project_id,
-        tag.text.overall,
-        tag.ortho.overall,
-        tag.lemma.cI,
-        tag.lemma.case
-      ) as any as ISelectOrtTagsResult[];
+      result.forEach((el: ISelectOrtTagsResult, idx: number, array) => {
+        if (el.tagName && el.tagName.startsWith('{'))
+          array[idx].tagName = el.tagName.substring(1, el.tagName.length - 1);
+      });
+      res = res.concat(result);
     }
-    if (tag.group) {
-      return tagDao.getOrtTagGroup(
-        tag.ids,
-        tag.erhArt,
-        tag.ausbildung,
-        tag.beruf_id,
-        tag.weiblich,
-        tag.gender_sel,
-        tag.project_id,
-        tag.ids.length
-      ) as any as ISelectOrtTagsResult[];
-    } else {
-      return tagDao.getOrtTag(
-        tag.ids,
-        tag.erhArt,
-        tag.ausbildung,
-        tag.beruf_id,
-        tag.weiblich,
-        tag.gender_sel,
-        tag.project_id
-      );
-    }
+    return res;
   },
   async getTagGen(gen: number): Promise<ISelectSingleGenResult[]> {
     return tagDao.getSingleGen(gen);
