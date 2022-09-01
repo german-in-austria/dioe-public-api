@@ -71,7 +71,7 @@ export default {
             el.text.cI,
             el.lemma.case,
             el.lemma.cI
-          )) as unknown as ISelectOrtTagsResult[];
+          )) as any as ISelectOrtTagsResult[];
         } else {
           result = (await tagDao.getOrtTagToken(
             el.ids,
