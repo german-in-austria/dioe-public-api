@@ -252,16 +252,9 @@
 						"type": "string",
 						"nullable": true
 					},
-					"tagId": {
-						"type": "number",
-						"format": "double"
-					},
-					"tagLang": {
+					"tagName": {
 						"type": "string",
 						"nullable": true
-					},
-					"tagName": {
-						"type": "string"
 					}
 				},
 				"required": [
@@ -270,8 +263,6 @@
 					"numTag",
 					"ortNamelang",
 					"osmId",
-					"tagId",
-					"tagLang",
 					"tagName"
 				],
 				"type": "object",

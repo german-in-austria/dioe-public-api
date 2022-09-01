@@ -386,24 +386,6 @@ export default {
   ): Promise<ISelectInfErhebungenResult[]> {
     return await antwortenDao.getErhebungsart(osmId.toString(), erhId);
   },
-  mergeTagNum(
-    antworten: Array<{ tagId: number; osmid: string }>,
-    tagNum: ISelectOrtTagsResult[]
-  ): Array<{
-    tagId: number;
-    osmid: string;
-    tagNum: string | null;
-  }> {
-    return antworten.map((a) => {
-      const num = tagNum.filter(
-        (e) => e.tagId === a.tagId && e.osmId === a.osmid
-      )[0].numTag;
-      return {
-        ...a,
-        tagNum: num,
-      };
-    });
-  },
   groupBy<TItem>(xs: TItem[], key: string): { [key: string]: TItem[] } {
     return xs.reduce((rv: any, x: any) => {
       (rv[x[key]] = rv[x[key]] || []).push(x);

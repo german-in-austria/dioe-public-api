@@ -109,9 +109,7 @@ export interface ISelectOrtTokenResult {
   numTag: string | null;
   ortNamelang: string;
   osmId: string | null;
-  tagId: number;
-  tagLang: string | null;
-  tagName: string;
+  tagName: string | null;
 }
 
 /** 'SelectOrtToken' query type */
@@ -166,9 +164,7 @@ export interface ISelectOrtTagsResult {
   numTag: string | null;
   ortNamelang: string;
   osmId: string | null;
-  tagId: number;
-  tagLang: string | null;
-  tagName: string;
+  tagName: string | null;
 }
 
 /** 'SelectOrtTags' query type */
@@ -197,9 +193,7 @@ export interface ISelectOrtTagGroupResult {
   numTag: string | null;
   ortNamelang: string;
   osmId: string | null;
-  tagId: number;
-  tagLang: string | null;
-  tagName: string;
+  tagName: string | null;
 }
 
 /** 'SelectOrtTagGroup' query type */
