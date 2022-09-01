@@ -111,9 +111,10 @@ export default {
           );
         }
       }
-      result.forEach((el: ISelectOrtTagsResult, idx: number, array) => {
-        if (el.tagName && el.tagName.startsWith('{'))
-          array[idx].tagName = el.tagName.substring(1, el.tagName.length - 1);
+      result.forEach((e: ISelectOrtTagsResult, idx: number, array) => {
+        array[idx].para = el.para;
+        if (e.tagName && e.tagName.startsWith('{'))
+          array[idx].tagName = e.tagName.substring(1, e.tagName.length - 1);
       });
       res = res.concat(result);
     }

@@ -164,6 +164,7 @@ export interface ISelectOrtTagsResult {
   numTag: string | null;
   ortNamelang: string;
   osmId: string | null;
+  para: unknown | null;
   tagName: string | null;
 }
 

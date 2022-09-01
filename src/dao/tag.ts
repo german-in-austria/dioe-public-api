@@ -256,7 +256,8 @@ const tagDao = {
           odto. "osm_id" AS osm_id,
           odto. "ort_namelang" AS ort_namelang,
           odto. "lat" AS lat,
-          odto. "lon" AS lon
+          odto. "lon" AS lon,
+          '' as para
         FROM
           "KorpusDB_tbl_tags" kdtt
           JOIN "KorpusDB_tbl_antwortentags" kdta ON kdtt.id = kdta. "id_Tag_id"

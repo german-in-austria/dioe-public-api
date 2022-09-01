@@ -4,6 +4,7 @@ import { aufgabenDto } from 'src/controller/aufgabenController';
 import { selectionObject, tagDto } from 'src/controller/tagController';
 import { Antwort } from './antworten';
 import { ausbildungGrad } from './social';
+import tag from './tag';
 
 export interface tag {
   ids: number[];
@@ -17,6 +18,7 @@ export interface tag {
   text: searchToken;
   ortho: searchToken;
   lemma: searchToken;
+  para: string;
 }
 
 export interface ageBound {
@@ -96,6 +98,7 @@ export default {
       text: tags,
       ortho: ortho,
       lemma: lemma,
+      para: el.para,
     } as tag;
   },
   validateAufgabenDto(auf: aufgabenDto) {
