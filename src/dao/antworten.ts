@@ -503,7 +503,7 @@ const antwortenDao = {
           and (t.text ~ $textTagC or 
             t.ortho ~ $textOrthoC or 
             t.text_in_ortho ~ $textInOrthoC)
-          and ($firstTag < -1 or t.id in 
+          and ($firstTag < 0 or t.id in 
             (select kdta.ist_token_id
               from "KorpusDB_tbl_antwortentags" kdta3 
               join "KorpusDB_tbl_antworten" kdta on kdta.id = kdta3."id_Antwort_id"
@@ -551,7 +551,7 @@ const antwortenDao = {
         and (t.text ~ $textTagC or 
           t.ortho ~ $textOrthoC or 
           t.text_in_ortho ~ $textInOrthoC)
-          and ($firstTag < -1 or t4.id in 
+          and ($firstTag < 0 or t4.id in 
             (select kdta.ist_tokenset_id
               from "KorpusDB_tbl_antwortentags" kdta3 
               join "KorpusDB_tbl_antworten" kdta on kdta.id = kdta3."id_Antwort_id"
