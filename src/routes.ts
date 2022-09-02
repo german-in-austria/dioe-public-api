@@ -123,6 +123,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "ids": {"dataType":"array","array":{"dataType":"double"},"required":true},
             "para": {"dataType":"string"},
+            "ageRange": {"dataType":"array","array":{"dataType":"double"}},
             "erhArt": {"dataType":"array","array":{"dataType":"double"}},
             "ausbildung": {"dataType":"string"},
             "beruf_id": {"dataType":"double"},

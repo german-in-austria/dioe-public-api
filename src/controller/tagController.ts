@@ -22,6 +22,7 @@ export interface selectionObject {
 export interface tagDto {
   ids: number[];
   para?: string;
+  ageRange?: number[];
   erhArt?: number[];
   ausbildung?: string;
   beruf_id?: number;

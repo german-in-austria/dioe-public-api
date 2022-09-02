@@ -6,7 +6,7 @@ import { Antwort } from './antworten';
 import { ausbildungGrad } from './social';
 import tag from './tag';
 
-export interface tag {
+export interface tag extends ageBound {
   ids: number[];
   erhArt: number[];
   ausbildung: string;
@@ -56,6 +56,8 @@ export default {
     const aus = this.validateAusbildung(el.ausbildung ? el.ausbildung : '');
     const beruf = this.validateBeruf(el.beruf_id ? el.beruf_id : -1);
     let project_id = el.project == undefined ? -1 : el.project;
+    const age = el.ageRange ? el.ageRange : [-1, -1];
+    const ageBound = this.validateAgeBound(age[0], age[1]);
     let gender_sel = 0;
     let tags: searchToken = this.constructSearchToken();
     let ortho: searchToken = this.constructSearchToken();
@@ -88,7 +90,8 @@ export default {
     if (el.group === undefined) el.group = false;
     return {
       ids: el.ids,
-      erhArt: el.erhArt == undefined ? [-1] : el.erhArt,
+      erhArt:
+        el.erhArt == undefined || el.erhArt.length === 0 ? [-1] : el.erhArt,
       ausbildung: aus,
       beruf_id: beruf,
       weiblich: el.weiblich,
@@ -99,6 +102,8 @@ export default {
       ortho: ortho,
       lemma: lemma,
       para: el.para,
+      ageLower: ageBound.ageLower,
+      ageUpper: ageBound.ageUpper,
     } as tag;
   },
   validateAufgabenDto(auf: aufgabenDto) {
