@@ -219,18 +219,17 @@ const antwortenDao = {
           kdta."stop_Antwort" as "stop_Antwort",
           kdti."Dateipfad" as dateipfad, 
           kdti."Audiofile" as "audiofile",
-          kdtt.id as tag_id, 
           DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
+          kdtt."Tag" as tagName,
+          kdtt.id::TEXT as tag_id,
           odto.osm_id as osmId, 
-          kdtt."Tag_lang" as tag_name,
-          kdtt."Tag" as tag_short,
           pdtig.gruppe_bez, pdtt.team_bez,
           kdti."ID_Erh_id"
        	from "KorpusDB_tbl_tags" kdtt       
         join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
         join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
         join "PersonenDB_tbl_informanten" pdti on pdti.id = kdta."von_Inf_id"
-        JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
+        LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
         join "KorpusDB_tbl_inf_zu_erhebung" kdtize on pdti.id = kdtize."ID_Inf_id" 
         join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id 
         join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
@@ -255,11 +254,10 @@ const antwortenDao = {
           kdte."stop_Aufgabe" as "stop_Antwort",
           kdti."Dateipfad" as dateipfad, 
           kdti."Audiofile" as "audiofile",
-          kdtt.id as tag_id, 
           DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
+          CONCAT(ARRAY_AGG(kdtt."Tag")) as tag_name,
+          CONCAT(ARRAY_AGG(kdtt.id)) as tag_id,
           odto.osm_id as osmId, 
-          kdtt."Tag_lang" as tag_name,
-          kdtt."Tag" as tag_short,
           pdtig.gruppe_bez, pdtt.team_bez,
           kdti."ID_Erh_id"
         from "KorpusDB_tbl_tags" kdtt      
@@ -272,7 +270,7 @@ const antwortenDao = {
           join lateral (
           	select * from "PersonenDB_tbl_informanten" pdti where pdti.id = kdta."von_Inf_id"
           ) pdti on true
-          JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
+          LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
           join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
           join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
           join "OrteDB_tbl_orte" odto on kdti."Ort_id" = odto.id
@@ -295,10 +293,15 @@ const antwortenDao = {
           and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
           and ($gender_sel < 0 OR pdtp.weiblich = $gender)
           and kdta2."id_Antwort_id" in 
-          (select kdta3."id_Antwort_id" from "KorpusDB_tbl_antwortentags" kdta3 
-            where kdta3."id_Tag_id" in $$tagId
-            group by
-            kdta3."id_Antwort_id" having count(kdta3."id_Tag_id") >= $tagGroupLength)
+          (select DISTINCT 
+            kdta."id_Antwort_id"
+            from "KorpusDB_tbl_antwortentags" kdta 
+            where kdta."id_Tag_id" IN $$tagId
+            group by kdta."id_Antwort_id", kdta."id_Tag_id" 
+              having (select count(*) from (select distinct kdta2."id_Antwort_id", kdta2."id_Tag_id" 
+                from "KorpusDB_tbl_antwortentags" kdta2
+                where kdta2."id_Antwort_id" = kdta."id_Antwort_id"  
+                and kdta2."id_Tag_id" IN $$tagId) as sub) >= $tagGroupLength)
         group by 
           kdti."ID_Erh_id" ,
           pdti.id,
@@ -306,14 +309,10 @@ const antwortenDao = {
           kdte."stop_Aufgabe",
           kdti."Dateipfad", 
           kdti."Audiofile",
-          kdtt.id, 
           odto.osm_id, 
-          kdtt."Tag_lang",
-          kdtt."Tag",
           kdti."Datum",
           pdtp.geb_datum,
           pdtig.gruppe_bez, pdtt.team_bez
-          having count(pdti.id) > 2 and count(kdti."ID_Erh_id") > 2  
         UNION
           select
             kdte."start_Aufgabe" as "start_Antwort", 
@@ -321,10 +320,9 @@ const antwortenDao = {
             kdti."Dateipfad" as dateipfad, 
             kdti."Audiofile" as "audiofile",
             DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
-            kdtt.id as tag_id, 
+            CONCAT(ARRAY_AGG(kdtt."Tag")) as tag_name,
+            CONCAT(ARRAY_AGG(kdtt.id)) as tag_id,
             odto.osm_id as osmId, 
-            kdtt."Tag_lang" as tag_name,
-            kdtt."Tag" as tag_short,
             pdtig.gruppe_bez, pdtt.team_bez,
             kdti."ID_Erh_id"
         from "KorpusDB_tbl_tags" kdtt      
@@ -337,7 +335,7 @@ const antwortenDao = {
           join lateral (
           	select * from "PersonenDB_tbl_informanten" pdti where pdti.id = kdta."von_Inf_id"
           ) pdti on true
-          JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
+          LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
           join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
           join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
           join "OrteDB_tbl_orte" odto on pdti.inf_ort_id = odto.id
@@ -358,10 +356,15 @@ const antwortenDao = {
           and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
           and ($gender_sel < 0 OR pdtp.weiblich = $gender)
           and kdta2."id_Antwort_id" in 
-        (select kdta3."id_Antwort_id" from "KorpusDB_tbl_antwortentags" kdta3 
-        	where kdta3."id_Tag_id" in $$tagId
-        	group by
-        	kdta3."id_Antwort_id" having count(kdta3."id_Tag_id") >= $tagGroupLength)
+        (select DISTINCT 
+          kdta."id_Antwort_id"
+          from "KorpusDB_tbl_antwortentags" kdta 
+          where kdta."id_Tag_id" IN $$tagId
+          group by kdta."id_Antwort_id", kdta."id_Tag_id" 
+            having (select count(*) from (select distinct kdta2."id_Antwort_id", kdta2."id_Tag_id" 
+              from "KorpusDB_tbl_antwortentags" kdta2
+              where kdta2."id_Antwort_id" = kdta."id_Antwort_id"  
+              and kdta2."id_Tag_id" IN $$tagId) as sub) >= $tagGroupLength)
         group by 
           kdti."ID_Erh_id",
           pdti.id,
@@ -371,12 +374,8 @@ const antwortenDao = {
           kdti."Audiofile",
           kdti."Datum",
           pdtp.geb_datum,
-          kdtt.id, 
           odto.osm_id, 
-          kdtt."Tag_lang",
-          kdtt."Tag",
           pdtig.gruppe_bez, pdtt.team_bez
-          having count(pdti.id) > 2 and count(kdti."ID_Erh_id") > 2      
     `;
     return await query(getTimeStampAntwort, {
       tagId: tagId,

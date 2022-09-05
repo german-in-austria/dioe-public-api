@@ -229,9 +229,8 @@ const models: TsoaRoute.Models = {
         "properties": {
             "start": {"dataType":"any","required":true},
             "stop": {"dataType":"any","required":true},
-            "tagId": {"dataType":"double","required":true},
+            "tagId": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"array","array":{"dataType":"double"}},{"dataType":"enum","enums":[null]}],"required":true},
             "tagName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "tagShort": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": true,
     },
@@ -264,9 +263,8 @@ const models: TsoaRoute.Models = {
         "properties": {
             "start": {"dataType":"any","required":true},
             "stop": {"dataType":"any","required":true},
-            "tagId": {"dataType":"double","required":true},
+            "tagId": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"array","array":{"dataType":"double"}},{"dataType":"enum","enums":[null]}],"required":true},
             "tagName": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "tagShort": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "ortho": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "orthoText": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
         },

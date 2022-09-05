@@ -19,9 +19,8 @@ import {
 export interface Antwort {
   start: any;
   stop: any;
-  tagId: number;
+  tagId: number | number[] | null;
   tagName: string | null;
-  tagShort: string | null;
 }
 
 export interface AntwortAufgabe extends Antwort {
@@ -117,7 +116,7 @@ export default {
       const end = Date.now() - start;
       console.log(`Execution time: ${end} ms`);
       let resAntAuf: IGetTimeStampAntwortResult[] = [];
-      if (transCheck.length - tagIDs.length != 0) {
+      if (transCheck.length - tagIDs.length != 0 || resTrans.length === 0) {
         resAntAuf = await antwortenDao.getTimeStampAntwort(
           tagIDs,
           osmId.toString(),
@@ -214,13 +213,22 @@ export default {
     mergeArr.forEach((el: any) => {
       // const cont = el.content;
       let ant: Antwort | AntwortToken = {} as Antwort;
+      let tagId = el.tagId;
+      if (tagId.split(',').length > 1) {
+        tagId = [
+          ...new Set(el.tagId.replace(/[{}]*/g, '').split(',').map(Number)),
+        ];
+      } else {
+        tagId = Number(tagId.replace(/[{}]*/g, ''));
+      }
       if (el.ortho || el.text || el.orthoText) {
         ant = {
           start: el.startAntwort,
           stop: el.stopAntwort,
-          tagId: el.tagId,
-          tagName: el.tagName,
-          tagShort: el.tagShort,
+          tagId: tagId,
+          tagName: [
+            ...new Set(el.tagname.replace(/[{}]*/g, '').split(',')),
+          ].join(','),
           ortho: el.text,
           orthoText: el.orthoText,
         } as AntwortToken;
@@ -228,9 +236,10 @@ export default {
         ant = {
           start: el.startAntwort,
           stop: el.stopAntwort,
-          tagId: el.tagId,
-          tagName: el.tagName,
-          tagShort: el.tagSort,
+          tagId: tagId,
+          tagName: [
+            ...new Set(el.tagname.replace(/[{}]*/g, '').split(',')),
+          ].join(','),
         } as Antwort;
       }
       const newTimestamp: AntwortTokenStamp = {
@@ -274,9 +283,8 @@ export default {
                 (<AntwortToken>curr).ortho = `${currStr}, ${antStr}`;
                 (<AntwortToken>curr).orthoText = `${currStr}, ${antStr}`;
               }
-              if (curr.tagName || curr.tagShort) {
+              if (curr.tagName) {
                 curr.tagName = `${curr.tagName}, ${ant.tagName}`;
-                curr.tagShort = `${curr.tagShort}, ${ant.tagShort}`;
               }
             }
           } else {
@@ -316,7 +324,6 @@ export default {
         tagName: el.tagName,
         satzId: el.satzId,
         aufgabeId: el.aufgabeId,
-        tagShort: '',
       };
       const newTimestamp: AntwortTimestamp = {
         dateipfad: el.dateipfad,

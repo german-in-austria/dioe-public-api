@@ -577,14 +577,22 @@
 					"start": {},
 					"stop": {},
 					"tagId": {
-						"type": "number",
-						"format": "double"
-					},
-					"tagName": {
-						"type": "string",
+						"anyOf": [
+							{
+								"type": "number",
+								"format": "double"
+							},
+							{
+								"items": {
+									"type": "number",
+									"format": "double"
+								},
+								"type": "array"
+							}
+						],
 						"nullable": true
 					},
-					"tagShort": {
+					"tagName": {
 						"type": "string",
 						"nullable": true
 					}
@@ -593,8 +601,7 @@
 					"start",
 					"stop",
 					"tagId",
-					"tagName",
-					"tagShort"
+					"tagName"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -669,14 +676,22 @@
 					"start": {},
 					"stop": {},
 					"tagId": {
-						"type": "number",
-						"format": "double"
-					},
-					"tagName": {
-						"type": "string",
+						"anyOf": [
+							{
+								"type": "number",
+								"format": "double"
+							},
+							{
+								"items": {
+									"type": "number",
+									"format": "double"
+								},
+								"type": "array"
+							}
+						],
 						"nullable": true
 					},
-					"tagShort": {
+					"tagName": {
 						"type": "string",
 						"nullable": true
 					},
@@ -694,7 +709,6 @@
 					"stop",
 					"tagId",
 					"tagName",
-					"tagShort",
 					"ortho",
 					"orthoText"
 				],
