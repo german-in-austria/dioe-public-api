@@ -65,7 +65,7 @@ const aufgabenDao = {
     const selectOrtAufgabe = sql<ISelectOrtAufgabeQuery>`
     select count(*) as num_aufg, 
     kdta.id,
-    kdta."Aufgabenstellung", 
+    (case when kdta."Aufgabenstellung" is null then kdta."Beschreibung_Aufgabe" else kdta."Aufgabenstellung" END) as aufgabenstellung,   
     odto.ort_namelang, odto.lat, odto.lon, odto.osm_id 
     from "KorpusDB_tbl_aufgaben" kdta
       join "KorpusDB_tbl_antworten" kdta2 on kdta2."zu_Aufgabe_id" = kdta.id

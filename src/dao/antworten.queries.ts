@@ -121,6 +121,7 @@ export interface IGetTimeStampAntwortResult {
   osmid: string | null;
   startAntwort: string | null;
   stopAntwort: string | null;
+  tagId: string | null;
   tagname: string | null;
   teamBez: string | null;
 }
