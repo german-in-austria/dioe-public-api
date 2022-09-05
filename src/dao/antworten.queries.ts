@@ -108,6 +108,7 @@ export interface IGetTimeStampAntwortParams {
   aus: string | null | void;
   beruf: number | null | void;
   first_phaen: number | null | void;
+  first_tag: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
   osmId: string | null | void;
@@ -218,6 +219,7 @@ export interface ISelectAntwortenTransParams {
   aus: string | null | void;
   beruf: number | null | void;
   first_phaen: number | null | void;
+  first_tag: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
   orthoTag: string | null | void;

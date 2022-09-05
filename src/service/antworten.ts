@@ -102,7 +102,7 @@ export default {
       let resTrans: ISelectAntwortenTransResult[] = [];
       if (transCheck.length > 0) {
         resTrans = await antwortenDao.selectAntwortenTrans(
-          transCheck.map((el) => el.id),
+          tagIDs[0] < 0 ? tagIDs : transCheck.map((el) => el.id),
           osmId.toString(),
           filters.ageLower,
           filters.ageUpper,
@@ -112,7 +112,7 @@ export default {
           filters.gender_sel,
           filters.text.case,
           filters.ortho.case,
-          filters.group ? transCheck.map((el) => el.id).length : 0,
+          filters.group ? (tagIDs[0] < 0 ? 0 : tagIDs.length) : 0,
           filters.phaen
         );
       }
@@ -129,7 +129,7 @@ export default {
           filters.beruf_id,
           filters.weiblich,
           filters.gender_sel,
-          filters.group ? tagIDs.length : 0,
+          filters.group ? (tagIDs[0] < 0 ? 0 : tagIDs.length) : 0,
           filters.phaen
         );
       }
