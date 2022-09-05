@@ -214,21 +214,26 @@ export default {
       // const cont = el.content;
       let ant: Antwort | AntwortToken = {} as Antwort;
       let tagId = el.tagId;
-      if (tagId.split(',').length > 1) {
-        tagId = [
-          ...new Set(el.tagId.replace(/[{}]*/g, '').split(',').map(Number)),
-        ];
-      } else {
-        tagId = Number(tagId.replace(/[{}]*/g, ''));
+      if (tagId && tagId !== undefined) {
+        if (tagId.split(',').length > 1) {
+          tagId = [
+            ...new Set(el.tagId.replace(/[{}]*/g, '').split(',').map(Number)),
+          ];
+        } else {
+          tagId = Number(tagId.replace(/[{}]*/g, ''));
+        }
+      } else if (tagIDs.length > 0 && tagIDs[0] > -1) {
+        tagId = tagIDs[0];
       }
+      let tag_name = el.tagname === undefined ? el.tagName : el.tagname;
       if (el.ortho || el.text || el.orthoText) {
         ant = {
           start: el.startAntwort,
           stop: el.stopAntwort,
           tagId: tagId,
-          tagName: [
-            ...new Set(el.tagname.replace(/[{}]*/g, '').split(',')),
-          ].join(','),
+          tagName: [...new Set(tag_name.replace(/[{}]*/g, '').split(','))].join(
+            ','
+          ),
           ortho: el.text,
           orthoText: el.orthoText,
         } as AntwortToken;
@@ -237,9 +242,9 @@ export default {
           start: el.startAntwort,
           stop: el.stopAntwort,
           tagId: tagId,
-          tagName: [
-            ...new Set(el.tagname.replace(/[{}]*/g, '').split(',')),
-          ].join(','),
+          tagName: [...new Set(tag_name.replace(/[{}]*/g, '').split(','))].join(
+            ','
+          ),
         } as Antwort;
       }
       const newTimestamp: AntwortTokenStamp = {
