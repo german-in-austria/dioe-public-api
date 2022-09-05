@@ -300,6 +300,7 @@ const models: TsoaRoute.Models = {
             "ortho": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},
             "textInOrtho": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},
             "lemma": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},
+            "phaen": {"dataType":"array","array":{"dataType":"double"}},
         },
         "additionalProperties": true,
     },

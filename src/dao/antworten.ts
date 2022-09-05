@@ -166,16 +166,23 @@ const antwortenDao = {
     where kdts."Transkript" like $str`;
     return await query(selectSatz, { str: str });
   },
-  async checkIfTrans(tagId: number[]) {
+  async checkIfTrans(tagId: number[], phaen: number[]) {
     const checkIfTrans = sql<ICheckIfTransParams & ICheckIfTransQuery>`
     select distinct t.id
-        from(select kdtt2.id from "KorpusDB_tbl_tags" kdtt2 where kdtt2.id in $$tagId) t 
+        from(select kdtt2.id from "KorpusDB_tbl_tags" kdtt2 
+          where ($tag_first < 0 or kdtt2.id in $$tagId) AND 
+          ($phaen_first < 0 or kdtt2."zu_Phaenomen_id" in $$phaen)) t 
         join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = t.id
         join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
         WHERE 
           (kdta.ist_token_id is not null or kdta.ist_tokenset_id is not null);
     `;
-    return await query(checkIfTrans, { tagId: tagId });
+    return await query(checkIfTrans, {
+      tagId: tagId,
+      tag_first: tagId[0],
+      phaen: phaen,
+      phaen_first: phaen[0],
+    });
   },
   async checkIfRep(tagId: number[]) {
     const checkIfRep = sql<ICheckIfRepQuery>`
@@ -210,7 +217,8 @@ const antwortenDao = {
     beruf: number,
     gender: boolean,
     gender_sel: number,
-    tagGroupLength: number
+    tagGroupLength: number,
+    phaen: number[]
   ) {
     const getTimeStampAntwort = sql<
       IGetTimeStampAntwortQuery & IGetTimeStampAntwortParams
@@ -220,7 +228,7 @@ const antwortenDao = {
           kdti."Dateipfad" as dateipfad, 
           kdti."Audiofile" as "audiofile",
           DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
-          kdtt."Tag" as tagName,
+          CASE WHEN kdtt."Tag" = '' THEN kdtp."Bez_Phaenomen" ELSE kdtt."Tag" END as tagName,
           kdtt.id::TEXT as tag_id,
           odto.osm_id as osmId, 
           pdtig.gruppe_bez, pdtt.team_bez,
@@ -238,9 +246,11 @@ const antwortenDao = {
         join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
         join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+        left join "KorpusDB_tbl_phaenomene" kdtp on kdtp.id = kdtt."zu_Phaenomen_id"
         WHERE 
           kdta."start_Antwort" <> kdta."stop_Antwort" and 
           kdtt.id in $$tagId and 
+          ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen) and
           odto.osm_id = $osmId and 
           kdta3.id = kdta."zu_Aufgabe_id" 
           and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
@@ -255,7 +265,11 @@ const antwortenDao = {
           kdti."Dateipfad" as dateipfad, 
           kdti."Audiofile" as "audiofile",
           DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
-          CONCAT(ARRAY_AGG(kdtt."Tag")) as tag_name,
+          CONCAT(
+            ARRAY_AGG(
+              CASE WHEN kdtt."Tag" = '' THEN kdtp."Bez_Phaenomen" ELSE kdtt."Tag" END
+            )
+          ) as tag_name,
           CONCAT(ARRAY_AGG(kdtt.id)) as tag_id,
           odto.osm_id as osmId, 
           pdtig.gruppe_bez, pdtt.team_bez,
@@ -281,8 +295,10 @@ const antwortenDao = {
           join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
           join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
           join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+          left join "KorpusDB_tbl_phaenomene" kdtp on kdtp.id = kdtt."zu_Phaenomen_id"
         WHERE 
         	kdtt.id in $$tagId
+          and ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
         	and odto.osm_id = $osmId
           and kdti."Dateipfad" not in ('', '0') 
           and kdti."Audiofile" not in ('', '0')
@@ -320,7 +336,11 @@ const antwortenDao = {
             kdti."Dateipfad" as dateipfad, 
             kdti."Audiofile" as "audiofile",
             DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
-            CONCAT(ARRAY_AGG(kdtt."Tag")) as tag_name,
+            CONCAT(
+              ARRAY_AGG(
+                CASE WHEN kdtt."Tag" = '' THEN kdtp."Bez_Phaenomen" ELSE kdtt."Tag" END
+              )
+            ) as tag_name,
             CONCAT(ARRAY_AGG(kdtt.id)) as tag_id,
             odto.osm_id as osmId, 
             pdtig.gruppe_bez, pdtt.team_bez,
@@ -346,8 +366,10 @@ const antwortenDao = {
           join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
           join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
           join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+          left join "KorpusDB_tbl_phaenomene" kdtp on kdtp.id = kdtt."zu_Phaenomen_id"
         WHERE 
         	kdtt.id in $$tagId
+          and ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
         	and odto.osm_id = $osmId
           and kdta3.id = kdta."zu_Aufgabe_id"  
           and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
@@ -387,6 +409,8 @@ const antwortenDao = {
       aus: aus,
       gender_sel: gender_sel,
       tagGroupLength: String(tagGroupLength),
+      phaen: phaen,
+      first_phaen: phaen[0],
     });
   },
   async getStampsFromAntwort(
@@ -596,7 +620,8 @@ const antwortenDao = {
     gender_sel: number,
     textTag: string,
     orthoTag: string,
-    tagGroupLength: number
+    tagGroupLength: number,
+    phaen: number[]
   ) {
     const selectAntwortenTrans = sql<
       ISelectAntwortenTransQuery & ISelectAntwortenTransParams
@@ -618,6 +643,7 @@ const antwortenDao = {
 		    join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
 		    join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
 		      where (kdta.ist_token_id is not null or kdta.ist_tokenset_id is not null) and 
+            ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen) AND
 		        kdtt.id in $$tagID) tags
     join token t on t.id = tags.ist_token_id 
       and ($textTag = '' OR t.text SIMILAR TO $textTag)
@@ -664,7 +690,9 @@ const antwortenDao = {
             join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
             join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
               where kdta.ist_tokenset_id is not null and 
-                kdtt.id in $$tagID) tags
+                kdtt.id in $$tagID AND
+                ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
+                ) tags
         join tokenset t4 on t4.id = tags.ist_tokenset_id
         join tokentoset t2 on t2.id_tokenset_id = t4.id
         join token t on t.id = t2.id_token_id 
@@ -707,6 +735,8 @@ const antwortenDao = {
       textTag: textTag,
       orthoTag: orthoTag,
       tagGroupLength: String(tagGroupLength),
+      phaen: phaen,
+      first_phaen: phaen[0],
     });
   },
   async selectAntwortenFromAufgaben(satzid: number, aufgabeid: number) {

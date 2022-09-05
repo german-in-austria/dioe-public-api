@@ -15,6 +15,7 @@ import {
   IGetTimeStampAntwortResult,
   ISelectInfErhebungenResult,
 } from '../dao/antworten.queries';
+import phaen from './phaen';
 
 export interface Antwort {
   start: any;
@@ -69,7 +70,7 @@ export default {
       tagIDs = [-1];
     }
     if (
-      tagIDs[0] < 0 ||
+      (tagIDs[0] < 0 && filters.phaen[0] < 0) ||
       filters.lemma.overall.length > 0 ||
       filters.text.overall.length > 0 ||
       filters.ortho.overall.length > 0
@@ -95,7 +96,8 @@ export default {
       mergeArr = resTrans;
     } else {
       const transCheck: ICheckIfTransResult[] = await antwortenDao.checkIfTrans(
-        tagIDs
+        tagIDs,
+        filters.phaen
       );
       let resTrans: ISelectAntwortenTransResult[] = [];
       if (transCheck.length > 0) {
@@ -110,7 +112,8 @@ export default {
           filters.gender_sel,
           filters.text.case,
           filters.ortho.case,
-          filters.group ? transCheck.map((el) => el.id).length : 0
+          filters.group ? transCheck.map((el) => el.id).length : 0,
+          filters.phaen
         );
       }
       const end = Date.now() - start;
@@ -126,7 +129,8 @@ export default {
           filters.beruf_id,
           filters.weiblich,
           filters.gender_sel,
-          filters.group ? tagIDs.length : 0
+          filters.group ? tagIDs.length : 0,
+          filters.phaen
         );
       }
       mergeArr = resTrans;

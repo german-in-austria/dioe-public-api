@@ -37,6 +37,7 @@ export interface filters extends ageBound {
   ortho: searchToken;
   textInOrtho: searchToken;
   lemma: searchToken;
+  phaen: number[];
 }
 
 export interface searchToken {
@@ -168,6 +169,8 @@ export default {
       lemma = this.transformTextToMatch(ant.lemma, false);
     }
 
+    if (ant.phaen === undefined || ant.phaen.length === 0) ant.phaen = [-1];
+
     return {
       ausbildung: aus,
       beruf_id: beruf,
@@ -180,6 +183,7 @@ export default {
       ortho: ortho,
       textInOrtho: textInOrtho,
       lemma: lemma,
+      phaen: ant.phaen,
     } as filters;
   },
   validateAusbildung(str: string): string {

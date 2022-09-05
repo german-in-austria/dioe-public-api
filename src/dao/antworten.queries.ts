@@ -52,6 +52,9 @@ export interface ISelectSatzQuery {
 
 /** 'CheckIfTrans' parameters type */
 export interface ICheckIfTransParams {
+  phaen: readonly (number | null | void)[];
+  phaen_first: number | null | void;
+  tag_first: number | null | void;
   tagId: readonly (number | null | void)[];
 }
 
@@ -104,9 +107,11 @@ export interface IGetTimeStampAntwortParams {
   ageUpper: number | null | void;
   aus: string | null | void;
   beruf: number | null | void;
+  first_phaen: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
   osmId: string | null | void;
+  phaen: readonly (number | null | void)[];
   tagGroupLength: string | null | void;
   tagId: readonly (number | null | void)[];
 }
@@ -212,10 +217,12 @@ export interface ISelectAntwortenTransParams {
   ageUpper: number | null | void;
   aus: string | null | void;
   beruf: number | null | void;
+  first_phaen: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
   orthoTag: string | null | void;
   osmId: string | null | void;
+  phaen: readonly (number | null | void)[];
   tagGroupLength: string | null | void;
   tagID: readonly (number | null | void)[];
   textTag: string | null | void;
