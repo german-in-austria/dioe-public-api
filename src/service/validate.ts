@@ -90,7 +90,7 @@ export default {
     }
 
     if (el.group === undefined) el.group = false;
-    if (el.phaen === undefined) el.phaen = [-1];
+    if (el.phaen === undefined || el.phaen.length === 0) el.phaen = [-1];
     return {
       ids: el.ids,
       erhArt:
