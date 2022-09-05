@@ -130,6 +130,7 @@ const models: TsoaRoute.Models = {
             "weiblich": {"dataType":"boolean"},
             "project": {"dataType":"double"},
             "group": {"dataType":"boolean"},
+            "phaen": {"dataType":"array","array":{"dataType":"double"}},
             "text": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},
             "ortho": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},
             "lemma": {"dataType":"array","array":{"dataType":"refObject","ref":"selectionObject"}},

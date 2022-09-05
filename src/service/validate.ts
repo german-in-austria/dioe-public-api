@@ -9,6 +9,7 @@ import tag from './tag';
 export interface tag extends ageBound {
   ids: number[];
   erhArt: number[];
+  phaenIds: number[];
   ausbildung: string;
   beruf_id: number;
   weiblich: boolean;
@@ -88,6 +89,7 @@ export default {
     }
 
     if (el.group === undefined) el.group = false;
+    if (el.phaen === undefined) el.phaen = [-1];
     return {
       ids: el.ids,
       erhArt:
@@ -104,6 +106,7 @@ export default {
       para: el.para,
       ageLower: ageBound.ageLower,
       ageUpper: ageBound.ageUpper,
+      phaenIds: el.phaen,
     } as tag;
   },
   validateAufgabenDto(auf: aufgabenDto) {

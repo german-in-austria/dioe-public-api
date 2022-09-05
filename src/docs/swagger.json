@@ -331,6 +331,13 @@
 					"group": {
 						"type": "boolean"
 					},
+					"phaen": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					},
 					"text": {
 						"items": {
 							"$ref": "#/components/schemas/selectionObject"

@@ -232,6 +232,7 @@ export interface ISelectAntwortenTransResult {
   startAntwort: string | null;
   stopAntwort: string | null;
   tagName: string | null;
+  tagName: string | null;
   tagShort: string | null;
   teamBez: string | null;
 }

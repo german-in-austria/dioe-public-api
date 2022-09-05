@@ -48,7 +48,8 @@ export default {
       tag.beruf_id,
       tag.weiblich,
       tag.gender_sel,
-      -1
+      -1,
+      [-1]
     );
   },
   async getPresetOrtTags(tagId: number[]): Promise<IGetPresetOrtTagResult[]> {
@@ -101,7 +102,8 @@ export default {
             el.weiblich,
             el.gender_sel,
             el.project_id,
-            el.ids.length
+            el.ids.length,
+            el.phaenIds
           )) as any as ISelectOrtTagsResult[];
         } else {
           result = await tagDao.getOrtTag(
@@ -111,7 +113,8 @@ export default {
             el.beruf_id,
             el.weiblich,
             el.gender_sel,
-            el.project_id
+            el.project_id,
+            el.phaenIds
           );
         }
       }

@@ -29,6 +29,7 @@ export interface tagDto {
   weiblich?: boolean;
   project?: number;
   group?: boolean;
+  phaen?: number[];
   text?: Array<selectionObject>;
   ortho?: Array<selectionObject>;
   lemma?: Array<selectionObject>;

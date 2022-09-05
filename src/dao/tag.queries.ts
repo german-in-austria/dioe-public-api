@@ -153,8 +153,11 @@ export interface ISelectOrtTagsParams {
   erhArt: readonly (number | null | void)[];
   gender: boolean | null | void;
   gender_sel: number | null | void;
+  phaen: readonly (number | null | void)[];
+  phaen_first: number | null | void;
   project_id: number | null | void;
   tagId: readonly (number | null | void)[];
+  tagId_first: number | null | void;
 }
 
 /** 'SelectOrtTags' return type */
@@ -181,6 +184,8 @@ export interface ISelectOrtTagGroupParams {
   firstTag: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
+  phaen: readonly (number | null | void)[];
+  phaen_first: number | null | void;
   project_id: number | null | void;
   tagGroupLength: string | null | void;
   tagId: readonly (number | null | void)[];

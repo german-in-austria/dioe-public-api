@@ -247,7 +247,8 @@ const tagDao = {
     beruf: number,
     gender: boolean,
     gender_sel: number,
-    project_id: number
+    project_id: number,
+    phaen: number[]
   ) {
     const selectOrtTags = sql<ISelectOrtTagsQuery & ISelectOrtTagsParams>`
         SELECT
@@ -266,7 +267,7 @@ const tagDao = {
           JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
           join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
         WHERE
-          (kdtt.id IN $$tagId) and odto.osm_id in (
+          ($tagId_first < 0 or kdtt.id IN $$tagId) and odto.osm_id in (
             select osm_id from "OrteDB_tbl_orte" odto 
               join "KorpusDB_tbl_inferhebung" kdti on kdti."Ort_id" = odto.id 
               join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
@@ -278,6 +279,7 @@ const tagDao = {
           and ($aus = '' OR pdti.ausbildung_max = $aus)
           and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
           and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+          and ($phaen_first < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
           and pdti.inf_gruppe_id in (
             select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
             where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
@@ -289,12 +291,15 @@ const tagDao = {
       `;
     return await query(selectOrtTags, {
       tagId: tagId,
+      tagId_first: tagId[0],
       beruf: beruf,
       gender: gender,
       erhArt: erhArt,
       gender_sel: gender_sel,
       aus: aus,
       project_id: project_id,
+      phaen: phaen,
+      phaen_first: phaen[0],
     });
   },
   async getOrtTagGroup(
@@ -305,7 +310,8 @@ const tagDao = {
     gender: boolean,
     gender_sel: number,
     project_id: number,
-    tagGroupLength: number
+    tagGroupLength: number,
+    phaen: number[]
   ) {
     const selectOrtTagGroup = sql<
       ISelectOrtTagGroupParams & ISelectOrtTagGroupQuery
@@ -335,6 +341,7 @@ const tagDao = {
         and ($aus = '' OR pdti.ausbildung_max = $aus)
         and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
         and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+        and ($phaen_first < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
         and kdta."id_Antwort_id" in 
         (select kdta3."id_Antwort_id" from "KorpusDB_tbl_antwortentags" kdta3 
         	where kdta3."id_Tag_id" in $$tagId
@@ -359,6 +366,8 @@ const tagDao = {
       aus: aus,
       project_id: project_id,
       tagGroupLength: String(tagGroupLength),
+      phaen: phaen,
+      phaen_first: phaen[0],
     });
   },
   async getPresetOrtTag(tagIDs: number[]) {
