@@ -207,6 +207,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "beschreibung": {"dataType":"string","required":true},
+            "aufgabenstellung": {"dataType":"string"},
             "id": {"dataType":"double","required":true},
         },
         "additionalProperties": true,

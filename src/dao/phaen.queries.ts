@@ -93,3 +93,22 @@ export interface ISelectASetByPhaenQuery {
   result: ISelectASetByPhaenResult;
 }
 
+/** 'SelectAufgabenByPhaen' parameters type */
+export interface ISelectAufgabenByPhaenParams {
+  phaenID: readonly (number | null | void)[];
+}
+
+/** 'SelectAufgabenByPhaen' return type */
+export interface ISelectAufgabenByPhaenResult {
+  aufgabe: string | null;
+  beschr: string | null;
+  id: number;
+  phaen: string;
+}
+
+/** 'SelectAufgabenByPhaen' query type */
+export interface ISelectAufgabenByPhaenQuery {
+  params: ISelectAufgabenByPhaenParams;
+  result: ISelectAufgabenByPhaenResult;
+}
+

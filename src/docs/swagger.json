@@ -531,6 +531,9 @@
 					"beschreibung": {
 						"type": "string"
 					},
+					"aufgabenstellung": {
+						"type": "string"
+					},
 					"id": {
 						"type": "number",
 						"format": "double"
