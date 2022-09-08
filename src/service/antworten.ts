@@ -1,8 +1,6 @@
 import antwortenDao from '../dao/antworten';
 import _, { filter } from 'lodash';
 
-import { ISelectOrtTagsResult } from 'src/dao/tag.queries';
-
 import validator, { filters, tag } from '../service/validate';
 
 import {
@@ -15,7 +13,6 @@ import {
   IGetTimeStampAntwortResult,
   ISelectInfErhebungenResult,
 } from '../dao/antworten.queries';
-import phaen from './phaen';
 
 export interface Antwort {
   start: any;
