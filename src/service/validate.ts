@@ -267,8 +267,17 @@ export default {
       return false;
     }
 
+    if (sStamp.minutes !== undefined && sAnt.minutes !== undefined) {
+      return (
+        sStamp.minutes === sAnt.minutes &&
+        sStamp.seconds === sAnt.seconds &&
+        sStamp.milliseconds === sAnt.milliseconds &&
+        eStamp.minutes == eAnt.minutes &&
+        eStamp.seconds === eStamp.seconds &&
+        eStamp.milliseconds === eStamp.milliseconds
+      );
+    }
     return (
-      sStamp.minutes === sAnt.minutes &&
       sStamp.seconds === sAnt.seconds &&
       sStamp.milliseconds === sAnt.milliseconds &&
       eStamp.minutes == eAnt.minutes &&

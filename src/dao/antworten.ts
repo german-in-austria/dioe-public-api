@@ -312,20 +312,22 @@ const antwortenDao = {
           (select DISTINCT 
             kdta."id_Antwort_id"
             from "KorpusDB_tbl_antwortentags" kdta 
-            where kdta."id_Tag_id" IN $$tagId
+            join "KorpusDB_tbl_tags" kdtt on kdtt.id = kdta."id_Tag_id" 
+            where kdta."id_Tag_id" in $$tagId and
+            ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
             group by kdta."id_Antwort_id", kdta."id_Tag_id" 
               having (select count(*) from (select distinct kdta2."id_Antwort_id", kdta2."id_Tag_id" 
                 from "KorpusDB_tbl_antwortentags" kdta2
                 where kdta2."id_Antwort_id" = kdta."id_Antwort_id"  
                 and kdta2."id_Tag_id" IN $$tagId) as sub) >= $tagGroupLength))
         group by 
-          kdti."ID_Erh_id" ,
-          pdti.id,
           kdte."start_Aufgabe", 
           kdte."stop_Aufgabe",
           kdti."Dateipfad", 
           kdti."Audiofile",
           odto.osm_id, 
+          kdti."ID_Erh_id",
+          pdti.id,
           kdti."Datum",
           pdtp.geb_datum,
           pdtig.gruppe_bez, pdtt.team_bez
@@ -381,19 +383,21 @@ const antwortenDao = {
         (select DISTINCT 
           kdta."id_Antwort_id"
           from "KorpusDB_tbl_antwortentags" kdta 
-          where kdta."id_Tag_id" IN $$tagId
+          join "KorpusDB_tbl_tags" kdtt on kdtt.id = kdta."id_Tag_id" 
+        	where kdta."id_Tag_id" in $$tagId and
+          ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
           group by kdta."id_Antwort_id", kdta."id_Tag_id" 
             having (select count(*) from (select distinct kdta2."id_Antwort_id", kdta2."id_Tag_id" 
               from "KorpusDB_tbl_antwortentags" kdta2
               where kdta2."id_Antwort_id" = kdta."id_Antwort_id"  
               and kdta2."id_Tag_id" IN $$tagId) as sub) >= $tagGroupLength))
         group by 
-          kdti."ID_Erh_id",
-          pdti.id,
           kdte."start_Aufgabe", 
           kdte."stop_Aufgabe",
           kdti."Dateipfad", 
           kdti."Audiofile",
+          kdti."ID_Erh_id",
+          pdti.id,
           kdti."Datum",
           pdtp.geb_datum,
           odto.osm_id, 
@@ -669,7 +673,9 @@ const antwortenDao = {
         and ($first_tag < 0 OR tags."id_Antwort_id" in 
         (select kdta3."id_Antwort_id" 
           from "KorpusDB_tbl_antwortentags" kdta3 
-        	where kdta3."id_Tag_id" in $$tagID
+          join "KorpusDB_tbl_tags" kdtt on kdtt.id = kdta3."id_Tag_id" 
+        	where kdta3."id_Tag_id" in $$tagID and
+          ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
         	group by
         	  kdta3."id_Antwort_id" 
               having count(kdta3."id_Tag_id") >= $tagGroupLength))
@@ -719,7 +725,9 @@ const antwortenDao = {
         and ($first_tag < 0 OR tags."id_Antwort_id" in 
         (select kdta3."id_Antwort_id" 
           from "KorpusDB_tbl_antwortentags" kdta3 
-        	where kdta3."id_Tag_id" in $$tagID
+          join "KorpusDB_tbl_tags" kdtt on kdtt.id = kdta3."id_Tag_id" 
+        	where kdta3."id_Tag_id" in $$tagID and
+          ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
         	group by
         	  kdta3."id_Antwort_id" 
               having count(kdta3."id_Tag_id") >= $tagGroupLength))

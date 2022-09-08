@@ -296,6 +296,24 @@ export default {
                 curr.tagName = `${curr.tagName}, ${ant.tagName}`;
               }
             }
+          } else if (
+            (<AntwortToken>curr).orthoText !== undefined &&
+            (<AntwortToken>ant).orthoText !== undefined
+          ) {
+            // Is AntwortToken
+            let currStr = (<AntwortToken>curr).orthoText;
+            const antStr = (<AntwortToken>ant).orthoText;
+            if (
+              (currStr && antStr && !currStr.includes(antStr)) ||
+              curr.tagName !== ant.tagName
+            ) {
+              if (currStr !== antStr) {
+                (<AntwortToken>curr).orthoText = `${currStr}, ${antStr}`;
+              }
+              if (curr.tagName) {
+                curr.tagName = `${curr.tagName}, ${ant.tagName}`;
+              }
+            }
           } else {
             // Is Antwort
             antworten[dataIdx].data.push(ant);
