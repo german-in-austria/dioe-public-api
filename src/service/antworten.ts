@@ -216,6 +216,7 @@ export default {
       let ant: Antwort | AntwortToken = {} as Antwort;
       let tagId = el.tagId;
       if (tagId && tagId !== undefined) {
+        // console.log(el);
         if (tagId.split(',').length > 1) {
           tagId = [
             ...new Set(el.tagId.replace(/[{}]*/g, '').split(',').map(Number)),
