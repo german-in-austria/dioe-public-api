@@ -210,6 +210,7 @@ const antwortenDao = {
   },
   async getTimeStampAntwort(
     tagId: number[],
+    erhArt: number[],
     osmId: string,
     ageLower: number,
     ageUpper: number,
@@ -251,8 +252,13 @@ const antwortenDao = {
           kdta."start_Antwort" <> kdta."stop_Antwort" and 
           ($first_tag < 0 or kdtt.id in $$tagId) and 
           ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen) and
-          odto.osm_id = $osmId and 
-          kdta3.id = kdta."zu_Aufgabe_id" 
+          odto.osm_id in (
+            select osm_id from "OrteDB_tbl_orte" odto2 
+              join "KorpusDB_tbl_inferhebung" kdti2 on kdti2."Ort_id" = odto2.id 
+              join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
+              where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = $osmId
+          )
+          and kdta3.id = kdta."zu_Aufgabe_id" 
           and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
           and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
           and ($aus = '' OR pdti.ausbildung_max = $aus)
@@ -299,7 +305,12 @@ const antwortenDao = {
         WHERE 
           ($first_tag < 0 or kdtt.id in $$tagId) 
           and ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
-        	and odto.osm_id = $osmId
+        	and odto.osm_id in (
+            select osm_id from "OrteDB_tbl_orte" odto2 
+              join "KorpusDB_tbl_inferhebung" kdti2 on kdti2."Ort_id" = odto2.id 
+              join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
+              where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = $osmId
+          )
           and kdti."Dateipfad" not in ('', '0') 
           and kdti."Audiofile" not in ('', '0')
           and kdta3.id = kdta."zu_Aufgabe_id"
@@ -372,7 +383,12 @@ const antwortenDao = {
         WHERE 
           ($first_tag < 0 or kdtt.id in $$tagId) 
           and ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
-        	and odto.osm_id = $osmId
+        	and odto.osm_id in (
+            select osm_id from "OrteDB_tbl_orte" odto2 
+              join "KorpusDB_tbl_inferhebung" kdti2 on kdti2."Ort_id" = odto2.id 
+              join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
+              where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = $osmId
+          )
           and kdta3.id = kdta."zu_Aufgabe_id"  
           and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
           and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
@@ -406,6 +422,8 @@ const antwortenDao = {
     return await query(getTimeStampAntwort, {
       tagId: tagId,
       first_tag: tagId[0],
+      erhArt: erhArt,
+      firstErhArt: erhArt[0],
       osmId: osmId,
       ageLower: ageLower,
       ageUpper: ageUpper,
@@ -476,6 +494,7 @@ const antwortenDao = {
   },
   async selectAntwortenToken(
     tagId: number[],
+    erhArt: number[],
     osmId: string,
     ageLower: number,
     ageUpper: number,
@@ -515,7 +534,12 @@ const antwortenDao = {
         join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
         left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
-      where odto.osm_id  = $osmId
+      where odto.osm_id in (
+        select osm_id from "OrteDB_tbl_orte" odto2 
+          join "KorpusDB_tbl_inferhebung" kdti2 on kdti2."Ort_id" = odto2.id 
+          join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
+          where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = $osmId
+      )
         and (t.text ~* $textTagCI or 
           t.ortho ~* $textOrthoCI or 
           t.text_in_ortho ~* $textInOrthoCI)
@@ -595,6 +619,8 @@ const antwortenDao = {
     `;
     return await query(selectAntwortenToken, {
       osmId: osmId,
+      erhArt: erhArt,
+      firstErhArt: erhArt[0],
       ageLower: ageLower,
       ageUpper: ageUpper,
       beruf: beruf,
@@ -616,6 +642,7 @@ const antwortenDao = {
   },
   async selectAntwortenTrans(
     tagID: number[],
+    erhArt: number[],
     osmId: string,
     ageLower: number,
     ageUpper: number,
@@ -662,7 +689,12 @@ const antwortenDao = {
     join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
     left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
     join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
-      where odto.osm_id  = $osmId
+      where odto.osm_id in (
+        select osm_id from "OrteDB_tbl_orte" odto2 
+          join "KorpusDB_tbl_inferhebung" kdti2 on kdti2."Ort_id" = odto2.id 
+          join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
+          where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = $osmId
+      )
         and kdti."Dateipfad" not in ('', '0') 
         and kdti."Audiofile" not in ('', '0')
         and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
@@ -714,7 +746,12 @@ const antwortenDao = {
         join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
         left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
-      where odto.osm_id  = $osmId
+      where odto.osm_id in (
+        select osm_id from "OrteDB_tbl_orte" odto2 
+          join "KorpusDB_tbl_inferhebung" kdti2 on kdti2."Ort_id" = odto2.id 
+          join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
+          where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = $osmId
+      )
         and kdti."Dateipfad" not in ('', '0') 
         and kdti."Audiofile" not in ('', '0')
         and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
@@ -735,6 +772,8 @@ const antwortenDao = {
     return await query(selectAntwortenTrans, {
       tagID: tagID,
       first_tag: tagID[0],
+      erhArt: erhArt,
+      firstErhArt: erhArt[0],
       osmId: osmId,
       ageLower: ageLower,
       ageUpper: ageUpper,

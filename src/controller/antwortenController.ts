@@ -37,6 +37,7 @@ import { selectionObject } from './tagController';
 
 export interface antwortenDto {
   ids: number[];
+  erhArt?: number[];
   osmId: number;
   ageLower?: number;
   ageUpper?: number;

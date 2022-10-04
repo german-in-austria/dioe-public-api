@@ -107,8 +107,10 @@ export interface IGetTimeStampAntwortParams {
   ageUpper: number | null | void;
   aus: string | null | void;
   beruf: number | null | void;
+  erhArt: readonly (number | null | void)[];
   first_phaen: number | null | void;
   first_tag: number | null | void;
+  firstErhArt: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
   osmId: string | null | void;
@@ -175,6 +177,8 @@ export interface ISelectAntwortenTokenParams {
   ageUpper: number | null | void;
   aus: string | null | void;
   beruf: number | null | void;
+  erhArt: readonly (number | null | void)[];
+  firstErhArt: number | null | void;
   firstTag: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
@@ -218,8 +222,10 @@ export interface ISelectAntwortenTransParams {
   ageUpper: number | null | void;
   aus: string | null | void;
   beruf: number | null | void;
+  erhArt: readonly (number | null | void)[];
   first_phaen: number | null | void;
   first_tag: number | null | void;
+  firstErhArt: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
   orthoTag: string | null | void;

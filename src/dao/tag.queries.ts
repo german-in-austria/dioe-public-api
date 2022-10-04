@@ -90,6 +90,7 @@ export interface ISelectOrtTokenParams {
   aus: string | null | void;
   beruf: number | null | void;
   erhArt: readonly (number | null | void)[];
+  firstErhArt: number | null | void;
   firstTagId: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
