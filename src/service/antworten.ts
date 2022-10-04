@@ -227,6 +227,9 @@ export default {
         tagId = tagIDs[0];
       }
       let tag_name = el.tagname === undefined ? el.tagName : el.tagname;
+      if (tag_name === undefined) {
+        tag_name = '';
+      }
       if (el.ortho || el.text || el.orthoText) {
         ant = {
           start: el.startAntwort,
