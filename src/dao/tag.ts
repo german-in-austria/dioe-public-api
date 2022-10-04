@@ -272,9 +272,7 @@ const tagDao = {
               join "KorpusDB_tbl_inferhebung" kdti on kdti."Ort_id" = odto.id 
               join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
               where 
-                ($$erhArt < 0 or 
-                  $$erhArt > (select max(kdte2.id) from "KorpusDB_tbl_erhebungsarten" kdte2) or 
-                  kdte."Art_Erhebung_id" in $$erhArt)
+                ($firstErhArt < 0 or kdte."Art_Erhebung_id" in $$erhArt)
           )
           and ($aus = '' OR pdti.ausbildung_max = $aus)
           and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
@@ -295,6 +293,7 @@ const tagDao = {
       beruf: beruf,
       gender: gender,
       erhArt: erhArt,
+      firstErhArt: erhArt[0],
       gender_sel: gender_sel,
       aus: aus,
       project_id: project_id,
@@ -336,7 +335,7 @@ const tagDao = {
 	        select osm_id from "OrteDB_tbl_orte" odto 
 	        	join "KorpusDB_tbl_inferhebung" kdti on kdti."Ort_id" = odto.id 
 	        	join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
-	        	where ($$erhArt < 0 or $$erhArt > (select max(kdte2.id) from "KorpusDB_tbl_erhebungsarten" kdte2) or kdte."Art_Erhebung_id" in $$erhArt)
+	        	where ($firstErhArt < 0 or kdte."Art_Erhebung_id" in $$erhArt)
         )
         and ($aus = '' OR pdti.ausbildung_max = $aus)
         and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
@@ -362,6 +361,7 @@ const tagDao = {
       beruf: beruf,
       gender: gender,
       erhArt: erhArt,
+      firstErhArt: erhArt[0],
       gender_sel: gender_sel,
       aus: aus,
       project_id: project_id,

@@ -151,6 +151,7 @@ export interface ISelectOrtTagsParams {
   aus: string | null | void;
   beruf: number | null | void;
   erhArt: readonly (number | null | void)[];
+  firstErhArt: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
   phaen: readonly (number | null | void)[];
@@ -181,6 +182,7 @@ export interface ISelectOrtTagGroupParams {
   aus: string | null | void;
   beruf: number | null | void;
   erhArt: readonly (number | null | void)[];
+  firstErhArt: number | null | void;
   firstTag: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
