@@ -115,6 +115,7 @@ export interface IGetTimeStampAntwortParams {
   gender_sel: number | null | void;
   osmId: string | null | void;
   phaen: readonly (number | null | void)[];
+  project_id: number | null | void;
   tagGroupLength: string | null | void;
   tagId: readonly (number | null | void)[];
 }
@@ -186,6 +187,7 @@ export interface ISelectAntwortenTokenParams {
   lemmaTokenCI: string | null | void;
   len: string | null | void;
   osmId: string | null | void;
+  project_id: number | null | void;
   tagID: readonly (number | null | void)[];
   textInOrthoC: string | null | void;
   textInOrthoCI: string | null | void;
@@ -231,6 +233,7 @@ export interface ISelectAntwortenTransParams {
   orthoTag: string | null | void;
   osmId: string | null | void;
   phaen: readonly (number | null | void)[];
+  project_id: number | null | void;
   tagGroupLength: string | null | void;
   tagID: readonly (number | null | void)[];
   textTag: string | null | void;

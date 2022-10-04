@@ -30,6 +30,7 @@ export interface ageBound {
 export interface filters extends ageBound {
   ausbildung: string;
   erhArt: number[];
+  project: number;
   beruf_id: number;
   weiblich: boolean;
   gender_sel: number;
@@ -177,6 +178,7 @@ export default {
       beruf_id: beruf,
       erhArt:
         ant.erhArt == undefined || ant.erhArt.length === 0 ? [-1] : ant.erhArt,
+      project: ant.project == undefined ? -1 : ant.project,
       weiblich: ant.weiblich,
       gender_sel: gender_sel,
       ageLower: ageBound.ageLower,

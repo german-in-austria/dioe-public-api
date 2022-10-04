@@ -211,6 +211,7 @@ const antwortenDao = {
   async getTimeStampAntwort(
     tagId: number[],
     erhArt: number[],
+    project: number,
     osmId: string,
     ageLower: number,
     ageUpper: number,
@@ -259,6 +260,9 @@ const antwortenDao = {
               where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = $osmId
           )
           and kdta3.id = kdta."zu_Aufgabe_id" 
+          and pdti.inf_gruppe_id in (
+            select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
+            where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
           and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
           and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
           and ($aus = '' OR pdti.ausbildung_max = $aus)
@@ -317,6 +321,9 @@ const antwortenDao = {
           and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
           and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
           and ($aus = '' OR pdti.ausbildung_max = $aus)
+          and pdti.inf_gruppe_id in (
+            select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
+            where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
           and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
           and ($gender_sel < 0 OR pdtp.weiblich = $gender)
           and ($first_tag < 0 OR kdta2."id_Antwort_id" in 
@@ -395,6 +402,9 @@ const antwortenDao = {
           and ($aus = '' OR pdti.ausbildung_max = $aus)
           and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
           and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+          and pdti.inf_gruppe_id in (
+            select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
+            where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
           and ($first_tag < 0 OR kdta2."id_Antwort_id" in 
         (select DISTINCT 
           kdta."id_Antwort_id"
@@ -422,6 +432,7 @@ const antwortenDao = {
     return await query(getTimeStampAntwort, {
       tagId: tagId,
       first_tag: tagId[0],
+      project_id: project,
       erhArt: erhArt,
       firstErhArt: erhArt[0],
       osmId: osmId,
@@ -495,6 +506,7 @@ const antwortenDao = {
   async selectAntwortenToken(
     tagId: number[],
     erhArt: number[],
+    project: number,
     osmId: string,
     ageLower: number,
     ageUpper: number,
@@ -552,6 +564,9 @@ const antwortenDao = {
           and ($gender_sel < 0 OR pdtp.weiblich = $gender)
           and ($lemmaTokenC = '' or t.splemma ~ $lemmaTokenC)
           and ($lemmaTokenCI = '' or t.splemma ~* $lemmaTokenCI)
+          and pdti.inf_gruppe_id in (
+            select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
+            where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
           and (t.text ~ $textTagC or 
             t.ortho ~ $textOrthoC or 
             t.text_in_ortho ~ $textInOrthoC)
@@ -602,6 +617,9 @@ const antwortenDao = {
         and ($gender_sel < 0 OR pdtp.weiblich = $gender)
         and ($lemmaTokenC = '' or t.splemma ~ $lemmaTokenC)
         and ($lemmaTokenCI = '' or t.splemma ~* $lemmaTokenCI)
+        and pdti.inf_gruppe_id in (
+            select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
+            where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
         and (t.text ~ $textTagC or 
           t.ortho ~ $textOrthoC or 
           t.text_in_ortho ~ $textInOrthoC)
@@ -619,6 +637,7 @@ const antwortenDao = {
     `;
     return await query(selectAntwortenToken, {
       osmId: osmId,
+      project_id: project,
       erhArt: erhArt,
       firstErhArt: erhArt[0],
       ageLower: ageLower,
@@ -643,6 +662,7 @@ const antwortenDao = {
   async selectAntwortenTrans(
     tagID: number[],
     erhArt: number[],
+    project: number,
     osmId: string,
     ageLower: number,
     ageUpper: number,
@@ -697,6 +717,9 @@ const antwortenDao = {
       )
         and kdti."Dateipfad" not in ('', '0') 
         and kdti."Audiofile" not in ('', '0')
+        and pdti.inf_gruppe_id in (
+          select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
+          where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
         and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
         and ($ageUpper < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
         and ($aus = '' OR pdti.ausbildung_max = $aus)
@@ -758,6 +781,9 @@ const antwortenDao = {
         and ($ageUpper < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
         and ($aus = '' OR pdti.ausbildung_max = $aus)
         and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+        and pdti.inf_gruppe_id in (
+          select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
+          where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
         and ($gender_sel < 0 OR pdtp.weiblich = $gender)
         and ($first_tag < 0 OR tags."id_Antwort_id" in 
         (select kdta3."id_Antwort_id" 
@@ -772,6 +798,7 @@ const antwortenDao = {
     return await query(selectAntwortenTrans, {
       tagID: tagID,
       first_tag: tagID[0],
+      project_id: project,
       erhArt: erhArt,
       firstErhArt: erhArt[0],
       osmId: osmId,

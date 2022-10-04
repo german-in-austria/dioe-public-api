@@ -291,6 +291,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "ids": {"dataType":"array","array":{"dataType":"double"},"required":true},
             "erhArt": {"dataType":"array","array":{"dataType":"double"}},
+            "project": {"dataType":"double"},
             "osmId": {"dataType":"double","required":true},
             "ageLower": {"dataType":"double"},
             "ageUpper": {"dataType":"double"},

@@ -75,6 +75,7 @@ export default {
       const resTrans = await antwortenDao.selectAntwortenToken(
         tagIDs,
         filters.erhArt,
+        filters.project,
         osmId.toString(),
         filters.ageLower,
         filters.ageUpper,
@@ -102,6 +103,7 @@ export default {
         resTrans = await antwortenDao.selectAntwortenTrans(
           tagIDs[0] < 0 ? tagIDs : transCheck.map((el) => el.id),
           filters.erhArt,
+          filters.project,
           osmId.toString(),
           filters.ageLower,
           filters.ageUpper,
@@ -122,6 +124,7 @@ export default {
         resAntAuf = await antwortenDao.getTimeStampAntwort(
           tagIDs,
           filters.erhArt,
+          filters.project,
           osmId.toString(),
           filters.ageLower,
           filters.ageUpper,
