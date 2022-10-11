@@ -43,6 +43,7 @@ export default {
     }
     return tagDao.getOrtTag(
       res.map((val) => val.tagId),
+      0,
       tag.erhArt,
       aus,
       tag.beruf_id,
@@ -108,6 +109,7 @@ export default {
         } else {
           result = await tagDao.getOrtTag(
             el.ids,
+            el.ids.length,
             el.erhArt,
             el.ausbildung,
             el.beruf_id,

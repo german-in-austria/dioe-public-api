@@ -448,7 +448,7 @@ const antwortenDao = {
     `;
     return await query(getTimeStampAntwort, {
       tagId: tagId,
-      tagGroupLength: String(tagGroupLength),
+      tagGroupLength: tagGroupLength,
       first_tag: tagId[0],
       project_id: project,
       erhArt: erhArt,
@@ -814,7 +814,7 @@ const antwortenDao = {
       gender_sel: gender_sel,
       textTag: textTag,
       orthoTag: orthoTag,
-      tagGroupLength: String(tagGroupLength),
+      tagGroupLength: tagGroupLength,
       phaen: phaen,
       first_phaen: phaen[0],
     });

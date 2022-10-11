@@ -116,7 +116,7 @@ export interface IGetTimeStampAntwortParams {
   osmId: string | null | void;
   phaen: readonly (number | null | void)[];
   project_id: number | null | void;
-  tagGroupLength: string | null | void;
+  tagGroupLength: number | null | void;
   tagId: readonly (number | null | void)[];
 }
 
@@ -231,7 +231,7 @@ export interface ISelectAntwortenTransParams {
   osmId: string | null | void;
   phaen: readonly (number | null | void)[];
   project_id: number | null | void;
-  tagGroupLength: string | null | void;
+  tagGroupLength: number | null | void;
   tagID: readonly (number | null | void)[];
   textTag: string | null | void;
 }

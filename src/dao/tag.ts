@@ -132,15 +132,17 @@ const tagDao = {
         WHERE
           ($firstTagId < 0 OR (kdtt.id IN $$tagId 
             AND kdta2.id in 
-            (select DISTINCT 
-              kdta."id_Antwort_id"
-              from "KorpusDB_tbl_antwortentags" kdta 
-              where kdta."id_Tag_id" IN $$tagId
-              group by kdta."id_Antwort_id", kdta."id_Tag_id" 
-                having (select count(*) from (select distinct kdta2."id_Antwort_id", kdta2."id_Tag_id" 
-                  from "KorpusDB_tbl_antwortentags" kdta2
-                  where kdta2."id_Antwort_id" = kdta."id_Antwort_id"  
-                  and kdta2."id_Tag_id" IN $$tagId) as sub) >= $tagLen)
+            (select kdta3."id_Antwort_id" 
+              from "KorpusDB_tbl_antwortentags" kdta3 
+                join "KorpusDB_tbl_tagebene" kdtt on kdtt.id = kdta3."id_TagEbene_id"
+                join "KorpusDB_tbl_tagebenezutag" kdtt2 on kdtt2."id_TagEbene_id" = kdtt.id
+                join "KorpusDB_tbl_tags" kdtt3 on kdtt2."id_Tag_id" = kdtt3.id
+              where 
+                kdta3."id_Tag_id" IN $$tagId
+                and ($tagLen = 0 or kdtt3."Generation" = 0) 
+                and ($tagLen = 0 or kdtt3.id in $$tagId)
+              group by kdta3."id_Antwort_id" 
+                having count(kdta3."id_Tag_id") >= $tagLen)
           )) and odto.osm_id in (
             select osm_id from "OrteDB_tbl_orte" odto 
               join "KorpusDB_tbl_inferhebung" kdti on kdti."Ort_id" = odto.id 
@@ -165,7 +167,7 @@ const tagDao = {
     return await query(selectOrtToken, {
       tagId: tagId,
       firstTagId: tagId[0],
-      tagLen: tagId.length.toString(),
+      tagLen: tagId.length,
       lemmaTokenC: lemmaC,
       lemmaTokenCI: lemmaCI,
       beruf: beruf,
@@ -243,6 +245,7 @@ const tagDao = {
   },
   async getOrtTag(
     tagId: number[],
+    tagLength: number,
     erhArt: number[],
     aus: string,
     beruf: number,
@@ -268,7 +271,23 @@ const tagDao = {
           JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
           join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
         WHERE
-          ($tagId_first < 0 or kdtt.id IN $$tagId) and odto.osm_id in (
+          ($tagId_first < 0 
+            or kdta2.id IN 
+              (
+                select kdta3."id_Antwort_id" 
+              from "KorpusDB_tbl_antwortentags" kdta3 
+                join "KorpusDB_tbl_tagebene" kdtt on kdtt.id = kdta3."id_TagEbene_id"
+                join "KorpusDB_tbl_tagebenezutag" kdtt2 on kdtt2."id_TagEbene_id" = kdtt.id
+                join "KorpusDB_tbl_tags" kdtt3 on kdtt2."id_Tag_id" = kdtt3.id
+              where 
+                kdta3."id_Tag_id" IN $$tagId
+                and ($tagLen = 0 or kdtt3."Generation" = 0) 
+                and ($tagLen = 0 or kdtt3.id in $$tagId)
+              group by kdta3."id_Antwort_id" 
+                having count(kdta3."id_Tag_id") >= $tagLen
+              )
+            ) 
+          and odto.osm_id in (
             select osm_id from "OrteDB_tbl_orte" odto 
               join "KorpusDB_tbl_inferhebung" kdti on kdti."Ort_id" = odto.id 
               join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
@@ -291,6 +310,7 @@ const tagDao = {
     return await query(selectOrtTags, {
       tagId: tagId,
       tagId_first: tagId[0],
+      tagLen: tagLength,
       beruf: beruf,
       gender: gender,
       erhArt: erhArt,
@@ -343,10 +363,17 @@ const tagDao = {
         and ($gender_sel < 0 OR pdtp.weiblich = $gender)
         and ($phaen_first < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
         and kdta."id_Antwort_id" in 
-        (select kdta3."id_Antwort_id" from "KorpusDB_tbl_antwortentags" kdta3 
-        	where kdta3."id_Tag_id" in $$tagId
-        	group by
-        	kdta3."id_Antwort_id" having count(kdta3."id_Tag_id") >= $tagGroupLength)
+        (select kdta3."id_Antwort_id" 
+          from "KorpusDB_tbl_antwortentags" kdta3 
+            join "KorpusDB_tbl_tagebene" kdtt on kdtt.id = kdta3."id_TagEbene_id"
+            join "KorpusDB_tbl_tagebenezutag" kdtt2 on kdtt2."id_TagEbene_id" = kdtt.id
+            join "KorpusDB_tbl_tags" kdtt3 on kdtt2."id_Tag_id" = kdtt3.id
+          where 
+            kdta3."id_Tag_id" IN $$tagId
+            and ($tagGroupLength = 0 or kdtt3."Generation" = 0) 
+            and ($tagGroupLength = 0 or kdtt3.id in $$tagId)
+          group by kdta3."id_Antwort_id" 
+          having count(kdta3."id_Tag_id") >= $tagGroupLength)
         and pdti.inf_gruppe_id in (
           select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
           where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
@@ -366,7 +393,7 @@ const tagDao = {
       gender_sel: gender_sel,
       aus: aus,
       project_id: project_id,
-      tagGroupLength: String(tagGroupLength),
+      tagGroupLength: tagGroupLength,
       phaen: phaen,
       phaen_first: phaen[0],
     });

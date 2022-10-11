@@ -98,7 +98,7 @@ export interface ISelectOrtTokenParams {
   lemmaTokenCI: string | null | void;
   project_id: number | null | void;
   tagId: readonly (number | null | void)[];
-  tagLen: string | null | void;
+  tagLen: number | null | void;
   textOrtho: string | null | void;
   textTag: string | null | void;
 }
@@ -160,6 +160,7 @@ export interface ISelectOrtTagsParams {
   project_id: number | null | void;
   tagId: readonly (number | null | void)[];
   tagId_first: number | null | void;
+  tagLen: number | null | void;
 }
 
 /** 'SelectOrtTags' return type */
@@ -190,7 +191,7 @@ export interface ISelectOrtTagGroupParams {
   phaen: readonly (number | null | void)[];
   phaen_first: number | null | void;
   project_id: number | null | void;
-  tagGroupLength: string | null | void;
+  tagGroupLength: number | null | void;
   tagId: readonly (number | null | void)[];
 }
 
