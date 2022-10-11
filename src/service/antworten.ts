@@ -119,7 +119,6 @@ export default {
       }
       const end = Date.now() - start;
       console.log(`Execution time: ${end} ms`);
-      console.log(transCheck);
       let resAntAuf: IGetTimeStampAntwortResult[] = [];
       if (transCheck.length - tagIDs.length != 0 || resTrans.length === 0) {
         resAntAuf = await antwortenDao.getTimeStampAntwort(
