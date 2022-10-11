@@ -251,7 +251,20 @@ const antwortenDao = {
         left join "KorpusDB_tbl_phaenomene" kdtp on kdtp.id = kdtt."zu_Phaenomen_id"
         WHERE 
           kdta."start_Antwort" <> kdta."stop_Antwort" and 
-          ($first_tag < 0 or kdtt.id in $$tagId) and 
+          ($first_tag < 0 or kdta2."id_Antwort_id" in (
+            select kdta3."id_Antwort_id" 
+              from "KorpusDB_tbl_antwortentags" kdta3 
+                join "KorpusDB_tbl_tagebene" kdtt on kdtt.id = kdta3."id_TagEbene_id"
+                join "KorpusDB_tbl_tagebenezutag" kdtt2 on kdtt2."id_TagEbene_id" = kdtt.id
+                join "KorpusDB_tbl_tags" kdtt3 on kdtt2."id_Tag_id" = kdtt3.id
+              where 
+                kdta3."id_Tag_id" IN $$tagId
+                and ($tagGroupLength = 0 or kdtt3."Generation" = 0) 
+                and ($tagGroupLength = 0 or kdtt3.id in $$tagId)
+                and ($first_phaen < 0 OR kdtt3."zu_Phaenomen_id" IN $$phaen)
+              group by kdta3."id_Antwort_id" 
+                having count(kdta3."id_Tag_id") >= $tagGroupLength
+          )) and 
           ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen) and
           odto.osm_id in (
             select osm_id from "OrteDB_tbl_orte" odto2 
@@ -327,17 +340,19 @@ const antwortenDao = {
           and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
           and ($gender_sel < 0 OR pdtp.weiblich = $gender)
           and ($first_tag < 0 OR kdta2."id_Antwort_id" in 
-          (select DISTINCT 
-            kdta."id_Antwort_id"
-            from "KorpusDB_tbl_antwortentags" kdta 
-            join "KorpusDB_tbl_tags" kdtt on kdtt.id = kdta."id_Tag_id" 
-            where kdta."id_Tag_id" in $$tagId and
-            ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
-            group by kdta."id_Antwort_id", kdta."id_Tag_id" 
-              having (select count(*) from (select distinct kdta2."id_Antwort_id", kdta2."id_Tag_id" 
-                from "KorpusDB_tbl_antwortentags" kdta2
-                where kdta2."id_Antwort_id" = kdta."id_Antwort_id"  
-                and kdta2."id_Tag_id" IN $$tagId) as sub) >= $tagGroupLength))
+          (select kdta3."id_Antwort_id" 
+          from "KorpusDB_tbl_antwortentags" kdta3 
+            join "KorpusDB_tbl_tagebene" kdtt on kdtt.id = kdta3."id_TagEbene_id"
+            join "KorpusDB_tbl_tagebenezutag" kdtt2 on kdtt2."id_TagEbene_id" = kdtt.id
+            join "KorpusDB_tbl_tags" kdtt3 on kdtt2."id_Tag_id" = kdtt3.id
+          where 
+            kdta3."id_Tag_id" IN $$tagId
+            and ($tagGroupLength = 0 or kdtt3."Generation" = 0) 
+            and ($tagGroupLength = 0 or kdtt3.id in $$tagId)
+            and ($first_phaen < 0 OR kdtt3."zu_Phaenomen_id" IN $$phaen)
+          group by kdta3."id_Antwort_id" 
+            having count(kdta3."id_Tag_id") >= $tagGroupLength  
+          ))
         group by 
           kdte."start_Aufgabe", 
           kdte."stop_Aufgabe",
@@ -406,17 +421,19 @@ const antwortenDao = {
             select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
             where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
           and ($first_tag < 0 OR kdta2."id_Antwort_id" in 
-        (select DISTINCT 
-          kdta."id_Antwort_id"
-          from "KorpusDB_tbl_antwortentags" kdta 
-          join "KorpusDB_tbl_tags" kdtt on kdtt.id = kdta."id_Tag_id" 
-        	where kdta."id_Tag_id" in $$tagId and
-          ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
-          group by kdta."id_Antwort_id", kdta."id_Tag_id" 
-            having (select count(*) from (select distinct kdta2."id_Antwort_id", kdta2."id_Tag_id" 
-              from "KorpusDB_tbl_antwortentags" kdta2
-              where kdta2."id_Antwort_id" = kdta."id_Antwort_id"  
-              and kdta2."id_Tag_id" IN $$tagId) as sub) >= $tagGroupLength))
+        (select kdta3."id_Antwort_id" 
+        from "KorpusDB_tbl_antwortentags" kdta3 
+          join "KorpusDB_tbl_tagebene" kdtt on kdtt.id = kdta3."id_TagEbene_id"
+          join "KorpusDB_tbl_tagebenezutag" kdtt2 on kdtt2."id_TagEbene_id" = kdtt.id
+          join "KorpusDB_tbl_tags" kdtt3 on kdtt2."id_Tag_id" = kdtt3.id
+        where 
+          kdta3."id_Tag_id" IN $$tagId
+          and ($tagGroupLength = 0 or kdtt3."Generation" = 0) 
+          and ($tagGroupLength = 0 or kdtt3.id in $$tagId)
+          and ($first_phaen < 0 OR kdtt3."zu_Phaenomen_id" IN $$phaen)
+        group by kdta3."id_Antwort_id" 
+          having count(kdta3."id_Tag_id") >= $tagGroupLength
+          ))
         group by 
           kdte."start_Aufgabe", 
           kdte."stop_Aufgabe",
@@ -431,6 +448,7 @@ const antwortenDao = {
     `;
     return await query(getTimeStampAntwort, {
       tagId: tagId,
+      tagGroupLength: String(tagGroupLength),
       first_tag: tagId[0],
       project_id: project,
       erhArt: erhArt,
@@ -442,7 +460,6 @@ const antwortenDao = {
       gender: gender,
       aus: aus,
       gender_sel: gender_sel,
-      tagGroupLength: String(tagGroupLength),
       phaen: phaen,
       first_phaen: phaen[0],
     });
@@ -570,17 +587,6 @@ const antwortenDao = {
           and (t.text ~ $textTagC or 
             t.ortho ~ $textOrthoC or 
             t.text_in_ortho ~ $textInOrthoC)
-          and ($firstTag < 0 or t.id in 
-            (select DISTINCT 
-              kdta.ist_token_id
-              from "KorpusDB_tbl_antwortentags" kdta3 
-              join "KorpusDB_tbl_antworten" kdta on kdta.id = kdta3."id_Antwort_id"
-              where kdta3."id_Tag_id" IN $$tagID
-              group by kdta3."id_Antwort_id", kdta3."id_Tag_id", kdta.ist_token_id
-                having (select count(*) from (select distinct kdta2."id_Antwort_id", kdta2."id_Tag_id" 
-                  from "KorpusDB_tbl_antwortentags" kdta2
-                  where kdta2."id_Antwort_id" = kdta3."id_Antwort_id"  
-                  and kdta2."id_Tag_id" IN $$tagID) as sub) >= $len))
      union 
         select e.start_time as "start_Antwort", 
         e.end_time as "stop_Antwort",
@@ -623,17 +629,6 @@ const antwortenDao = {
         and (t.text ~ $textTagC or 
           t.ortho ~ $textOrthoC or 
           t.text_in_ortho ~ $textInOrthoC)
-          and ($firstTag < 0 or t4.id in 
-            (select DISTINCT 
-              kdta.ist_tokenset_id
-              from "KorpusDB_tbl_antwortentags" kdta3 
-              join "KorpusDB_tbl_antworten" kdta on kdta.id = kdta3."id_Antwort_id"
-              where kdta3."id_Tag_id" IN $$tagID
-              group by kdta3."id_Antwort_id", kdta3."id_Tag_id", kdta.ist_tokenset_id
-                having (select count(*) from (select distinct kdta2."id_Antwort_id", kdta2."id_Tag_id" 
-                  from "KorpusDB_tbl_antwortentags" kdta2
-                  where kdta2."id_Antwort_id" = kdta3."id_Antwort_id"  
-                  and kdta2."id_Tag_id" IN $$tagID) as sub) >= $len))
     `;
     return await query(selectAntwortenToken, {
       osmId: osmId,
@@ -654,9 +649,7 @@ const antwortenDao = {
       textOrthoCI: textOrthoCI,
       textInOrthoCI: textInOrthoCI,
       lemmaTokenCI: textLemmaCI,
-      tagID: tagId,
-      len: tagId.length.toString(),
-      firstTag: tagId[0],
+      // tagGroupLength: String(tagId.length),
     });
   },
   async selectAntwortenTrans(
@@ -677,14 +670,13 @@ const antwortenDao = {
   ) {
     const selectAntwortenTrans = sql<
       ISelectAntwortenTransQuery & ISelectAntwortenTransParams
-    >`
-    select e.start_time as "start_Antwort", 
+    >`select e.start_time as "start_Antwort", 
           e.end_time as "stop_Antwort",
           tags."Tag_lang" as tag_name,
           tags."Tag" as tag_short,
           t.ortho as "ortho",
           DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age, 
-          tags."Tag" as tag_name,
+          tags."Tag" as tag,
           kdti."Dateipfad" as dateipfad, 
           kdti."Audiofile" as "audiofile",
           t.text_in_ortho as "ortho_text",
@@ -725,15 +717,21 @@ const antwortenDao = {
         and ($aus = '' OR pdti.ausbildung_max = $aus)
         and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
         and ($gender_sel < 0 OR pdtp.weiblich = $gender)
-        and ($first_tag < 0 OR tags."id_Antwort_id" in 
-        (select kdta3."id_Antwort_id" 
-          from "KorpusDB_tbl_antwortentags" kdta3 
-          join "KorpusDB_tbl_tags" kdtt on kdtt.id = kdta3."id_Tag_id" 
-        	where kdta3."id_Tag_id" in $$tagID and
-          ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
-        	group by
-        	  kdta3."id_Antwort_id" 
-              having count(kdta3."id_Tag_id") >= $tagGroupLength))
+        and ($first_tag < 0 OR tags."id_Antwort_id" IN 
+        (
+          select kdta3."id_Antwort_id" 
+              from "KorpusDB_tbl_antwortentags" kdta3 
+                join "KorpusDB_tbl_tagebene" kdtt on kdtt.id = kdta3."id_TagEbene_id"
+                join "KorpusDB_tbl_tagebenezutag" kdtt2 on kdtt2."id_TagEbene_id" = kdtt.id
+                join "KorpusDB_tbl_tags" kdtt3 on kdtt2."id_Tag_id" = kdtt3.id
+              where 
+                kdta3."id_Tag_id" IN $$tagID
+                and ($tagGroupLength = 0 or kdtt3."Generation" = 0) 
+                and ($tagGroupLength = 0 or kdtt3.id in $$tagID)
+                and ($first_phaen < 0 OR kdtt3."zu_Phaenomen_id" IN $$phaen)
+              group by kdta3."id_Antwort_id" 
+                having count(kdta3."id_Tag_id") >= $tagGroupLength
+        ))
         union 
         select e.start_time as "start_Antwort", 
         e.end_time as "stop_Antwort",
@@ -785,15 +783,21 @@ const antwortenDao = {
           select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
           where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
         and ($gender_sel < 0 OR pdtp.weiblich = $gender)
-        and ($first_tag < 0 OR tags."id_Antwort_id" in 
-        (select kdta3."id_Antwort_id" 
-          from "KorpusDB_tbl_antwortentags" kdta3 
-          join "KorpusDB_tbl_tags" kdtt on kdtt.id = kdta3."id_Tag_id" 
-        	where kdta3."id_Tag_id" in $$tagID and
-          ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
-        	group by
-        	  kdta3."id_Antwort_id" 
-              having count(kdta3."id_Tag_id") >= $tagGroupLength))
+        and ($first_tag < 0 OR tags."id_Antwort_id" IN 
+        (
+          select kdta3."id_Antwort_id" 
+              from "KorpusDB_tbl_antwortentags" kdta3 
+                join "KorpusDB_tbl_tagebene" kdtt on kdtt.id = kdta3."id_TagEbene_id"
+                join "KorpusDB_tbl_tagebenezutag" kdtt2 on kdtt2."id_TagEbene_id" = kdtt.id
+                join "KorpusDB_tbl_tags" kdtt3 on kdtt2."id_Tag_id" = kdtt3.id
+              where 
+                kdta3."id_Tag_id" IN $$tagID
+                and ($tagGroupLength = 0 or kdtt3."Generation" = 0) 
+                and ($tagGroupLength = 0 or kdtt3.id in $$tagID)
+                and ($first_phaen < 0 OR kdtt3."zu_Phaenomen_id" IN $$phaen)
+              group by kdta3."id_Antwort_id" 
+                having count(kdta3."id_Tag_id") >= $tagGroupLength
+                ))
     `;
     return await query(selectAntwortenTrans, {
       tagID: tagID,

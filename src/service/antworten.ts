@@ -119,6 +119,7 @@ export default {
       }
       const end = Date.now() - start;
       console.log(`Execution time: ${end} ms`);
+      console.log(transCheck);
       let resAntAuf: IGetTimeStampAntwortResult[] = [];
       if (transCheck.length - tagIDs.length != 0 || resTrans.length === 0) {
         resAntAuf = await antwortenDao.getTimeStampAntwort(
@@ -270,6 +271,10 @@ export default {
         (a: AntwortTokenStamp) =>
           a.dateipfad === el.dateipfad && a.audiofile === el.audiofile
       );
+      if (el.ortho === 'einmal' && el.audiofile === '0210_0218_NMYB_GFG.ogg') {
+        console.log(filters);
+        console.log(el);
+      }
       if (dataIdx >= 0) {
         // Data already exists in the return array.
         // Check if the timestamps are also already there

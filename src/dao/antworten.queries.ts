@@ -180,15 +180,12 @@ export interface ISelectAntwortenTokenParams {
   beruf: number | null | void;
   erhArt: readonly (number | null | void)[];
   firstErhArt: number | null | void;
-  firstTag: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
   lemmaTokenC: string | null | void;
   lemmaTokenCI: string | null | void;
-  len: string | null | void;
   osmId: string | null | void;
   project_id: number | null | void;
-  tagID: readonly (number | null | void)[];
   textInOrthoC: string | null | void;
   textInOrthoCI: string | null | void;
   textOrthoC: string | null | void;
@@ -249,7 +246,7 @@ export interface ISelectAntwortenTransResult {
   orthoText: string | null;
   startAntwort: string | null;
   stopAntwort: string | null;
-  tagName: string | null;
+  tag: string | null;
   tagName: string | null;
   tagShort: string | null;
   teamBez: string | null;
