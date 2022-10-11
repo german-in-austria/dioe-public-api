@@ -79,6 +79,7 @@ export default {
             el.lemma.cI
           )) as any as ISelectOrtTagsResult[];
         } else {
+          console.log(el);
           result = (await tagDao.getOrtTagToken(
             el.ids,
             el.erhArt,

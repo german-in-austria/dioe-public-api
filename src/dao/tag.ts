@@ -271,22 +271,7 @@ const tagDao = {
           JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
           join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
         WHERE
-          ($tagId_first < 0 
-            or kdta2.id IN 
-              (
-                select kdta3."id_Antwort_id" 
-              from "KorpusDB_tbl_antwortentags" kdta3 
-                join "KorpusDB_tbl_tagebene" kdtt on kdtt.id = kdta3."id_TagEbene_id"
-                join "KorpusDB_tbl_tagebenezutag" kdtt2 on kdtt2."id_TagEbene_id" = kdtt.id
-                join "KorpusDB_tbl_tags" kdtt3 on kdtt2."id_Tag_id" = kdtt3.id
-              where 
-                kdta3."id_Tag_id" IN $$tagId
-                and ($tagLen = 0 or kdtt3."Generation" = 0) 
-                and ($tagLen = 0 or kdtt3.id in $$tagId)
-              group by kdta3."id_Antwort_id" 
-                having count(kdta3."id_Tag_id") >= $tagLen
-              )
-            ) 
+          ($tagId_first < 0 or kdtt.id IN $$tagId) 
           and odto.osm_id in (
             select osm_id from "OrteDB_tbl_orte" odto 
               join "KorpusDB_tbl_inferhebung" kdti on kdti."Ort_id" = odto.id 
@@ -310,7 +295,6 @@ const tagDao = {
     return await query(selectOrtTags, {
       tagId: tagId,
       tagId_first: tagId[0],
-      tagLen: tagLength,
       beruf: beruf,
       gender: gender,
       erhArt: erhArt,
