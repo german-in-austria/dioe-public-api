@@ -1,5 +1,5 @@
 import antwortenDao from '../dao/antworten';
-import _, { filter } from 'lodash';
+import _, { filter, rest } from 'lodash';
 
 import validator, { filters, tag } from '../service/validate';
 
@@ -67,10 +67,11 @@ export default {
       tagIDs = [-1];
     }
     if (
-      (tagIDs[0] < 0 && filters.phaen[0] < 0) ||
-      filters.lemma.overall.length > 0 ||
-      filters.text.overall.length > 0 ||
-      filters.ortho.overall.length > 0
+      tagIDs[0] < 0 &&
+      filters.phaen[0] < 0 &&
+      (filters.lemma.overall.length > 0 ||
+        filters.text.overall.length > 0 ||
+        filters.ortho.overall.length > 0)
     ) {
       const resTrans = await antwortenDao.selectAntwortenToken(
         tagIDs,
