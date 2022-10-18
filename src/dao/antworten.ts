@@ -468,7 +468,6 @@ const antwortenDao = {
     });
   },
   async selectAntwortenToken(
-    tagId: number[],
     erhArt: number[],
     project: number,
     osmId: string,

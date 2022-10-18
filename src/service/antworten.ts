@@ -74,7 +74,6 @@ export default {
         filters.ortho.overall.length > 0)
     ) {
       const resTrans = await antwortenDao.selectAntwortenToken(
-        tagIDs,
         filters.erhArt,
         filters.project,
         osmId.toString(),
