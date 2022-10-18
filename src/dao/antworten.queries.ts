@@ -17,11 +17,11 @@ export interface ISelectAntwortenResult {
   audiofile: string | null;
   dateipfad: string | null;
   gruppeBez: string | null;
-  idErhId: number | null;
+  idErhId: number;
   osmid: string | null;
-  startAntwort: string | null;
-  stopAntwort: string | null;
-  tagId: number | null;
+  startAntwort: string;
+  stopAntwort: string;
+  tagId: number;
   tagName: string | null;
   teamBez: string | null;
 }
