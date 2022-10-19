@@ -66,9 +66,9 @@ export default {
     if (tagIDs.length === 0) {
       tagIDs = [-1];
     }
+    console.log('starting');
     if (
-      tagIDs[0] < 0 &&
-      filters.phaen[0] < 0 &&
+      (tagIDs[0] < 0 || filters.phaen[0] < 0) &&
       (filters.lemma.overall.length > 0 ||
         filters.text.overall.length > 0 ||
         filters.ortho.overall.length > 0)

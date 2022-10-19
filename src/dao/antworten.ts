@@ -188,7 +188,8 @@ const antwortenDao = {
         join "PersonenDB_tbl_informanten" pdti on pdti.id = kdta."von_Inf_id"
         LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
         join "KorpusDB_tbl_inf_zu_erhebung" kdtize on pdti.id = kdtize."ID_Inf_id" 
-        join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id 
+        join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
+        join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti."ID_Erh_id" 
         join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
         join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
         join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
@@ -213,12 +214,8 @@ const antwortenDao = {
                 having count(kdta3."id_Tag_id") >= $tagGroupLength
           )) and 
           ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen) and
-          odto.osm_id in (
-            select osm_id from "OrteDB_tbl_orte" odto2 
-              join "KorpusDB_tbl_inferhebung" kdti2 on kdti2."Ort_id" = odto2.id 
-              join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
-              where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = $osmId
-          )
+          ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
+          and odto.osm_id = $osmId
           and kdta3.id = kdta."zu_Aufgabe_id" 
           and pdti.inf_gruppe_id in (
             select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
@@ -257,6 +254,7 @@ const antwortenDao = {
           LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
           join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
           join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
+          join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti."ID_Erh_id"
           join "OrteDB_tbl_orte" odto on pdti.inf_ort_id = odto.id
           join lateral(
           	select * from "KorpusDB_tbl_erhinfaufgaben" kdte where kdte."id_InfErh_id" = kdti.id
@@ -269,12 +267,8 @@ const antwortenDao = {
         WHERE 
           ($first_tag < 0 or kdtt.id in $$tagId) 
           and ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
-        	and odto.osm_id in (
-            select osm_id from "OrteDB_tbl_orte" odto2 
-              join "KorpusDB_tbl_inferhebung" kdti2 on kdti2."Ort_id" = odto2.id 
-              join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
-              where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = $osmId
-          )
+        	and ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
+          and odto.osm_id = $osmId
           and kdti."Dateipfad" not in ('', '0') 
           and kdti."Audiofile" not in ('', '0')
           and kdta3.id = kdta."zu_Aufgabe_id"
@@ -504,17 +498,14 @@ const antwortenDao = {
         join transcript t3 on t3.id = t.transcript_id_id
         join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
         join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
+        join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
         join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
         join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
         join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
         left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
-      where odto.osm_id in (
-        select osm_id from "OrteDB_tbl_orte" odto2 
-          join "KorpusDB_tbl_inferhebung" kdti2 on kdti2."Ort_id" = odto2.id 
-          join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
-          where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = $osmId
-      )
+      where odto.osm_id = $osmId
+        and ($firstErhArt < 0 or kdte."Art_Erhebung_id" in $$erhArt)
         and (t.text ~* $textTagCI or 
           t.ortho ~* $textOrthoCI or 
           t.text_in_ortho ~* $textInOrthoCI)
@@ -642,17 +633,14 @@ const antwortenDao = {
     join transcript t3 on t3.id = t.transcript_id_id
     join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
     join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
+    join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
     join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
     join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
     join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
     left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
     join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
-      where odto.osm_id in (
-        select osm_id from "OrteDB_tbl_orte" odto2 
-          join "KorpusDB_tbl_inferhebung" kdti2 on kdti2."Ort_id" = odto2.id 
-          join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
-          where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = $osmId
-      )
+      where ($firstErhArt < 0 or kdte."Art_Erhebung_id" in $$erhArt)
+        and odto.osm_id = $osmId
         and kdti."Dateipfad" not in ('', '0') 
         and kdti."Audiofile" not in ('', '0')
         and pdti.inf_gruppe_id in (
@@ -708,17 +696,14 @@ const antwortenDao = {
         join transcript t3 on t3.id = t.transcript_id_id
         join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
         join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
+        join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
         join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
         join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
         join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
         left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
-      where odto.osm_id in (
-        select osm_id from "OrteDB_tbl_orte" odto2 
-          join "KorpusDB_tbl_inferhebung" kdti2 on kdti2."Ort_id" = odto2.id 
-          join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
-          where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = $osmId
-      )
+      where ($firstErhArt < 0 or kdte."Art_Erhebung_id" in $$erhArt)
+        and odto.osm_id = $osmId
         and kdti."Dateipfad" not in ('', '0') 
         and kdti."Audiofile" not in ('', '0')
         and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
