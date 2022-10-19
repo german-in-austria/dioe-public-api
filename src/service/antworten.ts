@@ -66,7 +66,6 @@ export default {
     if (tagIDs.length === 0) {
       tagIDs = [-1];
     }
-    console.log('starting');
     if (
       (tagIDs[0] < 0 || filters.phaen[0] < 0) &&
       (filters.lemma.overall.length > 0 ||
@@ -100,6 +99,7 @@ export default {
       );
       let resTrans: ISelectAntwortenTransResult[] = [];
       if (transCheck.length > 0) {
+        console.log('starting');
         resTrans = await antwortenDao.selectAntwortenTrans(
           tagIDs[0] < 0 ? tagIDs : transCheck.map((el) => el.id),
           filters.erhArt,
@@ -230,7 +230,10 @@ export default {
                 (<AntwortToken>curr).ortho = `${currStr}, ${antStr}`;
                 (<AntwortToken>curr).orthoText = `${currStr}, ${antStr}`;
               }
-              if (curr.tagName) {
+              if (
+                curr.tagName &&
+                !curr.tagName.includes(ant.tagName ? ant.tagName : '')
+              ) {
                 curr.tagName = `${curr.tagName}, ${ant.tagName}`;
               }
             }
@@ -245,10 +248,16 @@ export default {
               (currStr && antStr && !currStr.includes(antStr)) ||
               curr.tagName !== ant.tagName
             ) {
-              if (currStr !== antStr) {
+              if (
+                currStr !== antStr &&
+                !currStr?.includes(antStr ? antStr : '')
+              ) {
                 (<AntwortToken>curr).orthoText = `${currStr}, ${antStr}`;
               }
-              if (curr.tagName) {
+              if (
+                curr.tagName &&
+                !curr.tagName.includes(ant.tagName ? ant.tagName : '')
+              ) {
                 curr.tagName = `${curr.tagName}, ${ant.tagName}`;
               }
             }
