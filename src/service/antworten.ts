@@ -145,6 +145,7 @@ export default {
     */
     let antworten: AntwortTokenStamp[] = [];
     mergeArr.forEach((el: any) => {
+      console.log(el);
       // const cont = el.content;
       let ant: Antwort | AntwortToken = {} as Antwort;
       let tagId = el.tagId;
