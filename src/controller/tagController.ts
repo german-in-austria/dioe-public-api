@@ -18,6 +18,7 @@ export interface selectionObject {
   val: string;
   state: string;
   case: string;
+  sppos: string;
 }
 export interface tagDto {
   ids: number[];

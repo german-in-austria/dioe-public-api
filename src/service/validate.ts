@@ -46,6 +46,7 @@ export interface searchToken {
   case: string;
   cI: string;
   overall: string;
+  sppos: boolean;
 }
 
 export default {
@@ -206,6 +207,7 @@ export default {
       case: '',
       cI: '',
       overall: '',
+      sppos: false,
     };
   },
   validateAgeBound(
@@ -230,8 +232,14 @@ export default {
         el.case.toLowerCase() !== 'regexp'
           ? `${el.state === 'nicht' ? '?!' : ''}${el.val}`
           : el.val.substring(1, el.val.lastIndexOf('/'));
+      if (el.sppos !== '') {
+        const sppos = this.validateSppos(el.sppos);
+        if (sppos.length > 0) {
+          token = `${token}~${sppos}$`;
+        }
+      }
       if (el.state === 'genau') {
-        token = `^${token}$`;
+        token = token.indexOf('~') > -1 ? `^${token}` : `^${token}$`;
         matchAll = false;
       }
       if (el.case === 'case-sensitive') {
@@ -251,6 +259,10 @@ export default {
       return `(${val.join('|')})`;
     }
     return '';
+  },
+  validateSppos(token: string): string {
+    token = token.toUpperCase();
+    return token;
   },
   transformToken(token: selectionObject[]): searchToken {
     return this.transformTextToMatch(token, true);
