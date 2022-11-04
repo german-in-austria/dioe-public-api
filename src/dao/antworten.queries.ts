@@ -127,6 +127,7 @@ export interface IGetTimeStampAntwortResult {
   dateipfad: string | null;
   gruppeBez: string | null;
   idErhId: number | null;
+  infSigle: string | null;
   osmid: string | null;
   startAntwort: string | null;
   stopAntwort: string | null;
@@ -200,6 +201,7 @@ export interface ISelectAntwortenTokenResult {
   audiofile: string | null;
   dateipfad: string | null;
   gruppeBez: string | null;
+  infSigle: string | null;
   ortho: string | null;
   orthoText: string | null;
   osmId: string | null;
@@ -242,6 +244,7 @@ export interface ISelectAntwortenTransResult {
   audiofile: string | null;
   dateipfad: string | null;
   gruppeBez: string | null;
+  infSigle: string | null;
   ortho: string | null;
   orthoText: string | null;
   startAntwort: string | null;

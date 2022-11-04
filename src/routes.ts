@@ -281,6 +281,7 @@ const models: TsoaRoute.Models = {
             "audiofile": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "gruppeBez": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "teamBez": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "sigle": {"dataType":"string","required":true},
             "age": {"dataType":"double","required":true},
             "data": {"dataType":"array","array":{"dataType":"union","subSchemas":[{"ref":"Antwort"},{"ref":"AntwortToken"}]},"required":true},
         },

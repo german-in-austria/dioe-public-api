@@ -181,22 +181,23 @@ const antwortenDao = {
     kdtt.id::TEXT as tag_id,
     odto.osm_id as osmId, 
     pdtig.gruppe_bez, pdtt.team_bez,
-    kdti."ID_Erh_id"
+    kdti."ID_Erh_id",
+    pdti.inf_sigle
    from "KorpusDB_tbl_tags" kdtt       
-  join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
-  join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
-  join "PersonenDB_tbl_informanten" pdti on pdti.id = kdta."von_Inf_id"
-  LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
-  join "KorpusDB_tbl_inf_zu_erhebung" kdtize on pdti.id = kdtize."ID_Inf_id" 
-  join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
-  join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti."ID_Erh_id" 
-  join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
-  join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
-  join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
-  join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
-  join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
-  join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
-  left join "KorpusDB_tbl_phaenomene" kdtp on kdtp.id = kdtt."zu_Phaenomen_id"
+    join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
+    join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
+    join "PersonenDB_tbl_informanten" pdti on pdti.id = kdta."von_Inf_id"
+    LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
+    join "KorpusDB_tbl_inf_zu_erhebung" kdtize on pdti.id = kdtize."ID_Inf_id" 
+    join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
+    join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti."ID_Erh_id" 
+    join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
+    join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
+    join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
+    join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
+    join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
+    join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+    left join "KorpusDB_tbl_phaenomene" kdtp on kdtp.id = kdtt."zu_Phaenomen_id"
   WHERE 
     kdta."start_Antwort" <> kdta."stop_Antwort" and 
     ($first_tag < 0 or kdta2."id_Antwort_id" in (
@@ -215,7 +216,7 @@ const antwortenDao = {
     )) and 
     ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen) and
     ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
-    and odto.osm_id = 3858109
+    and odto.osm_id = $osmId
     and kdta3.id = kdta."zu_Aufgabe_id" 
     and pdti.inf_gruppe_id in (
       select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
@@ -240,7 +241,8 @@ select
     CONCAT(ARRAY_AGG(kdtt.id)) as tag_id,
     odto.osm_id as osmId, 
     pdtig.gruppe_bez, pdtt.team_bez,
-    kdti."ID_Erh_id"
+    kdti."ID_Erh_id",
+    pdti.inf_sigle
   from "KorpusDB_tbl_tags" kdtt      
     join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
     join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
@@ -260,7 +262,7 @@ select
     ($first_tag < 0 or kdtt.id in $$tagId) 
     and ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
     and ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
-    and odto.osm_id = 3858109
+    and odto.osm_id = $osmId
     and kdti."Dateipfad" not in ('', '0') 
     and kdti."Audiofile" not in ('', '0')
     and kdta3.id = kdta."zu_Aufgabe_id"
@@ -295,7 +297,8 @@ select
     kdti."ID_Erh_id",
     kdti."Datum",
     pdtp.geb_datum,
-    pdtig.gruppe_bez, pdtt.team_bez
+    pdtig.gruppe_bez, pdtt.team_bez,
+    pdti.inf_sigle
   UNION
     select
       kdte."start_Aufgabe" as "start_Antwort", 
@@ -311,7 +314,8 @@ select
       CONCAT(ARRAY_AGG(kdtt.id)) as tag_id,
       odto.osm_id as osmId, 
       pdtig.gruppe_bez, pdtt.team_bez,
-      kdti."ID_Erh_id"
+      kdti."ID_Erh_id",
+      pdti.inf_sigle
   from "KorpusDB_tbl_tags" kdtt      
     join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
     join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
@@ -333,7 +337,7 @@ select
       select osm_id from "OrteDB_tbl_orte" odto2 
         join "KorpusDB_tbl_inferhebung" kdti2 on kdti2."Ort_id" = odto2.id 
         join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
-        where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = 3858109
+        where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = $osmId
     )
     and kdta3.id = kdta."zu_Aufgabe_id"  
     and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
@@ -367,7 +371,8 @@ select
     kdti."Datum",
     pdtp.geb_datum,
     odto.osm_id, 
-    pdtig.gruppe_bez, pdtt.team_bez
+    pdtig.gruppe_bez, pdtt.team_bez,
+    pdti.inf_sigle
     `;
     return await query(getTimeStampAntwort, {
       tagId: tagId,
@@ -474,7 +479,8 @@ select
           kdti."Audiofile" as "audiofile",
           t.text_in_ortho as "ortho_text",
           pdtig.gruppe_bez, pdtt.team_bez,
-          odto.osm_id
+          odto.osm_id,
+          pdti.inf_sigle
       from token t
         join event e on t.event_id_id = e.id 
         join transcript t3 on t3.id = t.transcript_id_id
@@ -516,7 +522,8 @@ select
         kdti."Audiofile" as "audiofile",
         t.text_in_ortho as "ortho_text",
         pdtig.gruppe_bez, pdtt.team_bez,
-        odto.osm_id
+        odto.osm_id,
+        pdti.inf_sigle
       from tokenset t4
         join tokentoset t2 on t2.id_tokenset_id = t4.id
         join token t on t.id = t2.id_token_id 
@@ -599,7 +606,8 @@ select
           kdti."Dateipfad" as dateipfad, 
           kdti."Audiofile" as "audiofile",
           t.text_in_ortho as "ortho_text",
-          pdtig.gruppe_bez, pdtt.team_bez
+          pdtig.gruppe_bez, pdtt.team_bez,
+          pdti.inf_sigle
     from (
     	select kdtt."Tag_lang", kdtt."Tag", kdta.ist_token_id, kdta.ist_tokenset_id, kdta2."id_Antwort_id"
 		    from "KorpusDB_tbl_tags" kdtt      
@@ -659,7 +667,8 @@ select
         kdti."Dateipfad" as dateipfad, 
         kdti."Audiofile" as "audiofile",
         t.text_in_ortho as "ortho_text",
-        pdtig.gruppe_bez, pdtt.team_bez
+        pdtig.gruppe_bez, pdtt.team_bez,
+        pdti.inf_sigle
         from (
           select kdtt."Tag_lang", kdtt."Tag", kdta.ist_tokenset_id, kdta2."id_Antwort_id"
             from "KorpusDB_tbl_tags" kdtt      

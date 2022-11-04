@@ -747,6 +747,9 @@
 						"type": "string",
 						"nullable": true
 					},
+					"sigle": {
+						"type": "string"
+					},
 					"age": {
 						"type": "number",
 						"format": "double"
@@ -770,6 +773,7 @@
 					"audiofile",
 					"gruppeBez",
 					"teamBez",
+					"sigle",
 					"age",
 					"data"
 				],

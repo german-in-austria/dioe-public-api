@@ -36,6 +36,7 @@ export interface AntwortTokenStamp {
   audiofile: string | null;
   gruppeBez: string | null;
   teamBez: string | null;
+  sigle: string;
   age: number;
   data: (Antwort | AntwortToken)[];
 }
@@ -191,6 +192,7 @@ export default {
         audiofile: el.audiofile,
         gruppeBez: el.gruppeBez,
         teamBez: el.teamBez,
+        sigle: el.infSigle ? el.infSigle : '',
         age: el.age,
         data: [ant],
       };
