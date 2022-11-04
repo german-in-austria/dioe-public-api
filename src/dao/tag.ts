@@ -123,9 +123,6 @@ const tagDao = {
           JOIN "KorpusDB_tbl_antwortentags" kdta ON kdtt.id = kdta. "id_Tag_id"
           JOIN "KorpusDB_tbl_antworten" kdta2 ON kdta. "id_Antwort_id" = kdta2.id
           JOIN "PersonenDB_tbl_informanten" pdti ON kdta2. "von_Inf_id" = pdti.id
-          join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id
-          join "KorpusDB_tbl_inferhebung" kdti2 on kdti2.id = kdtize.id_inferhebung_id
-          join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
           JOIN "token" t on t."ID_Inf_id" = pdti.id 
             and ($textTag = '' OR t.text ~* $textTag)
             and ($textOrtho = '' OR t.ortho ~* $textOrtho)
@@ -147,7 +144,12 @@ const tagDao = {
               group by kdta3."id_Antwort_id" 
                 having count(kdta3."id_Tag_id") >= $tagLen)
           )) 
-          and ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
+          and ($firstErhArt < 0 or pdti.id in (
+	         select kdtize."ID_Inf_id" from "KorpusDB_tbl_inf_zu_erhebung" kdtize
+	          join "KorpusDB_tbl_inferhebung" kdti2 on kdti2.id = kdtize.id_inferhebung_id
+	          join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
+	          where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
+          ))
           and ($aus = '' OR pdti.ausbildung_max = $aus)
           and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
           and ($gender_sel < 0 OR pdtp.weiblich = $gender)
@@ -266,15 +268,17 @@ const tagDao = {
           JOIN "KorpusDB_tbl_antwortentags" kdta ON kdtt.id = kdta. "id_Tag_id"
           JOIN "KorpusDB_tbl_antworten" kdta2 ON kdta. "id_Antwort_id" = kdta2.id
           JOIN "PersonenDB_tbl_informanten" pdti ON kdta2. "von_Inf_id" = pdti.id
-          join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id
-          join "KorpusDB_tbl_inferhebung" kdti2 on kdti2.id = kdtize.id_inferhebung_id
-          join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
           LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
           JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
           join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
         WHERE
           ($tagId_first < 0 or kdtt.id IN $$tagId) 
-          and ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
+          and pdti.id in (
+	         select kdtize."ID_Inf_id" from "KorpusDB_tbl_inf_zu_erhebung" kdtize
+	          join "KorpusDB_tbl_inferhebung" kdti2 on kdti2.id = kdtize.id_inferhebung_id
+	          join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
+	          where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
+          )
           and ($aus = '' OR pdti.ausbildung_max = $aus)
           and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
           and ($gender_sel < 0 OR pdtp.weiblich = $gender)
@@ -328,15 +332,17 @@ const tagDao = {
         JOIN "KorpusDB_tbl_antwortentags" kdta ON kdtt.id = kdta. "id_Tag_id"
         JOIN "KorpusDB_tbl_antworten" kdta2 ON kdta. "id_Antwort_id" = kdta2.id
         JOIN "PersonenDB_tbl_informanten" pdti ON kdta2. "von_Inf_id" = pdti.id
-        join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id
-        join "KorpusDB_tbl_inferhebung" kdti2 on kdti2.id = kdtize.id_inferhebung_id
-        join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
         LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
         JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
       WHERE
         ($firstTag < 0 OR kdtt.id IN $$tagId)
-        and ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
+        and ($firstErhArt < 0 or pdti.id in (
+          select kdtize."ID_Inf_id" from "KorpusDB_tbl_inf_zu_erhebung" kdtize
+           join "KorpusDB_tbl_inferhebung" kdti2 on kdti2.id = kdtize.id_inferhebung_id
+           join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
+           where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
+         ))
         and ($aus = '' OR pdti.ausbildung_max = $aus)
         and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
         and ($gender_sel < 0 OR pdtp.weiblich = $gender)
