@@ -173,196 +173,34 @@ const antwortenDao = {
       IGetTimeStampAntwortQuery & IGetTimeStampAntwortParams
     >`
     select kdta."start_Antwort" as "start_Antwort", 
-          kdta."stop_Antwort" as "stop_Antwort",
-          kdti."Dateipfad" as dateipfad, 
-          kdti."Audiofile" as "audiofile",
-          DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
-          CASE WHEN kdtt."Tag" = '' THEN kdtp."Bez_Phaenomen" ELSE kdtt."Tag" END as tagName,
-          kdtt.id::TEXT as tag_id,
-          odto.osm_id as osmId, 
-          pdtig.gruppe_bez, pdtt.team_bez,
-          kdti."ID_Erh_id"
-       	from "KorpusDB_tbl_tags" kdtt       
-        join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
-        join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
-        join "PersonenDB_tbl_informanten" pdti on pdti.id = kdta."von_Inf_id"
-        LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
-        join "KorpusDB_tbl_inf_zu_erhebung" kdtize on pdti.id = kdtize."ID_Inf_id" 
-        join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
-        join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti."ID_Erh_id" 
-        join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
-        join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
-        join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
-        join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
-        join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
-        join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
-        left join "KorpusDB_tbl_phaenomene" kdtp on kdtp.id = kdtt."zu_Phaenomen_id"
-        WHERE 
-          kdta."start_Antwort" <> kdta."stop_Antwort" and 
-          ($first_tag < 0 or kdta2."id_Antwort_id" in (
-            select kdta3."id_Antwort_id" 
-              from "KorpusDB_tbl_antwortentags" kdta3 
-                join "KorpusDB_tbl_tagebene" kdtt on kdtt.id = kdta3."id_TagEbene_id"
-                join "KorpusDB_tbl_tagebenezutag" kdtt2 on kdtt2."id_TagEbene_id" = kdtt.id
-                join "KorpusDB_tbl_tags" kdtt3 on kdtt2."id_Tag_id" = kdtt3.id
-              where 
-                kdta3."id_Tag_id" IN $$tagId
-                and ($tagGroupLength = 0 or kdtt3."Generation" = 0) 
-                and ($tagGroupLength = 0 or kdtt3.id in $$tagId)
-                and ($first_phaen < 0 OR kdtt3."zu_Phaenomen_id" IN $$phaen)
-              group by kdta3."id_Antwort_id" 
-                having count(kdta3."id_Tag_id") >= $tagGroupLength
-          )) and 
-          ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen) and
-          ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
-          and odto.osm_id = $osmId
-          and kdta3.id = kdta."zu_Aufgabe_id" 
-          and pdti.inf_gruppe_id in (
-            select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
-            where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
-          and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
-          and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
-          and ($aus = '' OR pdti.ausbildung_max = $aus)
-          and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
-          and ($gender_sel < 0 OR pdtp.weiblich = $gender)
-    UNION
-    select
-          kdte."start_Aufgabe" as "start_Antwort", 
-          kdte."stop_Aufgabe" as "stop_Antwort",
-          kdti."Dateipfad" as dateipfad, 
-          kdti."Audiofile" as "audiofile",
-          DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
-          CONCAT(
-            ARRAY_AGG(
-              CASE WHEN kdtt."Tag" = '' THEN kdtp."Bez_Phaenomen" ELSE kdtt."Tag" END
-            )
-          ) as tag_name,
-          CONCAT(ARRAY_AGG(kdtt.id)) as tag_id,
-          odto.osm_id as osmId, 
-          pdtig.gruppe_bez, pdtt.team_bez,
-          kdti."ID_Erh_id"
-        from "KorpusDB_tbl_tags" kdtt      
-          join lateral (
-          	select * from "KorpusDB_tbl_antwortentags" kdta2 where kdta2."id_Tag_id" = kdtt.id
-          ) kdta2 on true
-          join lateral (
-          	select * from "KorpusDB_tbl_antworten" kdta where kdta2."id_Antwort_id" = kdta.id
-          ) kdta on true
-          join lateral (
-          	select * from "PersonenDB_tbl_informanten" pdti where pdti.id = kdta."von_Inf_id"
-          ) pdti on true
-          LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
-          join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
-          join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
-          join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti."ID_Erh_id"
-          join "OrteDB_tbl_orte" odto on pdti.inf_ort_id = odto.id
-          join lateral(
-          	select * from "KorpusDB_tbl_erhinfaufgaben" kdte where kdte."id_InfErh_id" = kdti.id
-          ) kdte on true
-          join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
-          join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
-          join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
-          join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
-          left join "KorpusDB_tbl_phaenomene" kdtp on kdtp.id = kdtt."zu_Phaenomen_id"
-        WHERE 
-          ($first_tag < 0 or kdtt.id in $$tagId) 
-          and ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
-        	and ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
-          and odto.osm_id = $osmId
-          and kdti."Dateipfad" not in ('', '0') 
-          and kdti."Audiofile" not in ('', '0')
-          and kdta3.id = kdta."zu_Aufgabe_id"
-          and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
-          and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
-          and ($aus = '' OR pdti.ausbildung_max = $aus)
-          and pdti.inf_gruppe_id in (
-            select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
-            where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
-          and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
-          and ($gender_sel < 0 OR pdtp.weiblich = $gender)
-          and ($first_tag < 0 OR kdta2."id_Antwort_id" in 
-          (select kdta3."id_Antwort_id" 
-          from "KorpusDB_tbl_antwortentags" kdta3 
-            join "KorpusDB_tbl_tagebene" kdtt on kdtt.id = kdta3."id_TagEbene_id"
-            join "KorpusDB_tbl_tagebenezutag" kdtt2 on kdtt2."id_TagEbene_id" = kdtt.id
-            join "KorpusDB_tbl_tags" kdtt3 on kdtt2."id_Tag_id" = kdtt3.id
-          where 
-            kdta3."id_Tag_id" IN $$tagId
-            and ($tagGroupLength = 0 or kdtt3."Generation" = 0) 
-            and ($tagGroupLength = 0 or kdtt3.id in $$tagId)
-            and ($first_phaen < 0 OR kdtt3."zu_Phaenomen_id" IN $$phaen)
-          group by kdta3."id_Antwort_id" 
-            having count(kdta3."id_Tag_id") >= $tagGroupLength  
-          ))
-        group by 
-          kdte."start_Aufgabe", 
-          kdte."stop_Aufgabe",
-          kdti."Dateipfad", 
-          kdti."Audiofile",
-          odto.osm_id, 
-          kdti."ID_Erh_id",
-          pdti.id,
-          kdti."Datum",
-          pdtp.geb_datum,
-          pdtig.gruppe_bez, pdtt.team_bez
-        UNION
-          select
-            kdte."start_Aufgabe" as "start_Antwort", 
-            kdte."stop_Aufgabe" as "stop_Antwort",
-            kdti."Dateipfad" as dateipfad, 
-            kdti."Audiofile" as "audiofile",
-            DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
-            CONCAT(
-              ARRAY_AGG(
-                CASE WHEN kdtt."Tag" = '' THEN kdtp."Bez_Phaenomen" ELSE kdtt."Tag" END
-              )
-            ) as tag_name,
-            CONCAT(ARRAY_AGG(kdtt.id)) as tag_id,
-            odto.osm_id as osmId, 
-            pdtig.gruppe_bez, pdtt.team_bez,
-            kdti."ID_Erh_id"
-        from "KorpusDB_tbl_tags" kdtt      
-          join lateral (
-          	select * from "KorpusDB_tbl_antwortentags" kdta2 where kdta2."id_Tag_id" = kdtt.id
-          ) kdta2 on true
-          join lateral (
-          	select * from "KorpusDB_tbl_antworten" kdta where kdta2."id_Antwort_id" = kdta.id
-          ) kdta on true
-          join lateral (
-          	select * from "PersonenDB_tbl_informanten" pdti where pdti.id = kdta."von_Inf_id"
-          ) pdti on true
-          LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
-          join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
-          join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
-          join "OrteDB_tbl_orte" odto on pdti.inf_ort_id = odto.id
-          join lateral(
-          	select * from "KorpusDB_tbl_erhinfaufgaben" kdte where kdte."id_InfErh_id" = kdti.id
-          ) kdte on true
-          join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
-          join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
-          join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
-          join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
-          left join "KorpusDB_tbl_phaenomene" kdtp on kdtp.id = kdtt."zu_Phaenomen_id"
-        WHERE 
-          ($first_tag < 0 or kdtt.id in $$tagId) 
-          and ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
-        	and odto.osm_id in (
-            select osm_id from "OrteDB_tbl_orte" odto2 
-              join "KorpusDB_tbl_inferhebung" kdti2 on kdti2."Ort_id" = odto2.id 
-              join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
-              where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = $osmId
-          )
-          and kdta3.id = kdta."zu_Aufgabe_id"  
-          and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
-          and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
-          and ($aus = '' OR pdti.ausbildung_max = $aus)
-          and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
-          and ($gender_sel < 0 OR pdtp.weiblich = $gender)
-          and pdti.inf_gruppe_id in (
-            select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
-            where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
-          and ($first_tag < 0 OR kdta2."id_Antwort_id" in 
-        (select kdta3."id_Antwort_id" 
+    kdta."stop_Antwort" as "stop_Antwort",
+    kdti."Dateipfad" as dateipfad, 
+    kdti."Audiofile" as "audiofile",
+    DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
+    CASE WHEN kdtt."Tag" = '' THEN kdtp."Bez_Phaenomen" ELSE kdtt."Tag" END as tagName,
+    kdtt.id::TEXT as tag_id,
+    odto.osm_id as osmId, 
+    pdtig.gruppe_bez, pdtt.team_bez,
+    kdti."ID_Erh_id"
+   from "KorpusDB_tbl_tags" kdtt       
+  join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
+  join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
+  join "PersonenDB_tbl_informanten" pdti on pdti.id = kdta."von_Inf_id"
+  LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
+  join "KorpusDB_tbl_inf_zu_erhebung" kdtize on pdti.id = kdtize."ID_Inf_id" 
+  join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
+  join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti."ID_Erh_id" 
+  join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
+  join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
+  join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
+  join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
+  join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
+  join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+  left join "KorpusDB_tbl_phaenomene" kdtp on kdtp.id = kdtt."zu_Phaenomen_id"
+  WHERE 
+    kdta."start_Antwort" <> kdta."stop_Antwort" and 
+    ($first_tag < 0 or kdta2."id_Antwort_id" in (
+      select kdta3."id_Antwort_id" 
         from "KorpusDB_tbl_antwortentags" kdta3 
           join "KorpusDB_tbl_tagebene" kdtt on kdtt.id = kdta3."id_TagEbene_id"
           join "KorpusDB_tbl_tagebenezutag" kdtt2 on kdtt2."id_TagEbene_id" = kdtt.id
@@ -374,18 +212,162 @@ const antwortenDao = {
           and ($first_phaen < 0 OR kdtt3."zu_Phaenomen_id" IN $$phaen)
         group by kdta3."id_Antwort_id" 
           having count(kdta3."id_Tag_id") >= $tagGroupLength
-          ))
-        group by 
-          kdte."start_Aufgabe", 
-          kdte."stop_Aufgabe",
-          kdti."Dateipfad", 
-          kdti."Audiofile",
-          kdti."ID_Erh_id",
-          pdti.id,
-          kdti."Datum",
-          pdtp.geb_datum,
-          odto.osm_id, 
-          pdtig.gruppe_bez, pdtt.team_bez
+    )) and 
+    ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen) and
+    ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
+    and odto.osm_id = 3858109
+    and kdta3.id = kdta."zu_Aufgabe_id" 
+    and pdti.inf_gruppe_id in (
+      select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
+      where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
+    and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+    and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+    and ($aus = '' OR pdti.ausbildung_max = $aus)
+    and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+    and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+UNION
+select
+    kdte."start_Aufgabe" as "start_Antwort", 
+    kdte."stop_Aufgabe" as "stop_Antwort",
+    kdti."Dateipfad" as dateipfad, 
+    kdti."Audiofile" as "audiofile",
+    DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
+    CONCAT(
+      ARRAY_AGG(
+        CASE WHEN kdtt."Tag" = '' THEN kdtp."Bez_Phaenomen" ELSE kdtt."Tag" END
+      )
+    ) as tag_name,
+    CONCAT(ARRAY_AGG(kdtt.id)) as tag_id,
+    odto.osm_id as osmId, 
+    pdtig.gruppe_bez, pdtt.team_bez,
+    kdti."ID_Erh_id"
+  from "KorpusDB_tbl_tags" kdtt      
+    join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
+    join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
+    join "PersonenDB_tbl_informanten" pdti on pdti.id = kdta."von_Inf_id"
+    LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
+    join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
+    join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
+    join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti."ID_Erh_id"
+    join "OrteDB_tbl_orte" odto on pdti.inf_ort_id = odto.id
+    join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
+    join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
+    join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
+    join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
+    join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+    left join "KorpusDB_tbl_phaenomene" kdtp on kdtp.id = kdtt."zu_Phaenomen_id"
+  WHERE 
+    ($first_tag < 0 or kdtt.id in $$tagId) 
+    and ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
+    and ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
+    and odto.osm_id = 3858109
+    and kdti."Dateipfad" not in ('', '0') 
+    and kdti."Audiofile" not in ('', '0')
+    and kdta3.id = kdta."zu_Aufgabe_id"
+    and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+    and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+    and ($aus = '' OR pdti.ausbildung_max = $aus)
+    and pdti.inf_gruppe_id in (
+      select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
+      where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
+    and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+    and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+    and ($first_tag < 0 OR kdta2."id_Antwort_id" in 
+    (select kdta3."id_Antwort_id" 
+    from "KorpusDB_tbl_antwortentags" kdta3 
+      join "KorpusDB_tbl_tagebene" kdtt on kdtt.id = kdta3."id_TagEbene_id"
+      join "KorpusDB_tbl_tagebenezutag" kdtt2 on kdtt2."id_TagEbene_id" = kdtt.id
+      join "KorpusDB_tbl_tags" kdtt3 on kdtt2."id_Tag_id" = kdtt3.id
+    where 
+      kdta3."id_Tag_id" IN $$tagId
+      and ($tagGroupLength = 0 or kdtt3."Generation" = 0) 
+      and ($tagGroupLength = 0 or kdtt3.id in $$tagId)
+      and ($first_phaen < 0 OR kdtt3."zu_Phaenomen_id" IN $$phaen)
+    group by kdta3."id_Antwort_id" 
+      having count(kdta3."id_Tag_id") >= $tagGroupLength  
+    ))
+  group by 
+    kdte."start_Aufgabe", 
+    kdte."stop_Aufgabe",
+    kdti."Dateipfad", 
+    kdti."Audiofile",
+    odto.osm_id, 
+    kdti."ID_Erh_id",
+    kdti."Datum",
+    pdtp.geb_datum,
+    pdtig.gruppe_bez, pdtt.team_bez
+  UNION
+    select
+      kdte."start_Aufgabe" as "start_Antwort", 
+      kdte."stop_Aufgabe" as "stop_Antwort",
+      kdti."Dateipfad" as dateipfad, 
+      kdti."Audiofile" as "audiofile",
+      DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
+      CONCAT(
+        ARRAY_AGG(
+          CASE WHEN kdtt."Tag" = '' THEN kdtp."Bez_Phaenomen" ELSE kdtt."Tag" END
+        )
+      ) as tag_name,
+      CONCAT(ARRAY_AGG(kdtt.id)) as tag_id,
+      odto.osm_id as osmId, 
+      pdtig.gruppe_bez, pdtt.team_bez,
+      kdti."ID_Erh_id"
+  from "KorpusDB_tbl_tags" kdtt      
+    join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
+    join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
+    join "PersonenDB_tbl_informanten" pdti on pdti.id = kdta."von_Inf_id"
+    LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
+    join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
+    join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
+    join "OrteDB_tbl_orte" odto on pdti.inf_ort_id = odto.id
+    join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
+    join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
+    join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
+    join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
+    join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+    left join "KorpusDB_tbl_phaenomene" kdtp on kdtp.id = kdtt."zu_Phaenomen_id"
+  WHERE 
+    ($first_tag < 0 or kdtt.id in $$tagId) 
+    and ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
+    and odto.osm_id in (
+      select osm_id from "OrteDB_tbl_orte" odto2 
+        join "KorpusDB_tbl_inferhebung" kdti2 on kdti2."Ort_id" = odto2.id 
+        join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti2."ID_Erh_id"
+        where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt) and odto2.osm_id = 3858109
+    )
+    and kdta3.id = kdta."zu_Aufgabe_id"  
+    and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+    and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+    and ($aus = '' OR pdti.ausbildung_max = $aus)
+    and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+    and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+    and pdti.inf_gruppe_id in (
+      select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
+      where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
+    and ($first_tag < 0 OR kdta2."id_Antwort_id" in 
+    (select kdta3."id_Antwort_id" 
+    from "KorpusDB_tbl_antwortentags" kdta3 
+      join "KorpusDB_tbl_tagebene" kdtt on kdtt.id = kdta3."id_TagEbene_id"
+      join "KorpusDB_tbl_tagebenezutag" kdtt2 on kdtt2."id_TagEbene_id" = kdtt.id
+      join "KorpusDB_tbl_tags" kdtt3 on kdtt2."id_Tag_id" = kdtt3.id
+    where 
+      kdta3."id_Tag_id" IN $$tagId
+      and ($tagGroupLength = 0 or kdtt3."Generation" = 0) 
+      and ($tagGroupLength = 0 or kdtt3.id in $$tagId)
+      and ($first_phaen < 0 OR kdtt3."zu_Phaenomen_id" IN $$phaen)
+    group by kdta3."id_Antwort_id" 
+      having count(kdta3."id_Tag_id") >= $tagGroupLength
+   ))
+  group by 
+    kdte."start_Aufgabe", 
+    kdte."stop_Aufgabe",
+    kdti."Audiofile",
+    kdti."Dateipfad", 
+    kdti."ID_Erh_id",
+    kdti."Datum",
+    pdtp.geb_datum,
+    odto.osm_id, 
+    pdtig.gruppe_bez, pdtt.team_bez
     `;
     return await query(getTimeStampAntwort, {
       tagId: tagId,

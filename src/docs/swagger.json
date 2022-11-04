@@ -278,12 +278,16 @@
 					},
 					"case": {
 						"type": "string"
+					},
+					"sppos": {
+						"type": "string"
 					}
 				},
 				"required": [
 					"val",
 					"state",
-					"case"
+					"case",
+					"sppos"
 				],
 				"type": "object",
 				"additionalProperties": true

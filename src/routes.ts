@@ -114,6 +114,7 @@ const models: TsoaRoute.Models = {
             "val": {"dataType":"string","required":true},
             "state": {"dataType":"string","required":true},
             "case": {"dataType":"string","required":true},
+            "sppos": {"dataType":"string","required":true},
         },
         "additionalProperties": true,
     },
