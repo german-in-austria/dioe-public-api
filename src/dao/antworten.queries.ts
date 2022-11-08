@@ -229,13 +229,11 @@ export interface ISelectAntwortenTransParams {
   firstErhArt: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
-  orthoTag: string | null | void;
   osmId: string | null | void;
   phaen: readonly (number | null | void)[];
   project_id: number | null | void;
   tagGroupLength: number | null | void;
   tagID: readonly (number | null | void)[];
-  textTag: string | null | void;
 }
 
 /** 'SelectAntwortenTrans' return type */

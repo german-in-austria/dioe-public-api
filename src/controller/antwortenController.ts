@@ -51,6 +51,7 @@ export interface antwortenDto {
   textInOrtho?: Array<selectionObject>;
   lemma?: Array<selectionObject>;
   phaen?: number[];
+  sigle?: string[];
 }
 
 @Route('antworten')

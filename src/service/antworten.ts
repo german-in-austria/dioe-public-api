@@ -112,8 +112,6 @@ export default {
           filters.beruf_id,
           filters.weiblich,
           filters.gender_sel,
-          filters.text.case,
-          filters.ortho.case,
           filters.group ? (tagIDs[0] < 0 ? 0 : tagIDs.length) : 0,
           filters.phaen
         );
@@ -146,7 +144,6 @@ export default {
     */
     let antworten: AntwortTokenStamp[] = [];
     mergeArr.forEach((el: any) => {
-      console.log(el);
       // const cont = el.content;
       let ant: Antwort | AntwortToken = {} as Antwort;
       let tagId = el.tagId;
@@ -200,10 +197,6 @@ export default {
         (a: AntwortTokenStamp) =>
           a.dateipfad === el.dateipfad && a.audiofile === el.audiofile
       );
-      if (el.ortho === 'einmal' && el.audiofile === '0210_0218_NMYB_GFG.ogg') {
-        console.log(filters);
-        console.log(el);
-      }
       if (dataIdx >= 0) {
         // Data already exists in the return array.
         // Check if the timestamps are also already there

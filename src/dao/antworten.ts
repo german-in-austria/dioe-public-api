@@ -589,8 +589,6 @@ select
     beruf: number,
     gender: boolean,
     gender_sel: number,
-    textTag: string,
-    orthoTag: string,
     tagGroupLength: number,
     phaen: number[]
   ) {
@@ -617,8 +615,6 @@ select
             ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen) AND
 		        ($first_tag < 0 OR kdtt.id in $$tagID)) tags
     join token t on t.id = tags.ist_token_id 
-      and ($textTag = '' OR t.text SIMILAR TO $textTag)
-      and ($orthoTag = '' OR t.ortho SIMILAR TO $orthoTag)
     join event e on t.event_id_id = e.id 
     join transcript t3 on t3.id = t.transcript_id_id
     join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
@@ -681,8 +677,6 @@ select
         join tokenset t4 on t4.id = tags.ist_tokenset_id
         join tokentoset t2 on t2.id_tokenset_id = t4.id
         join token t on t.id = t2.id_token_id 
-          and ($textTag = '' OR t.text SIMILAR TO $textTag)
-          and ($orthoTag = '' OR t.ortho SIMILAR TO $orthoTag)
         join event e on t.event_id_id = e.id 
         join transcript t3 on t3.id = t.transcript_id_id
         join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
@@ -734,8 +728,6 @@ select
       gender: gender,
       aus: aus,
       gender_sel: gender_sel,
-      textTag: textTag,
-      orthoTag: orthoTag,
       tagGroupLength: tagGroupLength,
       phaen: phaen,
       first_phaen: phaen[0],

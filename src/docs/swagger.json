@@ -855,6 +855,12 @@
 							"format": "double"
 						},
 						"type": "array"
+					},
+					"sigle": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
