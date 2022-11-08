@@ -754,16 +754,31 @@
 						"type": "number",
 						"format": "double"
 					},
-					"data": {
+					"res": {
 						"items": {
-							"anyOf": [
-								{
-									"$ref": "#/components/schemas/Antwort"
+							"properties": {
+								"id": {
+									"type": "string"
 								},
-								{
-									"$ref": "#/components/schemas/AntwortToken"
+								"data": {
+									"items": {
+										"anyOf": [
+											{
+												"$ref": "#/components/schemas/Antwort"
+											},
+											{
+												"$ref": "#/components/schemas/AntwortToken"
+											}
+										]
+									},
+									"type": "array"
 								}
-							]
+							},
+							"required": [
+								"id",
+								"data"
+							],
+							"type": "object"
 						},
 						"type": "array"
 					}
@@ -775,7 +790,7 @@
 					"teamBez",
 					"sigle",
 					"age",
-					"data"
+					"res"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -788,6 +803,9 @@
 							"format": "double"
 						},
 						"type": "array"
+					},
+					"paraid": {
+						"type": "string"
 					},
 					"erhArt": {
 						"items": {
@@ -1819,7 +1837,10 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/antwortenDto"
+								"items": {
+									"$ref": "#/components/schemas/antwortenDto"
+								},
+								"type": "array"
 							}
 						}
 					}

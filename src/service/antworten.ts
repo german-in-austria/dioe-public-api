@@ -38,7 +38,10 @@ export interface AntwortTokenStamp {
   teamBez: string | null;
   sigle: string;
   age: number;
-  data: (Antwort | AntwortToken)[];
+  res: {
+    data: (Antwort | AntwortToken)[];
+    id: string;
+  }[];
 }
 
 export interface AntwortTimestamp {
@@ -58,85 +61,97 @@ export interface AntwortenFromAufgabe {
 
 export default {
   async getAntwortenAudio(
-    tagIDs: number[],
-    osmId: number,
-    filters: filters
+    tagIDs: number[][],
+    osmId: number[],
+    ids: string[],
+    filters: filters[]
   ): Promise<AntwortTokenStamp[]> {
     const start = Date.now();
     let mergeArr: any = [];
-    if (tagIDs.length === 0) {
-      tagIDs = [-1];
-    }
-    if (
-      (tagIDs[0] < 0 || filters.phaen[0] < 0) &&
-      (filters.lemma.overall.length > 0 ||
-        filters.text.overall.length > 0 ||
-        filters.ortho.overall.length > 0)
-    ) {
-      const resTrans = await antwortenDao.selectAntwortenToken(
-        filters.erhArt,
-        filters.project,
-        osmId.toString(),
-        filters.ageLower,
-        filters.ageUpper,
-        filters.ausbildung,
-        filters.beruf_id,
-        filters.weiblich,
-        filters.gender_sel,
-        filters.text.case,
-        filters.ortho.case,
-        filters.textInOrtho.case,
-        filters.lemma.case,
-        filters.text.cI,
-        filters.ortho.cI,
-        filters.textInOrtho.cI,
-        filters.lemma.cI
-      );
-      mergeArr = resTrans;
-    } else {
-      const transCheck: ICheckIfTransResult[] = await antwortenDao.checkIfTrans(
-        tagIDs,
-        filters.phaen
-      );
-      let resTrans: ISelectAntwortenTransResult[] = [];
-      if (transCheck.length > 0) {
-        console.log('starting');
-        resTrans = await antwortenDao.selectAntwortenTrans(
-          tagIDs[0] < 0 ? tagIDs : transCheck.map((el) => el.id),
-          filters.erhArt,
-          filters.project,
-          osmId.toString(),
-          filters.ageLower,
-          filters.ageUpper,
-          filters.ausbildung,
-          filters.beruf_id,
-          filters.weiblich,
-          filters.gender_sel,
-          filters.group ? (tagIDs[0] < 0 ? 0 : tagIDs.length) : 0,
-          filters.phaen
-        );
+    for (let idx = 0; idx < ids.length; idx++) {
+      let tagId = tagIDs[idx];
+      const filter = filters[idx];
+      const el = osmId[idx];
+      const id = ids[idx];
+      let content = [] as any[];
+
+      if (tagId.length === 0) {
+        tagId = [-1];
       }
-      const end = Date.now() - start;
-      console.log(`Execution time: ${end} ms`);
-      let resAntAuf: IGetTimeStampAntwortResult[] = [];
-      if (transCheck.length - tagIDs.length != 0 || resTrans.length === 0) {
-        resAntAuf = await antwortenDao.getTimeStampAntwort(
-          tagIDs,
-          filters.erhArt,
-          filters.project,
-          osmId.toString(),
-          filters.ageLower,
-          filters.ageUpper,
-          filters.ausbildung,
-          filters.beruf_id,
-          filters.weiblich,
-          filters.gender_sel,
-          filters.group ? (tagIDs[0] < 0 ? 0 : tagIDs.length) : 0,
-          filters.phaen
+      if (
+        (tagId[0] < 0 || filter.phaen[0] < 0) &&
+        (filter.lemma.overall.length > 0 ||
+          filter.text.overall.length > 0 ||
+          filter.ortho.overall.length > 0)
+      ) {
+        const resTrans = await antwortenDao.selectAntwortenToken(
+          filter.erhArt,
+          filter.project,
+          el.toString(),
+          filter.ageLower,
+          filter.ageUpper,
+          filter.ausbildung,
+          filter.beruf_id,
+          filter.weiblich,
+          filter.gender_sel,
+          filter.text.case,
+          filter.ortho.case,
+          filter.textInOrtho.case,
+          filter.lemma.case,
+          filter.text.cI,
+          filter.ortho.cI,
+          filter.textInOrtho.cI,
+          filter.lemma.cI
         );
+        content = resTrans;
+      } else {
+        const transCheck: ICheckIfTransResult[] =
+          await antwortenDao.checkIfTrans(tagId, filter.phaen);
+        let resTrans: ISelectAntwortenTransResult[] = [];
+        if (transCheck.length > 0) {
+          console.log('starting');
+          resTrans = await antwortenDao.selectAntwortenTrans(
+            tagId[0] < 0 ? tagId : transCheck.map((el) => el.id),
+            filter.erhArt,
+            filter.project,
+            el.toString(),
+            filter.ageLower,
+            filter.ageUpper,
+            filter.ausbildung,
+            filter.beruf_id,
+            filter.weiblich,
+            filter.gender_sel,
+            filter.group ? (tagId[0] < 0 ? 0 : tagId.length) : 0,
+            filter.phaen
+          );
+        }
+        const end = Date.now() - start;
+        console.log(`Execution time: ${end} ms`);
+        let resAntAuf: IGetTimeStampAntwortResult[] = [];
+        if (transCheck.length - tagId.length != 0 || resTrans.length === 0) {
+          resAntAuf = await antwortenDao.getTimeStampAntwort(
+            tagId,
+            filter.erhArt,
+            filter.project,
+            el.toString(),
+            filter.ageLower,
+            filter.ageUpper,
+            filter.ausbildung,
+            filter.beruf_id,
+            filter.weiblich,
+            filter.gender_sel,
+            filter.group ? (tagId[0] < 0 ? 0 : tagId.length) : 0,
+            filter.phaen
+          );
+        }
+        content = resTrans;
+        content = content.concat(resAntAuf);
       }
-      mergeArr = resTrans;
-      mergeArr = mergeArr.concat(resAntAuf);
+      content.map((el) => {
+        el.id = id;
+        return el;
+      });
+      mergeArr = mergeArr.concat(content);
     }
     /*
     // Merge the results and add tagNum to the result
@@ -156,8 +171,6 @@ export default {
         } else {
           tagId = Number(tagId.replace(/[{}]*/g, ''));
         }
-      } else if (tagIDs.length > 0 && tagIDs[0] > -1) {
-        tagId = tagIDs[0];
       }
       let tag_name = el.tagname === undefined ? el.tagName : el.tagname;
       if (tag_name === undefined) {
@@ -191,25 +204,34 @@ export default {
         teamBez: el.teamBez,
         sigle: el.infSigle ? el.infSigle : '',
         age: el.age,
-        data: [ant],
+        res: [{ data: [ant], id: el.id }],
       };
       const dataIdx = antworten.findIndex(
         (a: AntwortTokenStamp) =>
           a.dateipfad === el.dateipfad && a.audiofile === el.audiofile
       );
       if (dataIdx >= 0) {
+        if (
+          antworten[dataIdx].res.findIndex((resEl) => resEl.id === el.id) < 0
+        ) {
+          antworten[dataIdx].res.push({ data: [ant], id: el.id });
+        }
+        const data =
+          antworten[dataIdx].res[
+            antworten[dataIdx].res.findIndex((resEl) => el.id === resEl.id)
+          ];
         // Data already exists in the return array.
         // Check if the timestamps are also already there
-        const idx = antworten[dataIdx].data.findIndex(
-          (a: Antwort | AntwortToken) => validator.compareTimeStamps(a, ant)
+        const idx = data.data.findIndex((a: Antwort | AntwortToken) =>
+          validator.compareTimeStamps(a, ant)
         );
         if (idx < 0) {
           // does not exist
-          antworten[dataIdx].data.push(ant);
+          data.data.push(ant);
         } else {
           // exists
           // append tagName, ortho and orthoText to the existing timestamp
-          const curr: Antwort | AntwortToken = antworten[dataIdx].data[idx];
+          const curr: Antwort | AntwortToken = data.data[idx];
 
           if (
             (<AntwortToken>curr).ortho !== undefined &&
@@ -259,7 +281,7 @@ export default {
             }
           } else {
             // Is Antwort
-            antworten[dataIdx].data.push(ant);
+            data.data.push(ant);
           }
         }
       } else {

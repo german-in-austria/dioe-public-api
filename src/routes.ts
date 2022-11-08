@@ -283,7 +283,7 @@ const models: TsoaRoute.Models = {
             "teamBez": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "sigle": {"dataType":"string","required":true},
             "age": {"dataType":"double","required":true},
-            "data": {"dataType":"array","array":{"dataType":"union","subSchemas":[{"ref":"Antwort"},{"ref":"AntwortToken"}]},"required":true},
+            "res": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"id":{"dataType":"string","required":true},"data":{"dataType":"array","array":{"dataType":"union","subSchemas":[{"ref":"Antwort"},{"ref":"AntwortToken"}]},"required":true}}},"required":true},
         },
         "additionalProperties": true,
     },
@@ -292,6 +292,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "ids": {"dataType":"array","array":{"dataType":"double"},"required":true},
+            "paraid": {"dataType":"string"},
             "erhArt": {"dataType":"array","array":{"dataType":"double"}},
             "project": {"dataType":"double"},
             "osmId": {"dataType":"double","required":true},
@@ -874,7 +875,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function AntwortenController_getAntByTags(request: any, response: any, next: any) {
             const args = {
-                    antwortenDto: {"in":"body","name":"antwortenDto","required":true,"ref":"antwortenDto"},
+                    antwortenDto: {"in":"body","name":"antwortenDto","required":true,"dataType":"array","array":{"dataType":"refObject","ref":"antwortenDto"}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

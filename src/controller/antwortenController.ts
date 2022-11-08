@@ -37,6 +37,7 @@ import { selectionObject } from './tagController';
 
 export interface antwortenDto {
   ids: number[];
+  paraid?: string;
   erhArt?: number[];
   project?: number;
   osmId: number;
@@ -67,12 +68,13 @@ export class AntwortenController extends Controller {
 
   @Post('/tags')
   public async getAntByTags(
-    @Body() antwortenDto: antwortenDto
+    @Body() antwortenDto: antwortenDto[]
   ): Promise<AntwortTokenStamp[]> {
     return antwortenService.getAntwortenAudio(
-      antwortenDto.ids,
-      antwortenDto.osmId,
-      validator.validateAntwortenDto(antwortenDto)
+      antwortenDto.map((el) => el.ids),
+      antwortenDto.map((el) => el.osmId),
+      antwortenDto.map((el) => (el.paraid ? el.paraid : '')),
+      validator.validateAntwortenDtoArray(antwortenDto)
     );
   }
 

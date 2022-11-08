@@ -125,6 +125,13 @@ export default {
 
     return { ids: aufIds, asetIds: asetIds };
   },
+  validateAntwortenDtoArray(ant: antwortenDto[]): filters[] {
+    const res = [] as filters[];
+    for (const a of ant) {
+      res.push(this.validateAntwortenDto(a));
+    }
+    return res;
+  },
   validateAntwortenDto(ant: antwortenDto): filters {
     const ageBound = this.validateAgeBound(ant.ageLower, ant.ageUpper);
     const aus = this.validateAusbildung(ant.ausbildung ? ant.ausbildung : '');
