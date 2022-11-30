@@ -105,13 +105,14 @@ export default {
         );
         content = resTrans;
       } else {
-        const transCheck: ICheckIfTransResult[] =
-          await antwortenDao.checkIfTrans(tagId, filter.phaen);
+        const transCheck = tagId;
+        /*const transCheck: ICheckIfTransResult[] =
+          await antwortenDao.checkIfTrans(tagId, filter.phaen);*/
         let resTrans: ISelectAntwortenTransResult[] = [];
         if (transCheck.length > 0) {
           console.log('starting');
           resTrans = await antwortenDao.selectAntwortenTrans(
-            tagId[0] < 0 ? tagId : transCheck.map((el) => el.id),
+            tagId[0] < 0 ? tagId : transCheck.map((el) => el),
             filter.erhArt,
             filter.project,
             el.toString(),

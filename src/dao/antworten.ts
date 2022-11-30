@@ -607,11 +607,11 @@ select
           pdtig.gruppe_bez, pdtt.team_bez,
           pdti.inf_sigle
     from (
-    	select kdtt."Tag_lang", kdtt."Tag", kdta.ist_token_id, kdta.ist_tokenset_id, kdta2."id_Antwort_id"
+    	select kdtt."Tag_lang", kdtt."Tag", kdta.ist_token_id, kdta2."id_Antwort_id"
 		    from "KorpusDB_tbl_tags" kdtt      
 		    join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
 		    join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
-		      where (kdta.ist_token_id is not null or kdta.ist_tokenset_id is not null) and 
+		      where (kdta.ist_token_id is not null) and 
             ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen) AND
 		        ($first_tag < 0 OR kdtt.id in $$tagID)) tags
     join token t on t.id = tags.ist_token_id 
