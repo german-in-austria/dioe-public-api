@@ -132,11 +132,13 @@ export interface ISelectAufgabeAudioByOrtParams {
 
 /** 'SelectAufgabeAudioByOrt' return type */
 export interface ISelectAufgabeAudioByOrtResult {
+  age: number | null;
   audiofile: string | null;
   aufgabe: string | null;
   dateipfad: string | null;
   gruppeBez: string | null;
   id: number | null;
+  infSigle: string | null;
   startAufgabe: string | null;
   stopAufgabe: string | null;
   teamBez: string | null;

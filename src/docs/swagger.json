@@ -1269,6 +1269,13 @@
 							"$ref": "#/components/schemas/Aufgabe"
 						},
 						"type": "array"
+					},
+					"sigle": {
+						"type": "string"
+					},
+					"age": {
+						"type": "number",
+						"format": "double"
 					}
 				},
 				"required": [
@@ -1276,7 +1283,9 @@
 					"audiofile",
 					"gruppeBez",
 					"teamBez",
-					"data"
+					"data",
+					"sigle",
+					"age"
 				],
 				"type": "object",
 				"additionalProperties": true

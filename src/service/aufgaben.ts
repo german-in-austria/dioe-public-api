@@ -23,6 +23,8 @@ export interface AufgabeStamp {
   gruppeBez: string | null;
   teamBez: string | null;
   data: Aufgabe[];
+  sigle: string;
+  age: number;
 }
 
 export default {

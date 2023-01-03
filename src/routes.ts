@@ -449,6 +449,8 @@ const models: TsoaRoute.Models = {
             "gruppeBez": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "teamBez": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "data": {"dataType":"array","array":{"dataType":"refObject","ref":"Aufgabe"},"required":true},
+            "sigle": {"dataType":"string","required":true},
+            "age": {"dataType":"double","required":true},
         },
         "additionalProperties": true,
     },
