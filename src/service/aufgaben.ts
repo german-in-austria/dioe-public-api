@@ -78,6 +78,8 @@ export default {
         audiofile: el.audiofile,
         gruppeBez: el.gruppeBez,
         teamBez: el.teamBez,
+        age: el.age,
+        sigle: el.infSigle,
         data: [a],
       } as AufgabeStamp;
 
