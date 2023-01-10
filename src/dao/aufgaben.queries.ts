@@ -93,11 +93,11 @@ export interface ISelectOrtAufgabeParams {
 /** 'SelectOrtAufgabe' return type */
 export interface ISelectOrtAufgabeResult {
   aufgabenstellung: string | null;
-  id: number;
+  id: number | null;
   lat: string | null;
   lon: string | null;
   numAufg: string | null;
-  ortNamelang: string;
+  ortNamelang: string | null;
   osmId: string | null;
 }
 

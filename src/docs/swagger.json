@@ -1080,7 +1080,8 @@
 					},
 					"id": {
 						"type": "number",
-						"format": "double"
+						"format": "double",
+						"nullable": true
 					},
 					"lat": {
 						"type": "string",
@@ -1095,7 +1096,8 @@
 						"nullable": true
 					},
 					"ortNamelang": {
-						"type": "string"
+						"type": "string",
+						"nullable": true
 					},
 					"osmId": {
 						"type": "string",

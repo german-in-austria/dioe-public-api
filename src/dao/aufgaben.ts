@@ -63,15 +63,14 @@ const aufgabenDao = {
   },
   async getOrtAufgabe(aufgID: number[], asetIds: number[]) {
     const selectOrtAufgabe = sql<ISelectOrtAufgabeQuery>`
-    select count(*) as num_aufg, 
-    kdta.id,
-    (case when kdta."Aufgabenstellung" is null then kdta."Beschreibung_Aufgabe" else kdta."Aufgabenstellung" END) as aufgabenstellung,   
-    odto.ort_namelang, odto.lat, odto.lon, odto.osm_id 
-    from "KorpusDB_tbl_aufgaben" kdta
+      select count(*) as num_aufg, 
+        kdta.id,
+        (case when kdta."Aufgabenstellung" is null then kdta."Beschreibung_Aufgabe" else kdta."Aufgabenstellung" END) as aufgabenstellung,   
+        odto.ort_namelang, odto.lat, odto.lon, odto.osm_id
+      from "KorpusDB_tbl_aufgaben" kdta
       join "KorpusDB_tbl_antworten" kdta2 on kdta2."zu_Aufgabe_id" = kdta.id
-      join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_Aufgabe_id" = kdta.id
-      join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdte."id_InfErh_id" 
-      join "OrteDB_tbl_orte" odto on odto.id = kdti."Ort_id" 
+      join "PersonenDB_tbl_informanten" pdti on pdti.id = kdta2."von_Inf_id"
+      join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id
       where 
         ($aufId < 0 OR kdta.id IN $$aufgID)
         AND ($asetSinId < 0 OR kdta."von_ASet_id" IN $$asetId)
@@ -82,6 +81,27 @@ const aufgabenDao = {
         kdta."Aufgabenstellung",
         odto.lat,
         odto.lon
+        union
+        select count(*) as num_aufg, 
+            kdta.id,
+            (case when kdta."Aufgabenstellung" is null then kdta."Beschreibung_Aufgabe" else kdta."Aufgabenstellung" END) as aufgabenstellung,   
+            odto.ort_namelang, odto.lat, odto.lon, odto.osm_id 
+        from "KorpusDB_tbl_aufgaben" kdta 
+          join "KorpusDB_tbl_erhinfaufgaben" kdte on kdta.id = kdte."id_Aufgabe_id" 
+          join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdte."id_InfErh_id" 
+          join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize.id_inferhebung_id = kdti.id
+          join "PersonenDB_tbl_informanten" pdti on pdti.id = kdtize."ID_Inf_id" 
+          join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
+        where  
+          ($aufId < 0 OR kdta.id IN $$aufgID)
+          AND ($asetSinId < 0 OR kdta."von_ASet_id" IN $$asetId)  
+        group by 
+          odto.osm_id,
+          odto.ort_namelang,
+          kdta.id,
+          kdta."Aufgabenstellung",
+          odto.lat,
+          odto.lon
     `;
     return await query(selectOrtAufgabe, {
       aufgID: aufgID,

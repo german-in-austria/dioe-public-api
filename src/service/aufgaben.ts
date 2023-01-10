@@ -51,7 +51,21 @@ export default {
     ids: number[];
     asetIds: number[];
   }): Promise<ISelectOrtAufgabeResult[]> {
-    return aufgabenDao.getOrtAufgabe(arg.ids, arg.asetIds);
+    const res = await aufgabenDao.getOrtAufgabe(arg.ids, arg.asetIds);
+    let aufgabenResult: ISelectOrtAufgabeResult[] = [];
+    res.forEach((el: ISelectOrtAufgabeResult) => {
+      const idx = aufgabenResult.findIndex((e) => e.osmId === el.osmId);
+      if (idx > -1) {
+        const num: number =
+          Number(aufgabenResult[idx].numAufg) +
+          (el.numAufg ? Number(el.numAufg) : 0);
+        aufgabenResult[idx].numAufg = num.toString();
+      } else {
+        aufgabenResult.push(el);
+      }
+    });
+    console.log(aufgabenResult.length);
+    return aufgabenResult;
   },
   async getAufgabeAudioByOrt(
     aufIDs: number[],
