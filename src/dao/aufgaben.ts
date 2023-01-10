@@ -74,6 +74,8 @@ const aufgabenDao = {
       where 
         ($aufId < 0 OR kdta.id IN $$aufgID)
         AND ($asetSinId < 0 OR kdta."von_ASet_id" IN $$asetId)
+        and kdta2."start_Antwort" <> '00:00:00' 
+        and kdta2."stop_Antwort"  <> '00:00:00'
       group by 
         odto.osm_id,
         odto.ort_namelang,
@@ -140,7 +142,7 @@ const aufgabenDao = {
       join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdte."id_InfErh_id" 
       join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize.id_inferhebung_id = kdti.id
       join "PersonenDB_tbl_informanten" pdti on pdti.id = kdtize."ID_Inf_id" 
-      join "OrteDB_tbl_orte" odto on odto.id = kdti."Ort_id" 
+      join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id
       join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
       join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
       join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
@@ -160,8 +162,7 @@ const aufgabenDao = {
       pdti.inf_sigle,
       DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age
       from "KorpusDB_tbl_aufgaben" kdta
-        join "KorpusDB_tbl_antworten" kdta2 on kdta2."zu_Aufgabe_id" = kdta.id
-        join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_Aufgabe_id" = kdta.id
+      join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_Aufgabe_id" = kdta.id
         join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdte."id_InfErh_id" 
         join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize.id_inferhebung_id = kdti.id
         join "PersonenDB_tbl_informanten" pdti on pdti.id = kdtize."ID_Inf_id" 
@@ -170,7 +171,7 @@ const aufgabenDao = {
         join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id 
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
       where
-        kdta2."von_Inf_id" = pdti.id and kdta.id IN $$aufIDs 
+        kdta.id IN $$aufIDs 
         and odto.osm_id = $osmId  
         and ($ageLower <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
         and ($ageUpper <= 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
