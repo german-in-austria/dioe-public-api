@@ -123,8 +123,12 @@ export default {
       result = result as numDto[];
       result.forEach((e: numDto, idx: number, array) => {
         array[idx].para = el.para;
-        if (e.tagName && e.tagName.startsWith('{'))
+        if (e.tagName && e.tagName.startsWith('{')) {
           array[idx].tagName = e.tagName.substring(1, e.tagName.length - 1);
+          array[idx].numTag = Math.floor(
+            Number(array[idx].numTag) / el.ids.length
+          ).toString();
+        }
       });
       res = res.concat(result);
     }

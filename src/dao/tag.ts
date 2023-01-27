@@ -332,7 +332,6 @@ const tagDao = {
         JOIN "KorpusDB_tbl_antwortentags" kdta ON kdtt.id = kdta. "id_Tag_id"
         JOIN "KorpusDB_tbl_antworten" kdta2 ON kdta. "id_Antwort_id" = kdta2.id
         JOIN "PersonenDB_tbl_informanten" pdti ON kdta2. "von_Inf_id" = pdti.id
-        LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
         JOIN "OrteDB_tbl_orte" odto ON pdti.inf_ort_id = odto.id
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
       WHERE
@@ -344,7 +343,9 @@ const tagDao = {
            where ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
          ))
         and ($aus = '' OR pdti.ausbildung_max = $aus)
-        and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+        and (pdti.id in (
+        	select pdiib.id_informant_id from "PersonenDB_inf_ist_beruf" pdiib where (pdiib.id_beruf_id = $beruf) 
+        ) or $beruf < 0)
         and ($gender_sel < 0 OR pdtp.weiblich = $gender)
         and ($phaen_first < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
         and kdta."id_Antwort_id" in 
