@@ -59,26 +59,72 @@ export default {
   async getTagOrte(tag: tag[]): Promise<ISelectOrtTagsResult[]> {
     let res: ISelectOrtTagsResult[] = [];
     for (const el of tag) {
-      console.log(tag);
-      let result;
+      let result: any[] = [];
       if (
         el.text.overall.length > 0 ||
         el.ortho.overall.length > 0 ||
-        el.lemma.overall.length > 0
+        el.lemma.overall.length > 0 ||
+        el.text.sppos.length > 0 ||
+        el.ortho.sppos.length > 0 ||
+        el.lemma.sppos.length > 0
       ) {
         if (el.ids[0] == -1) {
-          result = (await tagDao.getOrtToken(
-            el.erhArt,
-            el.ausbildung,
-            el.beruf_id,
-            el.weiblich,
-            el.gender_sel,
-            el.project_id,
-            el.text.case,
-            el.text.cI,
-            el.lemma.case,
-            el.lemma.cI
-          )) as any as ISelectOrtTagsResult[];
+          if (
+            el.text.overall.length > 0 ||
+            el.ortho.overall.length > 0 ||
+            el.lemma.overall.length > 0
+          ) {
+            console.log('calling');
+            result = (await tagDao.getOrtToken(
+              el.erhArt,
+              el.ausbildung,
+              el.beruf_id,
+              el.weiblich,
+              el.gender_sel,
+              el.project_id,
+              el.text.case,
+              el.text.cI,
+              el.lemma.case,
+              el.lemma.cI
+            )) as any as ISelectOrtTagsResult[];
+          }
+          if (el.text.sppos.length > 0) {
+            console.log('calling1');
+            for (const sppos of el.text.sppos) {
+              console.log(sppos);
+              const res = await tagDao.getOrtTokenSppos(
+                el.ausbildung,
+                el.beruf_id,
+                el.weiblich,
+                el.gender_sel,
+                el.project_id,
+                sppos.case,
+                sppos.cI,
+                '',
+                '',
+                sppos.sppos
+              );
+              result = this.concatByOsmID(result, res);
+            }
+          }
+          if (el.lemma.sppos.length > 0) {
+            console.log('calling2');
+            for (const sppos of el.lemma.sppos) {
+              const res = await tagDao.getOrtTokenSppos(
+                el.ausbildung,
+                el.beruf_id,
+                el.weiblich,
+                el.gender_sel,
+                el.project_id,
+                '',
+                '',
+                sppos.case,
+                sppos.cI,
+                sppos.sppos
+              );
+              result = this.concatByOsmID(result, res);
+            }
+          }
         } else {
           result = (await tagDao.getOrtTagToken(
             el.ids,
@@ -144,7 +190,22 @@ export default {
     const firstLevelTags = list.filter((t) => t.parentIds === null);
     return this.buildTreeRecursive(firstLevelTags, listById);
   },
-
+  concatByOsmID(array1: any[], array2: any[]): any[] {
+    if (
+      _.has(array1[0], 'numTag') &&
+      _.has(array2[0], 'numTag') &&
+      _.has(array1[0], 'osmId') &&
+      _.has(array2[0], 'osmId')
+    ) {
+      array2.forEach((el) => {
+        const currIdx = array1.findIndex((e) => e.osmId === el.osmId);
+        array1[currIdx].numTag = (
+          Number(el.numTag) + Number(array1[currIdx].numTag)
+        ).toString();
+      });
+    }
+    return array1;
+  },
   buildTreeRecursive(
     currentLevel: ISelectTagsResult[],
     listById: { [key: string]: ISelectTagsResult }

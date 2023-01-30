@@ -20,6 +20,7 @@ export interface tag extends ageBound {
   ortho: searchToken;
   lemma: searchToken;
   para: string;
+  sppos: Array<searchToken>;
 }
 
 export interface ageBound {
@@ -42,11 +43,17 @@ export interface filters extends ageBound {
   phaen: number[];
 }
 
+export interface searchTokenSppos {
+  case: string;
+  cI: string;
+  sppos: string;
+}
+
 export interface searchToken {
   case: string;
   cI: string;
   overall: string;
-  sppos: boolean;
+  sppos: Array<searchTokenSppos>;
 }
 
 export default {
@@ -214,7 +221,7 @@ export default {
       case: '',
       cI: '',
       overall: '',
-      sppos: false,
+      sppos: [],
     };
   },
   validateAgeBound(
@@ -234,31 +241,43 @@ export default {
   ): searchToken {
     const c: string[] = [];
     const cI: string[] = [];
+    const spposToken: searchTokenSppos[] = [];
+    let sppos = '';
     token.forEach((el: selectionObject) => {
       let token =
         el.case.toLowerCase() !== 'regexp'
           ? `${el.state === 'nicht' ? '?!' : ''}${el.val}`
           : el.val.substring(1, el.val.lastIndexOf('/'));
-      if (el.sppos !== '') {
-        const sppos = this.validateSppos(el.sppos);
-        if (sppos.length > 0) {
-          token = `${token}~${sppos}$`;
-        }
-      }
+      sppos = el.sppos !== '' ? this.validateSppos(el.sppos) : '';
       if (el.state === 'genau') {
-        token = token.indexOf('~') > -1 ? `^${token}` : `^${token}~$`;
+        token = token.indexOf('~') > -1 ? `^${token}` : `^${token}$`;
         matchAll = false;
       }
-      if (el.case === 'case-sensitive') {
-        c.push(token);
-      } else if (el.case === 'case-insensitive') {
-        cI.push(token);
+      if (sppos == '') {
+        if (el.case === 'case-sensitive') {
+          c.push(token);
+        } else if (el.case === 'case-insensitive') {
+          cI.push(token);
+        }
+      } else {
+        let res = {
+          case: '',
+          cI: '',
+          sppos: sppos,
+        };
+        if (el.case === 'case-sensitive') {
+          res.case = token;
+        } else if (el.case === 'case-insensitive') {
+          res.cI = token;
+        }
+        spposToken.push(res);
       }
     });
     return {
       case: `${this.createGroup(c)}${matchAll && c.length > 0 ? '.*' : ''}`,
       cI: `${this.createGroup(cI)}${matchAll && cI.length > 0 ? '.*' : ''}`,
       overall: `${this.createGroup(c.concat(cI))}${matchAll ? '.*' : ''}`,
+      sppos: spposToken,
     } as searchToken;
   },
   createGroup(val: string[]) {
