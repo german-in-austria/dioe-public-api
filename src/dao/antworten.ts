@@ -494,9 +494,9 @@ select
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
       where odto.osm_id = $osmId
         and ($firstErhArt < 0 or kdte."Art_Erhebung_id" in $$erhArt)
-        and (t.text ~* $textTagCI or 
-          t.ortho ~* $textOrthoCI or 
-          t.text_in_ortho ~* $textInOrthoCI)
+        and (t.text || '~' || t.sppos ~* $textTagCI or 
+          t.ortho || '~' || t.sppos  ~* $textOrthoCI or 
+          t.text_in_ortho || '~' || t.sppos  ~* $textInOrthoCI)
           and kdti."Dateipfad" not in ('', '0') 
           and kdti."Audiofile" not in ('', '0')
           and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
@@ -509,9 +509,9 @@ select
           and pdti.inf_gruppe_id in (
             select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
             where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
-          and (t.text ~ $textTagC or 
-            t.ortho ~ $textOrthoC or 
-            t.text_in_ortho ~ $textInOrthoC)
+          and (t.text || '~' || t.sppos  ~ $textTagC or 
+            t.ortho || '~' || t.sppos  ~ $textOrthoC or 
+            t.text_in_ortho || '~' || t.sppos  ~ $textInOrthoC)
      union 
         select e.start_time as "start_Antwort", 
         e.end_time as "stop_Antwort",
@@ -539,9 +539,9 @@ select
       where odto.osm_id = $osmId
         and kdti."Dateipfad" not in ('', '0') 
         and kdti."Audiofile" not in ('', '0')
-        and (t.text ~* $textTagCI or 
-          t.ortho ~* $textOrthoCI or 
-          t.text_in_ortho ~* $textInOrthoCI)
+        and (t.text || '~' || t.sppos  ~* $textTagCI or 
+          t.ortho || '~' || t.sppos  ~* $textOrthoCI or 
+          t.text_in_ortho || '~' || t.sppos  ~* $textInOrthoCI)
         and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
         and ($ageUpper < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
         and ($aus = '' OR pdti.ausbildung_max = $aus)
@@ -552,9 +552,9 @@ select
         and pdti.inf_gruppe_id in (
             select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
             where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
-        and (t.text ~ $textTagC or 
-          t.ortho ~ $textOrthoC or 
-          t.text_in_ortho ~ $textInOrthoC)
+        and (t.text || '~' || t.sppos  ~ $textTagC or 
+          t.ortho || '~' || t.sppos  ~ $textOrthoC or 
+          t.text_in_ortho || '~' || t.sppos  ~ $textInOrthoC)
     `;
     return await query(selectAntwortenToken, {
       osmId: osmId,

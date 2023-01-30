@@ -84,19 +84,19 @@ export default {
     }
 
     if (!(el.text === undefined || !el.text || el.text.length === 0)) {
-      tags = this.transformToken(el.text);
+      tags = this.transformToken(el.text, false);
       ortho = tags;
     }
 
     if (!(el.ortho === undefined || !el.ortho || el.ortho.length === 0)) {
-      ortho = this.transformToken(el.ortho);
+      ortho = this.transformToken(el.ortho, false);
       if (ortho.overall === '') {
         tags = ortho;
       }
     }
 
     if (!(el.lemma === undefined || !el.lemma || el.lemma.length === 0)) {
-      lemma = this.transformTextToMatch(el.lemma, false);
+      lemma = this.transformTextToMatch(el.lemma, false, false);
     }
 
     if (el.group === undefined) el.group = false;
@@ -155,12 +155,12 @@ export default {
     }
 
     if (!(ant.text === undefined || !ant.text || ant.text.length === 0)) {
-      text = this.transformToken(ant.text);
+      text = this.transformToken(ant.text, true);
       ortho = textInOrtho = text;
     }
 
     if (!(ant.ortho === undefined || !ant.ortho || ant.ortho.length === 0)) {
-      ortho = this.transformToken(ant.ortho);
+      ortho = this.transformToken(ant.ortho, true);
       if (ortho.overall === '') {
         text = ortho;
       }
@@ -173,7 +173,7 @@ export default {
         ant.textInOrtho.length === 0
       )
     ) {
-      textInOrtho = this.transformToken(ant.textInOrtho);
+      textInOrtho = this.transformToken(ant.textInOrtho, true);
       if (text.overall === '') {
         text = textInOrtho;
       }
@@ -183,7 +183,7 @@ export default {
     }
 
     if (!(ant.lemma === undefined || !ant.lemma || ant.lemma.length === 0)) {
-      lemma = this.transformTextToMatch(ant.lemma, false);
+      lemma = this.transformTextToMatch(ant.lemma, false, true);
     }
 
     if (ant.phaen === undefined || ant.phaen.length === 0) ant.phaen = [-1];
@@ -237,7 +237,8 @@ export default {
   },
   transformTextToMatch(
     token: selectionObject[],
-    matchAll: boolean
+    matchAll: boolean,
+    transSppos: boolean
   ): searchToken {
     const c: string[] = [];
     const cI: string[] = [];
@@ -249,11 +250,14 @@ export default {
           ? `${el.state === 'nicht' ? '?!' : ''}${el.val}`
           : el.val.substring(1, el.val.lastIndexOf('/'));
       sppos = el.sppos !== '' ? this.validateSppos(el.sppos) : '';
+      if (transSppos) {
+        token = `${token}~${sppos}$`;
+      }
       if (el.state === 'genau') {
         token = token.indexOf('~') > -1 ? `^${token}` : `^${token}$`;
         matchAll = false;
       }
-      if (sppos == '') {
+      if (sppos == '' || transSppos) {
         if (el.case === 'case-sensitive') {
           c.push(token);
         } else if (el.case === 'case-insensitive') {
@@ -290,8 +294,11 @@ export default {
     token = token.toUpperCase();
     return token;
   },
-  transformToken(token: selectionObject[]): searchToken {
-    return this.transformTextToMatch(token, true);
+  transformToken(
+    token: selectionObject[],
+    transformSppos: boolean
+  ): searchToken {
+    return this.transformTextToMatch(token, true, transformSppos);
   },
   compareTimeStamps(currStamp: Antwort, currAnt: Antwort): boolean {
     const sStamp = currStamp.start;
