@@ -246,7 +246,7 @@ export default {
         }
       }
       if (el.state === 'genau') {
-        token = token.indexOf('~') > -1 ? `^${token}` : `^${token}$`;
+        token = token.indexOf('~') > -1 ? `^${token}` : `^${token}~$`;
         matchAll = false;
       }
       if (el.case === 'case-sensitive') {

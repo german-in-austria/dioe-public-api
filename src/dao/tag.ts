@@ -19,6 +19,8 @@ import {
   ISelectOrtTokenParams,
   ISelectOrtTokenSingleParams,
   ISelectOrtTokenSingleQuery,
+  ISelectOrtTokenSpposParams,
+  ISelectOrtTokenSpposQuery,
 } from './tag.queries';
 
 const tagDao = {
@@ -157,8 +159,8 @@ const tagDao = {
             select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
             where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
           
-            and ($lemmaTokenC = '' or t.splemma ~ $lemmaTokenC)
-            and ($lemmaTokenCI = '' or t.splemma ~* $lemmaTokenCI)
+          and ($lemmaTokenC = '' or t.splemma ~ $lemmaTokenC)
+          and ($lemmaTokenCI = '' or t.splemma ~* $lemmaTokenCI)
         GROUP BY
           odto.osm_id,
           odto.ort_namelang,
@@ -242,6 +244,64 @@ const tagDao = {
       textTagC: textC,
       tokenLemmaC: lemmaC,
       tokenLemmaCI: lemmaCI,
+    });
+  },
+  async getOrtTokenSppos(
+    aus: string,
+    beruf: number,
+    gender: boolean,
+    gender_sel: number,
+    project_id: number,
+    textC: string,
+    textCI: string,
+    lemmaC: string,
+    lemmaCI: string,
+    sppos: string
+  ) {
+    const selectOrtTokenSppos = sql<
+      ISelectOrtTokenSpposParams & ISelectOrtTokenSpposQuery
+    >`
+      select 
+      count(1) as num_tag, 
+      odto. "osm_id" AS osm_id,
+                odto. "ort_namelang" AS ort_namelang,
+                odto. "lat" AS lat,
+                odto. "lon" AS lon
+                from token t 
+      join "PersonenDB_tbl_informanten" pdti on t."ID_Inf_id" = pdti.id
+      join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
+      join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id 
+      where 
+        ($textTagCI = '' OR t.ortho ~* $textTagCI)
+        AND ($textTagC = '' OR t.ortho ~ $textTagC)
+        AND ($tokenLemmaCI = '' OR t.splemma ~* $tokenLemmaCI)
+        AND ($tokenLemmaC = '' OR t.splemma ~ $tokenLemmaC)
+        AND ($sppos = '' OR t.sppos = $sppos)
+        and ($aus = '' OR pdti.ausbildung_max = $aus)
+        and (pdti.id in (
+        	select pdiib.id_informant_id from "PersonenDB_inf_ist_beruf" pdiib where (pdiib.id_beruf_id = $beruf) 
+        ) or $beruf < 0)
+                  and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+                  and pdti.inf_gruppe_id in (
+                    select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
+                  where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
+              GROUP BY
+                odto.osm_id,
+                odto.ort_namelang,
+                odto.lat,
+                odto.lon;
+      `;
+    return await query(selectOrtTokenSppos, {
+      beruf: beruf,
+      gender: gender,
+      gender_sel: gender_sel,
+      aus: aus,
+      project_id: project_id,
+      textTagCI: textCI,
+      textTagC: textC,
+      tokenLemmaC: lemmaC,
+      tokenLemmaCI: lemmaCI,
+      sppos: sppos,
     });
   },
   async getOrtTag(

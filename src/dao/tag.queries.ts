@@ -147,6 +147,35 @@ export interface ISelectOrtTokenSingleQuery {
   result: ISelectOrtTokenSingleResult;
 }
 
+/** 'SelectOrtTokenSppos' parameters type */
+export interface ISelectOrtTokenSpposParams {
+  aus: string | null | void;
+  beruf: number | null | void;
+  gender: boolean | null | void;
+  gender_sel: number | null | void;
+  project_id: number | null | void;
+  sppos: string | null | void;
+  textTagC: string | null | void;
+  textTagCI: string | null | void;
+  tokenLemmaC: string | null | void;
+  tokenLemmaCI: string | null | void;
+}
+
+/** 'SelectOrtTokenSppos' return type */
+export interface ISelectOrtTokenSpposResult {
+  lat: string | null;
+  lon: string | null;
+  numTag: string | null;
+  ortNamelang: string;
+  osmId: string | null;
+}
+
+/** 'SelectOrtTokenSppos' query type */
+export interface ISelectOrtTokenSpposQuery {
+  params: ISelectOrtTokenSpposParams;
+  result: ISelectOrtTokenSpposResult;
+}
+
 /** 'SelectOrtTags' parameters type */
 export interface ISelectOrtTagsParams {
   aus: string | null | void;

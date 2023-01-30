@@ -59,6 +59,7 @@ export default {
   async getTagOrte(tag: tag[]): Promise<ISelectOrtTagsResult[]> {
     let res: ISelectOrtTagsResult[] = [];
     for (const el of tag) {
+      console.log(tag);
       let result;
       if (
         el.text.overall.length > 0 ||
