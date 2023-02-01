@@ -21,6 +21,7 @@ import {
   ISelectOrtTokenSingleQuery,
   ISelectOrtTokenSpposParams,
   ISelectOrtTokenSpposQuery,
+  IGetAllSpposQuery,
 } from './tag.queries';
 
 const tagDao = {
@@ -495,6 +496,10 @@ const tagDao = {
       kdsp.id IN $$tagIDs
     `;
     return await query(getTagsByPreset, { tagIDs: tagIDs });
+  },
+  async getAllSppos() {
+    const getAllSppos = sql<IGetAllSpposQuery>`select distinct t.sppos from token t where t.sppos <> ''`;
+    return await query(getAllSppos);
   },
 };
 

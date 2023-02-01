@@ -207,6 +207,20 @@
 				"type": "object",
 				"additionalProperties": true
 			},
+			"IGetAllSpposResult": {
+				"description": "'GetAllSppos' return type",
+				"properties": {
+					"sppos": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"sppos"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
 			"IGetPresetTagsResult": {
 				"description": "'GetPresetTags' return type",
 				"properties": {
@@ -1422,6 +1436,28 @@
 								"schema": {
 									"items": {
 										"$ref": "#/components/schemas/ISelectTagsLayersResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/tags/sppos": {
+			"get": {
+				"operationId": "GetAllSppos",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/IGetAllSpposResult"
 									},
 									"type": "array"
 								}

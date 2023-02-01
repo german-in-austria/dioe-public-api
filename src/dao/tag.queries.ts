@@ -298,3 +298,17 @@ export interface IGetTagsByPresetQuery {
   result: IGetTagsByPresetResult;
 }
 
+/** 'GetAllSppos' parameters type */
+export type IGetAllSpposParams = void;
+
+/** 'GetAllSppos' return type */
+export interface IGetAllSpposResult {
+  sppos: string | null;
+}
+
+/** 'GetAllSppos' query type */
+export interface IGetAllSpposQuery {
+  params: IGetAllSpposParams;
+  result: IGetAllSpposResult;
+}
+

@@ -6,6 +6,7 @@ import {
   IGetTagsByPresetResult,
   IGetPresetTagsResult,
   IGetPresetOrtTagResult,
+  IGetAllSpposResult,
 } from '../dao/tag.queries';
 import tagDao from '../dao/tag';
 import _, { String } from 'lodash';
@@ -189,6 +190,9 @@ export default {
     const listById = _.keyBy(list, 'tagId');
     const firstLevelTags = list.filter((t) => t.parentIds === null);
     return this.buildTreeRecursive(firstLevelTags, listById);
+  },
+  async getAllSppos(): Promise<IGetAllSpposResult[]> {
+    return (await tagDao.getAllSppos()).filter((el) => el.sppos !== '\t');
   },
   concatByOsmID(array1: any[], array2: any[]): any[] {
     if (

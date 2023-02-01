@@ -7,6 +7,7 @@ import {
   IGetTagsByPresetResult,
   IGetPresetTagsResult,
   IGetPresetOrtTagResult,
+  IGetAllSpposResult,
 } from '../dao/tag.queries';
 
 import { Body, Controller, Get, Path, Post, Query, Route } from 'tsoa';
@@ -60,6 +61,11 @@ export class TagController extends Controller {
   @Get('/layers')
   public async getTagLayers(): Promise<ISelectTagsLayersResult[]> {
     return tagService.getTagLayers();
+  }
+
+  @Get('/sppos')
+  public async getAllSppos(): Promise<IGetAllSpposResult[]> {
+    return tagService.getAllSppos();
   }
 
   @Get('/preset')
