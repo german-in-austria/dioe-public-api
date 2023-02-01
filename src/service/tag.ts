@@ -75,7 +75,6 @@ export default {
             el.ortho.overall.length > 0 ||
             el.lemma.overall.length > 0
           ) {
-            console.log('calling');
             result = (await tagDao.getOrtToken(
               el.erhArt,
               el.ausbildung,
@@ -90,9 +89,7 @@ export default {
             )) as any as ISelectOrtTagsResult[];
           }
           if (el.text.sppos.length > 0) {
-            console.log('calling1');
             for (const sppos of el.text.sppos) {
-              console.log(sppos);
               const res = await tagDao.getOrtTokenSppos(
                 el.ausbildung,
                 el.beruf_id,
@@ -195,6 +192,9 @@ export default {
     return (await tagDao.getAllSppos()).filter((el) => el.sppos !== '\t');
   },
   concatByOsmID(array1: any[], array2: any[]): any[] {
+    if (array1.length === 0) {
+      return array2;
+    }
     if (
       _.has(array1[0], 'numTag') &&
       _.has(array2[0], 'numTag') &&
