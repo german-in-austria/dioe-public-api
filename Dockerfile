@@ -26,7 +26,7 @@ RUN npm install
 COPY . /usr/src/app
 
 RUN --mount=type=secret,id=pgaccess \
-    source $(echo pgaccess) \
+    export $(cat /run/secrets/pgaccess) \
     && npm run build
 
 ENV NODE_ENV production
