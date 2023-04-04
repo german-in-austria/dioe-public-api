@@ -5,7 +5,8 @@ Dockerfile
 .gitignore
 .gitlab-ci.yml
 env-dev.env
-*.env
+env-build.env
+env-production.env
 node_modules/*
 dist/*
 .idea

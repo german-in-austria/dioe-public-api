@@ -9,7 +9,7 @@ ARG PGDATABASE
 ARG PGPORT
 
 # CREATE APP DIR
-RUN mkdir -p /usr/src/app
+RUN mkdir -p /usr/src/app 
 WORKDIR /usr/src/app
 
 # INSTALL DEPENDENCIES
@@ -19,14 +19,15 @@ WORKDIR /usr/src/app
 # RUN apt -y update && apt -y -t jessie-backports install postgresql-client-9.6
 
 ## LIBRARIES
-COPY package.json /usr/src/app
-COPY package-lock.json /usr/src/app
+COPY package*.json /usr/src/app/
 
 RUN npm install
 
 COPY . /usr/src/app
 
-RUN npm run build
+RUN --mount=type=secret,id=pgaccess \
+    source $(echo pgaccess) \
+    && npm run build
 
 ENV NODE_ENV production
 
