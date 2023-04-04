@@ -12,8 +12,5 @@
     }
   ],
   "srcDir": "./src/",
-  "camelCaseColumnNames": true,
-  "db": {
-    "port": 54323
-  }
+  "camelCaseColumnNames": true
 }
