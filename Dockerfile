@@ -1,5 +1,5 @@
 # NODE AND NPM LTS
-FROM node:12-alpine
+FROM node:18-alpine
 
 # BUILD ARGS FOR GENERATING DB TYPES
 ARG PGHOST
@@ -27,6 +27,7 @@ COPY . /usr/src/app
 
 RUN --mount=type=secret,id=pgaccess \
     export $(cat /run/secrets/pgaccess) \
+    && export PGPORT=54323 \\
     && npm run build
 
 ENV NODE_ENV production
