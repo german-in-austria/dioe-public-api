@@ -1,5 +1,5 @@
 # NODE AND NPM LTS
-FROM node:12
+FROM node:12-alpine
 
 # BUILD ARGS FOR GENERATING DB TYPES
 ARG PGHOST
@@ -23,6 +23,8 @@ COPY package.json /usr/src/app
 COPY package-lock.json /usr/src/app
 
 RUN npm install
+
+ENV NODE_ENV production
 
 COPY . /usr/src/app
 
