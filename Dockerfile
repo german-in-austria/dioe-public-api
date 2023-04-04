@@ -24,11 +24,11 @@ COPY package-lock.json /usr/src/app
 
 RUN npm install
 
-ENV NODE_ENV production
-
 COPY . /usr/src/app
 
 RUN npm run build
+
+ENV NODE_ENV production
 
 # START AND EXPOSE TO HOST-DAEMON
 EXPOSE 3000
