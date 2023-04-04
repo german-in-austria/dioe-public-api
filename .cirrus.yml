@@ -1,3 +1,4 @@
+'''
 docker_builder: 
   env: 
     DOCKER_PASSWORD: ENCRYPTED[3ee344f0037b1dfa79e0e3672bca50b5c7447dabd0ec78f90470d590fd8448794bea2c5952f26100039eb1b46a2b1350]
@@ -27,3 +28,4 @@ docker_builder:
     test $CIRRUS_BRANCH == "main"
     && docker push dioe/dioe-public-api
     && curl -i -X POST -H "Content-Type: application/json" -d '{"text": "Cirrus CI built and pushed dioe/dioe-public-api\n details: https://cirrus-ci.com/task/'$CIRRUS_TASK_ID'"}' https://mm.dioe.at/hooks/9xkct75bzpbn3cm1kiut3jx1ur
+'''
