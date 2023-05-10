@@ -251,7 +251,7 @@ export default {
           : el.val.substring(1, el.val.lastIndexOf('/'));
       sppos = el.sppos !== '' ? this.validateSppos(el.sppos) : '';
       if (transSppos) {
-        token = `${token}~${sppos}$`;
+        token = `${token}~${sppos.length === 0 ? '.*' : sppos}$`;
       }
       if (el.state === 'genau') {
         token = token.indexOf('~') > -1 ? `^${token}` : `^${token}$`;

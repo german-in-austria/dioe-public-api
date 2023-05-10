@@ -74,6 +74,7 @@ export default {
       const el = osmId[idx];
       const id = ids[idx];
       let content = [] as any[];
+      console.log(filter);
 
       if (tagId.length === 0) {
         tagId = [-1];

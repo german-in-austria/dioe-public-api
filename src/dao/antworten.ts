@@ -470,7 +470,7 @@ select
     const selectAntwortenToken = sql<
       ISelectAntwortenTokenParams & ISelectAntwortenTokenQuery
     >`
-        select e.start_time as "start_Antwort", 
+      select e.start_time as "start_Antwort", 
           e.end_time as "stop_Antwort",
           t.text as "text",
           t.ortho as "ortho",
