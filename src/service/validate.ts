@@ -308,6 +308,14 @@ export default {
     const eAnt = currAnt.stop;
 
     if (
+      Array.isArray(currStamp.tagId) &&
+      currAnt.tagId &&
+      !Array.isArray(currAnt.tagId)
+    ) {
+      return currStamp.tagId.includes(currAnt.tagId);
+    }
+
+    if (
       sStamp.hours &&
       sAnt.hours &&
       eStamp.hours &&

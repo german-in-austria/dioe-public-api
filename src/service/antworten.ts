@@ -165,7 +165,6 @@ export default {
       let ant: Antwort | AntwortToken = {} as Antwort;
       let tagId = el.tagId;
       if (tagId && tagId !== undefined) {
-        // console.log(el);
         if (tagId.split(',').length > 1) {
           tagId = [
             ...new Set(el.tagId.replace(/[{}]*/g, '').split(',').map(Number)),
@@ -283,7 +282,19 @@ export default {
             }
           } else {
             // Is Antwort
-            data.data.push(ant);
+            if (Array.isArray(curr.tagId) && Array.isArray(ant.tagId)) {
+              if (!_.isEqual(curr.tagId.sort(), ant.tagId.sort())) {
+                data.data.push(ant);
+              }
+            } else if (
+              Array.isArray(curr.tagId) &&
+              !Array.isArray(ant.tagId) &&
+              ant.tagId
+            ) {
+              if (!curr.tagId.includes(ant.tagId)) {
+                data.data.push(ant);
+              }
+            }
           }
         }
       } else {
