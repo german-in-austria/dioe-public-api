@@ -730,6 +730,22 @@
 					"orthoText": {
 						"type": "string",
 						"nullable": true
+					},
+					"text": {
+						"type": "string",
+						"nullable": true
+					},
+					"phon": {
+						"type": "string",
+						"nullable": true
+					},
+					"transcript": {
+						"type": "string",
+						"nullable": true
+					},
+					"stdOrth": {
+						"type": "string",
+						"nullable": true
 					}
 				},
 				"required": [
@@ -738,7 +754,11 @@
 					"tagId",
 					"tagName",
 					"ortho",
-					"orthoText"
+					"orthoText",
+					"text",
+					"phon",
+					"transcript",
+					"stdOrth"
 				],
 				"type": "object",
 				"additionalProperties": true

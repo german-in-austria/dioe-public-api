@@ -29,6 +29,10 @@ export interface AntwortAufgabe extends Antwort {
 export interface AntwortToken extends Antwort {
   ortho: string | null;
   orthoText: string | null;
+  text: string | null;
+  phon: string | null;
+  transcript: string | null;
+  stdOrth: string | null;
 }
 
 export interface AntwortTokenStamp {
@@ -184,8 +188,12 @@ export default {
           tagName: [...new Set(tag_name.replace(/[{}]*/g, '').split(','))].join(
             ','
           ),
-          ortho: el.text,
+          ortho: el.ortho,
           orthoText: el.orthoText,
+          text: el.text,
+          phon: el.phon,
+          transcript: el.transcript,
+          stdOrth: el.standardorth,
         } as AntwortToken;
       } else {
         ant = {

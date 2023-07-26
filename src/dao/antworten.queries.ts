@@ -205,6 +205,8 @@ export interface ISelectAntwortenTokenResult {
   ortho: string | null;
   orthoText: string | null;
   osmId: string | null;
+  phon: string | null;
+  sppos: string | null;
   startAntwort: string | null;
   stopAntwort: string | null;
   teamBez: string | null;
@@ -245,12 +247,17 @@ export interface ISelectAntwortenTransResult {
   infSigle: string | null;
   ortho: string | null;
   orthoText: string | null;
+  phon: string | null;
+  sppos: string | null;
+  standardorth: string | null;
   startAntwort: string | null;
   stopAntwort: string | null;
   tag: string | null;
   tagName: string | null;
   tagShort: string | null;
   teamBez: string | null;
+  text: string | null;
+  transcript: string | null;
 }
 
 /** 'SelectAntwortenTrans' query type */

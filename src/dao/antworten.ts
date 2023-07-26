@@ -603,18 +603,24 @@ where odto.osm_id = $osmId
           tags."Tag_lang" as tag_name,
           tags."Tag" as tag_short,
           t.ortho as "ortho",
+          t.text as "text",
+          coalesce(t.phon, '') as "phon",
+  		    t.sppos as "sppos",
           DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age, 
           tags."Tag" as tag,
           kdti."Dateipfad" as dateipfad, 
           kdti."Audiofile" as "audiofile",
           t.text_in_ortho as "ortho_text",
           pdtig.gruppe_bez, pdtt.team_bez,
-          pdti.inf_sigle
+          pdti.inf_sigle,
+          coalesce(tags."Transkript", '') as "transcript",
+          coalesce(tags."Standardorth", '') as "standardorth"
     from (
-    	select kdtt."Tag_lang", kdtt."Tag", kdta.ist_token_id, kdta2."id_Antwort_id"
-		    from "KorpusDB_tbl_tags" kdtt      
-		    join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
-		    join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
+    	select kdtt."Tag_lang", kdtt."Tag", kdta.ist_token_id, kdta2."id_Antwort_id", kdts."Transkript", kdts."Standardorth"
+            from "KorpusDB_tbl_tags" kdtt      
+            join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
+            join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
+            left join "KorpusDB_tbl_saetze" kdts on kdts.id = kdta."ist_Satz_id"
 		      where (kdta.ist_token_id is not null) and 
             ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen) AND
 		        ($first_tag < 0 OR kdtt.id in $$tagID)) tags
@@ -662,18 +668,24 @@ where odto.osm_id = $osmId
         tags."Tag_lang" as tag_name,
         tags."Tag" as tag_short,
         t.ortho as "ortho",
+        t.text as "text",
+        coalesce(t.phon, '') as "phon",
+  		  t.sppos as "sppos",
         DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
         tags."Tag" as tag_name,
         kdti."Dateipfad" as dateipfad, 
         kdti."Audiofile" as "audiofile",
         t.text_in_ortho as "ortho_text",
         pdtig.gruppe_bez, pdtt.team_bez,
-        pdti.inf_sigle
+        pdti.inf_sigle,
+        coalesce(tags."Transkript", '') as "transcript",
+        coalesce(tags."Standardorth", '') as "standardorth"
         from (
-          select kdtt."Tag_lang", kdtt."Tag", kdta.ist_tokenset_id, kdta2."id_Antwort_id"
+          select kdtt."Tag_lang", kdtt."Tag", kdta.ist_tokenset_id, kdta2."id_Antwort_id", kdts."Transkript", kdts."Standardorth"
             from "KorpusDB_tbl_tags" kdtt      
             join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
             join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
+            left join "KorpusDB_tbl_saetze" kdts on kdts.id = kdta."ist_Satz_id"
               where kdta.ist_tokenset_id is not null and 
               ($first_tag < 0 OR kdtt.id in $$tagID) AND
                 ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
