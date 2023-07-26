@@ -74,7 +74,6 @@ export default {
       const el = osmId[idx];
       const id = ids[idx];
       let content = [] as any[];
-      console.log(filter);
 
       if (tagId.length === 0) {
         tagId = [-1];
@@ -223,8 +222,11 @@ export default {
           ];
         // Data already exists in the return array.
         // Check if the timestamps are also already there
-        const idx = data.data.findIndex((a: Antwort | AntwortToken) =>
-          validator.compareTimeStamps(a, ant)
+        const idx = data.data.findIndex(
+          (a: Antwort | AntwortToken) =>
+            validator.compareTimeStampsIfEqual(a, ant) ||
+            (validator.compareTimeStamps(a.start, ant.start) > 0 &&
+              validator.compareTimeStamps(a.stop, ant.stop) < 0)
         );
         if (idx < 0) {
           // does not exist
@@ -233,7 +235,6 @@ export default {
           // exists
           // append tagName, ortho and orthoText to the existing timestamp
           const curr: Antwort | AntwortToken = data.data[idx];
-
           if (
             (<AntwortToken>curr).ortho !== undefined &&
             (<AntwortToken>ant).ortho !== undefined

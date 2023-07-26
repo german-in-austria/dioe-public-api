@@ -300,7 +300,7 @@ export default {
   ): searchToken {
     return this.transformTextToMatch(token, true, transformSppos);
   },
-  compareTimeStamps(currStamp: Antwort, currAnt: Antwort): boolean {
+  compareTimeStampsIfEqual(currStamp: Antwort, currAnt: Antwort): boolean {
     const sStamp = currStamp.start;
     const eStamp = currStamp.stop;
 
@@ -342,5 +342,20 @@ export default {
       eStamp.seconds === eStamp.seconds &&
       eStamp.milliseconds === eStamp.milliseconds
     );
+  },
+  compareTimeStamps(t1: any, t2: any): number {
+    if (t1.hours < t2.hours) return -1;
+    if (t1.hours > t2.hours) return 1;
+
+    if (t1.minutes < t2.minutes) return -1;
+    if (t1.minutes > t2.minutes) return 1;
+
+    if (t1.seconds < t2.seconds) return -1;
+    if (t1.seconds > t2.seconds) return 1;
+
+    if (t1.milliseconds < t2.milliseconds) return -1;
+    if (t1.milliseconds > t2.milliseconds) return 1;
+
+    return 0;
   },
 };
