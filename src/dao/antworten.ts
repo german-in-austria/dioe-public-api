@@ -470,91 +470,95 @@ select
     const selectAntwortenToken = sql<
       ISelectAntwortenTokenParams & ISelectAntwortenTokenQuery
     >`
-      select e.start_time as "start_Antwort", 
-          e.end_time as "stop_Antwort",
-          t.text as "text",
-          t.ortho as "ortho",
-          DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age, 
-          kdti."Dateipfad" as dateipfad, 
-          kdti."Audiofile" as "audiofile",
-          t.text_in_ortho as "ortho_text",
-          pdtig.gruppe_bez, pdtt.team_bez,
-          odto.osm_id,
-          pdti.inf_sigle
-      from token t
-        join event e on t.event_id_id = e.id 
-        join transcript t3 on t3.id = t.transcript_id_id
-        join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
-        join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
-        join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
-        join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
-        join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
-        join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
-        left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
-        join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
-      where odto.osm_id = $osmId
-        and ($firstErhArt < 0 or kdte."Art_Erhebung_id" in $$erhArt)
-        and ($textTagCI = '' OR t.text || '~' || t.sppos ~* $textTagCI or 
-          $textOrthoCI = '' OR t.ortho || '~' || t.sppos  ~* $textOrthoCI or 
-          $textInOrthoCI = '' OR t.text_in_ortho || '~' || t.sppos  ~* $textInOrthoCI)
-          and kdti."Dateipfad" not in ('', '0') 
-          and kdti."Audiofile" not in ('', '0')
-          and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
-          and ($ageUpper < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
-          and ($aus = '' OR pdti.ausbildung_max = $aus)
-          and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
-          and ($gender_sel < 0 OR pdtp.weiblich = $gender)
-          and ($lemmaTokenC = '' or t.splemma ~ $lemmaTokenC)
-          and ($lemmaTokenCI = '' or t.splemma ~* $lemmaTokenCI)
-          and pdti.inf_gruppe_id in (
-            select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
-            where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
-          and ($textTagC = '' or t.text || '~' || t.sppos  ~ $textTagC or 
-            $textOrthoC = '' or t.ortho || '~' || t.sppos  ~ $textOrthoC or 
-            $textInOrthoC = '' or t.text_in_ortho || '~' || t.sppos  ~ $textInOrthoC)
-     union 
-        select e.start_time as "start_Antwort", 
-        e.end_time as "stop_Antwort",
-        t.ortho as "ortho",
-        t.text as "text",
-        DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
-        kdti."Dateipfad" as dateipfad, 
-        kdti."Audiofile" as "audiofile",
-        t.text_in_ortho as "ortho_text",
-        pdtig.gruppe_bez, pdtt.team_bez,
-        odto.osm_id,
-        pdti.inf_sigle
-      from tokenset t4
-        join tokentoset t2 on t2.id_tokenset_id = t4.id
-        join token t on t.id = t2.id_token_id 
-        join event e on t.event_id_id = e.id 
-        join transcript t3 on t3.id = t.transcript_id_id
-        join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
-        join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
-        join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
-        join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
-        join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
-        left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
-        join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
-      where odto.osm_id = $osmId
-        and kdti."Dateipfad" not in ('', '0') 
-        and kdti."Audiofile" not in ('', '0')
-        and ($textTagCI = '' OR t.text || '~' || t.sppos  ~* $textTagCI or 
-          $textOrthoCI = '' OR t.ortho || '~' || t.sppos  ~* $textOrthoCI or 
-          $textInOrthoCI = '' OR t.text_in_ortho || '~' || t.sppos  ~* $textInOrthoCI)
-        and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
-        and ($ageUpper < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
-        and ($aus = '' OR pdti.ausbildung_max = $aus)
-        and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
-        and ($gender_sel < 0 OR pdtp.weiblich = $gender)
-        and ($lemmaTokenC = '' or t.splemma ~ $lemmaTokenC)
-        and ($lemmaTokenCI = '' or t.splemma ~* $lemmaTokenCI)
-        and pdti.inf_gruppe_id in (
-            select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
-            where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
-        and ($textTagC = '' or t.text || '~' || t.sppos  ~ $textTagC or 
-          $textOrthoC = '' or t.ortho || '~' || t.sppos  ~ $textOrthoC or 
-          $textInOrthoC = '' or t.text_in_ortho || '~' || t.sppos  ~ $textInOrthoC)
+    select e.start_time as "start_Antwort", 
+    e.end_time as "stop_Antwort",
+    t.text as "text",
+    t.ortho as "ortho",
+    coalesce(t.phon, '') as "phon",
+    t.sppos as "sppos",
+    DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age, 
+    kdti."Dateipfad" as dateipfad, 
+    kdti."Audiofile" as "audiofile",
+    t.text_in_ortho as "ortho_text",
+    pdtig.gruppe_bez, pdtt.team_bez,
+    odto.osm_id,
+    pdti.inf_sigle
+from token t
+  join event e on t.event_id_id = e.id 
+  join transcript t3 on t3.id = t.transcript_id_id
+  join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
+  join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
+  join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
+  join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
+  join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
+  join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
+  left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
+  join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+where odto.osm_id = $osmId
+  and ($firstErhArt < 0 or kdte."Art_Erhebung_id" in $$erhArt)
+  and ($textTagCI = '' OR t.text || '~' || t.sppos ~* $textTagCI or 
+    $textOrthoCI = '' OR t.ortho || '~' || t.sppos  ~* $textOrthoCI or 
+    $textInOrthoCI = '' OR t.text_in_ortho || '~' || t.sppos  ~* $textInOrthoCI)
+    and kdti."Dateipfad" not in ('', '0') 
+    and kdti."Audiofile" not in ('', '0')
+    and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+    and ($ageUpper < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+    and ($aus = '' OR pdti.ausbildung_max = $aus)
+    and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+    and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+    and ($lemmaTokenC = '' or t.splemma ~ $lemmaTokenC)
+    and ($lemmaTokenCI = '' or t.splemma ~* $lemmaTokenCI)
+    and pdti.inf_gruppe_id in (
+      select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
+      where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
+    and ($textTagC = '' or t.text || '~' || t.sppos  ~ $textTagC or 
+      $textOrthoC = '' or t.ortho || '~' || t.sppos  ~ $textOrthoC or 
+      $textInOrthoC = '' or t.text_in_ortho || '~' || t.sppos  ~ $textInOrthoC)
+union 
+  select e.start_time as "start_Antwort", 
+  e.end_time as "stop_Antwort",
+  t.ortho as "ortho",
+  t.text as "text",
+  coalesce(t.phon, '') as "phon",
+  t.sppos as "sppos",
+  DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
+  kdti."Dateipfad" as dateipfad, 
+  kdti."Audiofile" as "audiofile",
+  t.text_in_ortho as "ortho_text",
+  pdtig.gruppe_bez, pdtt.team_bez,
+  odto.osm_id,
+  pdti.inf_sigle
+from tokenset t4
+  join tokentoset t2 on t2.id_tokenset_id = t4.id
+  join token t on t.id = t2.id_token_id 
+  join event e on t.event_id_id = e.id 
+  join transcript t3 on t3.id = t.transcript_id_id
+  join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
+  join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
+  join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
+  join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
+  join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
+  left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
+  join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+where odto.osm_id = $osmId
+  and kdti."Dateipfad" not in ('', '0') 
+  and kdti."Audiofile" not in ('', '0')
+  and ($textTagCI = '' OR t.text || '~' || t.sppos  ~* $textTagCI or 
+    $textOrthoCI = '' OR t.ortho || '~' || t.sppos  ~* $textOrthoCI or 
+    $textInOrthoCI = '' OR t.text_in_ortho || '~' || t.sppos  ~* $textInOrthoCI)
+  and ($ageLower < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) >= $ageLower)
+  and ($ageUpper < 1 or DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) <= $ageUpper)
+  and ($aus = '' OR pdti.ausbildung_max = $aus)
+  and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
+  and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+  and ($lemmaTokenC = '' or t.splemma ~ $lemmaTokenC)
+  and ($lemmaTokenCI = '' or t.splemma ~* $lemmaTokenCI)
+  and pdti.inf_gruppe_id in (
+      select pdtig.id from "PersonenDB_tbl_informantinnen_gruppe" pdtig 
+      where $project_id <= 0 or pdtig.gruppe_team_id = $project_id)
+  and ($textTagC = '' or t.text || '~' || t.sppos  ~ $textTagC or 
+    $textOrthoC = '' or t.ortho || '~' || t.sppos  ~ $textOrthoC or 
+    $textInOrthoC = '' or t.text_in_ortho || '~' || t.sppos  ~ $textInOrthoC)
     `;
     return await query(selectAntwortenToken, {
       osmId: osmId,
