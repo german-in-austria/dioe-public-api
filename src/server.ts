@@ -39,6 +39,9 @@ import './controller/socialController';
 
 const tsoaConfig = require('./../tsoa.json');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerJson = require('./docs/swagger.json');
+
 // allow unhandled rejections
 // to bubble up
 process.on('unhandledRejection', (error: Error) => {
@@ -87,10 +90,14 @@ app.use(methodOverride());
 
 const basePath = tsoaConfig.routes.basePath;
 
+console.log(basePath + '/docs/swagger.json');
 // serve the Swagger spec JSON
 app.use(basePath + '/docs/swagger.json', async (_req, res) => {
+  console.log(`${__dirname}/docs/swagger.json`);
   res.sendFile(`${__dirname}/docs/swagger.json`);
 });
+
+app.use(basePath + '/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJson));
 
 RegisterRoutes(app);
 
