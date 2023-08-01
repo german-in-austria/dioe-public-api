@@ -785,6 +785,10 @@
 							"$ref": "#/components/schemas/AntwortKontext"
 						},
 						"type": "array"
+					},
+					"reihung": {
+						"type": "number",
+						"format": "double"
 					}
 				},
 				"required": [
@@ -798,7 +802,8 @@
 					"phon",
 					"transcript",
 					"stdOrth",
-					"kontext"
+					"kontext",
+					"reihung"
 				],
 				"type": "object",
 				"additionalProperties": true

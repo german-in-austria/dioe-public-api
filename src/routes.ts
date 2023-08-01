@@ -296,6 +296,7 @@ const models: TsoaRoute.Models = {
             "transcript": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "stdOrth": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "kontext": {"dataType":"array","array":{"dataType":"refObject","ref":"AntwortKontext"},"required":true},
+            "reihung": {"dataType":"double","required":true},
         },
         "additionalProperties": true,
     },

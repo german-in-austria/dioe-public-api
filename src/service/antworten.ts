@@ -43,6 +43,7 @@ export interface AntwortToken extends Antwort {
   transcript: string | null;
   stdOrth: string | null;
   kontext: AntwortKontext[];
+  reihung: number;
 }
 
 export interface AntwortTokenStamp {
@@ -240,6 +241,7 @@ export default {
             phon: el.phon,
             transcript: el.transcript,
             stdOrth: el.standardorth,
+            reihung: el.tokenreihung,
             kontext: kontext,
           } as AntwortToken;
         } else {
