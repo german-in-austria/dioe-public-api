@@ -183,6 +183,7 @@ export interface ISelectAntwortenTokenParams {
   firstErhArt: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
+  kontextSize: number | null | void;
   lemmaTokenC: string | null | void;
   lemmaTokenCI: string | null | void;
   osmId: string | null | void;
@@ -202,6 +203,12 @@ export interface ISelectAntwortenTokenResult {
   dateipfad: string | null;
   gruppeBez: string | null;
   infSigle: string | null;
+  kontextortho: string | null;
+  kontextphon: string | null;
+  kontextreihung: number | null;
+  kontextsigle: string | null;
+  kontextsppos: string | null;
+  kontexttext: string | null;
   ortho: string | null;
   orthoText: string | null;
   osmId: string | null;
@@ -211,6 +218,7 @@ export interface ISelectAntwortenTokenResult {
   stopAntwort: string | null;
   teamBez: string | null;
   text: string | null;
+  tokenreihung: number | null;
 }
 
 /** 'SelectAntwortenToken' query type */
@@ -231,6 +239,7 @@ export interface ISelectAntwortenTransParams {
   firstErhArt: number | null | void;
   gender: boolean | null | void;
   gender_sel: number | null | void;
+  kontextSize: number | null | void;
   osmId: string | null | void;
   phaen: readonly (number | null | void)[];
   project_id: number | null | void;
@@ -245,6 +254,12 @@ export interface ISelectAntwortenTransResult {
   dateipfad: string | null;
   gruppeBez: string | null;
   infSigle: string | null;
+  kontextortho: string | null;
+  kontextphon: string | null;
+  kontextreihung: number | null;
+  kontextsigle: string | null;
+  kontextsppos: string | null;
+  kontexttext: string | null;
   ortho: string | null;
   orthoText: string | null;
   phon: string | null;
@@ -257,6 +272,7 @@ export interface ISelectAntwortenTransResult {
   tagShort: string | null;
   teamBez: string | null;
   text: string | null;
+  tokenreihung: number | null;
   transcript: string | null;
 }
 

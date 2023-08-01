@@ -269,6 +269,19 @@ const models: TsoaRoute.Models = {
         "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AntwortKontext": {
+        "dataType": "refObject",
+        "properties": {
+            "reihung": {"dataType":"double","required":true},
+            "ortho": {"dataType":"string","required":true},
+            "sppos": {"dataType":"string","required":true},
+            "text": {"dataType":"string","required":true},
+            "phon": {"dataType":"string","required":true},
+            "sigle": {"dataType":"string","required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "AntwortToken": {
         "dataType": "refObject",
         "properties": {
@@ -282,6 +295,7 @@ const models: TsoaRoute.Models = {
             "phon": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "transcript": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "stdOrth": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "kontext": {"dataType":"array","array":{"dataType":"refObject","ref":"AntwortKontext"},"required":true},
         },
         "additionalProperties": true,
     },

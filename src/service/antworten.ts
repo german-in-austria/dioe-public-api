@@ -1,5 +1,5 @@
 import antwortenDao from '../dao/antworten';
-import _, { filter, rest } from 'lodash';
+import _, { filter, isFunction, rest } from 'lodash';
 
 import validator, { filters, tag } from '../service/validate';
 
@@ -21,6 +21,15 @@ export interface Antwort {
   tagName: string | null;
 }
 
+export interface AntwortKontext {
+  reihung: number;
+  ortho: string;
+  sppos: string;
+  text: string;
+  phon: string;
+  sigle: string;
+}
+
 export interface AntwortAufgabe extends Antwort {
   satzId: number | null;
   aufgabeId: number;
@@ -33,6 +42,7 @@ export interface AntwortToken extends Antwort {
   phon: string | null;
   transcript: string | null;
   stdOrth: string | null;
+  kontext: AntwortKontext[];
 }
 
 export interface AntwortTokenStamp {
@@ -70,7 +80,7 @@ export default {
     ids: string[],
     filters: filters[]
   ): Promise<AntwortTokenStamp[]> {
-    const start = Date.now();
+    let start = Date.now();
     let mergeArr: any = [];
     for (let idx = 0; idx < ids.length; idx++) {
       let tagId = tagIDs[idx];
@@ -105,7 +115,8 @@ export default {
           filter.text.cI,
           filter.ortho.cI,
           filter.textInOrtho.cI,
-          filter.lemma.cI
+          filter.lemma.cI,
+          5
         );
         content = resTrans;
       } else {
@@ -127,10 +138,11 @@ export default {
             filter.weiblich,
             filter.gender_sel,
             filter.group ? (tagId[0] < 0 ? 0 : tagId.length) : 0,
-            filter.phaen
+            filter.phaen,
+            5
           );
         }
-        const end = Date.now() - start;
+        let end = Date.now() - start;
         console.log(`Execution time: ${end} ms`);
         let resAntAuf: IGetTimeStampAntwortResult[] = [];
         if (transCheck.length - tagId.length != 0 || resTrans.length === 0) {
@@ -163,153 +175,190 @@ export default {
     const merged = this.mergeTagNum(mergeArr, tagNum);
     */
     let antworten: AntwortTokenStamp[] = [];
-    mergeArr.forEach((el: any) => {
-      // const cont = el.content;
-      let ant: Antwort | AntwortToken = {} as Antwort;
-      let tagId = el.tagId;
-      if (tagId && tagId !== undefined) {
-        if (tagId.split(',').length > 1) {
-          tagId = [
-            ...new Set(el.tagId.replace(/[{}]*/g, '').split(',').map(Number)),
-          ];
+    start = Date.now();
+    mergeArr
+      .filter((el: any) => {
+        if (el.tokenreihung) {
+          return (
+            el.tokenreihung === el.kontextreihung &&
+            el.infSigle === el.kontextsigle
+          );
         } else {
-          tagId = Number(tagId.replace(/[{}]*/g, ''));
+          return true;
         }
-      }
-      let tag_name = el.tagname === undefined ? el.tagName : el.tagname;
-      if (tag_name === undefined) {
-        tag_name = '';
-      }
-      if (el.ortho || el.text || el.orthoText) {
-        ant = {
-          start: el.startAntwort,
-          stop: el.stopAntwort,
-          tagId: tagId,
-          tagName: [...new Set(tag_name.replace(/[{}]*/g, '').split(','))].join(
-            ','
-          ),
-          ortho: el.ortho,
-          orthoText: el.orthoText,
-          text: el.text,
-          phon: el.phon,
-          transcript: el.transcript,
-          stdOrth: el.standardorth,
-        } as AntwortToken;
-      } else {
-        ant = {
-          start: el.startAntwort,
-          stop: el.stopAntwort,
-          tagId: tagId,
-          tagName: [...new Set(tag_name.replace(/[{}]*/g, '').split(','))].join(
-            ','
-          ),
-        } as Antwort;
-      }
-      const newTimestamp: AntwortTokenStamp = {
-        dateipfad: el.dateipfad,
-        audiofile: el.audiofile,
-        gruppeBez: el.gruppeBez,
-        teamBez: el.teamBez,
-        sigle: el.infSigle ? el.infSigle : '',
-        age: el.age,
-        res: [{ data: [ant], id: el.id }],
-      };
-      const dataIdx = antworten.findIndex(
-        (a: AntwortTokenStamp) =>
-          a.dateipfad === el.dateipfad && a.audiofile === el.audiofile
-      );
-      if (dataIdx >= 0) {
-        if (
-          antworten[dataIdx].res.findIndex((resEl) => resEl.id === el.id) < 0
-        ) {
-          antworten[dataIdx].res.push({ data: [ant], id: el.id });
-        }
-        const data =
-          antworten[dataIdx].res[
-            antworten[dataIdx].res.findIndex((resEl) => el.id === resEl.id)
-          ];
-        // Data already exists in the return array.
-        // Check if the timestamps are also already there
-        const idx = data.data.findIndex(
-          (a: Antwort | AntwortToken) =>
-            validator.compareTimeStampsIfEqual(a, ant) ||
-            (validator.compareTimeStamps(a.start, ant.start) > 0 &&
-              validator.compareTimeStamps(a.stop, ant.stop) < 0)
-        );
-        if (idx < 0) {
-          // does not exist
-          data.data.push(ant);
-        } else {
-          // exists
-          // append tagName, ortho and orthoText to the existing timestamp
-          const curr: Antwort | AntwortToken = data.data[idx];
-          if (
-            (<AntwortToken>curr).ortho !== undefined &&
-            (<AntwortToken>ant).ortho !== undefined
-          ) {
-            // Is AntwortToken
-            let currStr = (<AntwortToken>curr).ortho;
-            const antStr = (<AntwortToken>ant).ortho;
-            if (
-              (currStr && antStr && !currStr.includes(antStr)) ||
-              curr.tagName !== ant.tagName
-            ) {
-              if (currStr !== antStr) {
-                (<AntwortToken>curr).ortho = `${currStr}, ${antStr}`;
-                (<AntwortToken>curr).orthoText = `${currStr}, ${antStr}`;
-              }
-              if (
-                curr.tagName &&
-                !curr.tagName.includes(ant.tagName ? ant.tagName : '')
-              ) {
-                curr.tagName = `${curr.tagName}, ${ant.tagName}`;
-              }
-            }
-          } else if (
-            (<AntwortToken>curr).orthoText !== undefined &&
-            (<AntwortToken>ant).orthoText !== undefined
-          ) {
-            // Is AntwortToken
-            let currStr = (<AntwortToken>curr).orthoText;
-            const antStr = (<AntwortToken>ant).orthoText;
-            if (
-              (currStr && antStr && !currStr.includes(antStr)) ||
-              curr.tagName !== ant.tagName
-            ) {
-              if (
-                currStr !== antStr &&
-                !currStr?.includes(antStr ? antStr : '')
-              ) {
-                (<AntwortToken>curr).orthoText = `${currStr}, ${antStr}`;
-              }
-              if (
-                curr.tagName &&
-                !curr.tagName.includes(ant.tagName ? ant.tagName : '')
-              ) {
-                curr.tagName = `${curr.tagName}, ${ant.tagName}`;
-              }
-            }
+      })
+      .forEach((el: any) => {
+        let ant: Antwort | AntwortToken = {} as Antwort;
+        let tagId = el.tagId;
+        if (tagId && tagId !== undefined) {
+          if (tagId.split(',').length > 1) {
+            tagId = [
+              ...new Set(el.tagId.replace(/[{}]*/g, '').split(',').map(Number)),
+            ];
           } else {
-            // Is Antwort
-            if (Array.isArray(curr.tagId) && Array.isArray(ant.tagId)) {
-              if (!_.isEqual(curr.tagId.sort(), ant.tagId.sort())) {
-                data.data.push(ant);
+            tagId = Number(tagId.replace(/[{}]*/g, ''));
+          }
+        }
+        let tag_name = el.tagname === undefined ? el.tagName : el.tagname;
+        if (tag_name === undefined) {
+          tag_name = '';
+        }
+        if (el.ortho || el.text || el.orthoText) {
+          let kontext: AntwortKontext[] = [];
+          kontext = mergeArr
+            .filter((kontextEl: any) => {
+              return (
+                el.ortho === kontextEl.ortho &&
+                el.text === kontextEl.text &&
+                el.dateipfad === kontextEl.dateipfad &&
+                el.audiofile === kontextEl.audiofile &&
+                el.tagShort === kontextEl.tagShort
+              );
+            })
+            .map((kontextEl: any) => ({
+              reihung: kontextEl.kontextreihung,
+              ortho: kontextEl.kontextortho,
+              sppos: kontextEl.kontextsppos,
+              text: kontextEl.kontexttext,
+              phon: kontextEl.kontextphon,
+              sigle: kontextEl.kontextsigle,
+            }))
+            .sort((a: AntwortKontext, b: AntwortKontext) =>
+              a.reihung < b.reihung ? -1 : 1
+            );
+
+          ant = {
+            start: el.startAntwort,
+            stop: el.stopAntwort,
+            tagId: tagId,
+            tagName: [
+              ...new Set(tag_name.replace(/[{}]*/g, '').split(',')),
+            ].join(','),
+            ortho: el.ortho,
+            orthoText: el.orthoText,
+            text: el.text,
+            phon: el.phon,
+            transcript: el.transcript,
+            stdOrth: el.standardorth,
+            kontext: kontext,
+          } as AntwortToken;
+        } else {
+          ant = {
+            start: el.startAntwort,
+            stop: el.stopAntwort,
+            tagId: tagId,
+            tagName: [
+              ...new Set(tag_name.replace(/[{}]*/g, '').split(',')),
+            ].join(','),
+          } as Antwort;
+        }
+        const newTimestamp: AntwortTokenStamp = {
+          dateipfad: el.dateipfad,
+          audiofile: el.audiofile,
+          gruppeBez: el.gruppeBez,
+          teamBez: el.teamBez,
+          sigle: el.infSigle ? el.infSigle : '',
+          age: el.age,
+          res: [{ data: [ant], id: el.id }],
+        };
+        const dataIdx = antworten.findIndex(
+          (a: AntwortTokenStamp) =>
+            a.dateipfad === el.dateipfad && a.audiofile === el.audiofile
+        );
+        if (dataIdx >= 0) {
+          if (
+            antworten[dataIdx].res.findIndex((resEl) => resEl.id === el.id) < 0
+          ) {
+            antworten[dataIdx].res.push({ data: [ant], id: el.id });
+          }
+          const data =
+            antworten[dataIdx].res[
+              antworten[dataIdx].res.findIndex((resEl) => el.id === resEl.id)
+            ];
+          // Data already exists in the return array.
+          // Check if the timestamps are also already there
+          const idx = data.data.findIndex(
+            (a: Antwort | AntwortToken) =>
+              validator.compareTimeStampsIfEqual(a, ant) ||
+              (validator.compareTimeStamps(a.start, ant.start) > 0 &&
+                validator.compareTimeStamps(a.stop, ant.stop) < 0)
+          );
+          if (idx < 0) {
+            // does not exist
+            data.data.push(ant);
+          } else {
+            // exists
+            // append tagName, ortho and orthoText to the existing timestamp
+            const curr: Antwort | AntwortToken = data.data[idx];
+            if (
+              (<AntwortToken>curr).ortho !== undefined &&
+              (<AntwortToken>ant).ortho !== undefined
+            ) {
+              // Is AntwortToken
+              let currStr = (<AntwortToken>curr).ortho;
+              const antStr = (<AntwortToken>ant).ortho;
+              if (
+                (currStr && antStr && !currStr.includes(antStr)) ||
+                curr.tagName !== ant.tagName
+              ) {
+                if (currStr !== antStr) {
+                  (<AntwortToken>curr).ortho = `${currStr}, ${antStr}`;
+                  (<AntwortToken>curr).orthoText = `${currStr}, ${antStr}`;
+                }
+                if (
+                  curr.tagName &&
+                  !curr.tagName.includes(ant.tagName ? ant.tagName : '')
+                ) {
+                  curr.tagName = `${curr.tagName}, ${ant.tagName}`;
+                }
               }
             } else if (
-              Array.isArray(curr.tagId) &&
-              !Array.isArray(ant.tagId) &&
-              ant.tagId
+              (<AntwortToken>curr).orthoText !== undefined &&
+              (<AntwortToken>ant).orthoText !== undefined
             ) {
-              if (!curr.tagId.includes(ant.tagId)) {
-                data.data.push(ant);
+              // Is AntwortToken
+              let currStr = (<AntwortToken>curr).orthoText;
+              const antStr = (<AntwortToken>ant).orthoText;
+              if (
+                (currStr && antStr && !currStr.includes(antStr)) ||
+                curr.tagName !== ant.tagName
+              ) {
+                if (
+                  currStr !== antStr &&
+                  !currStr?.includes(antStr ? antStr : '')
+                ) {
+                  (<AntwortToken>curr).orthoText = `${currStr}, ${antStr}`;
+                }
+                if (
+                  curr.tagName &&
+                  !curr.tagName.includes(ant.tagName ? ant.tagName : '')
+                ) {
+                  curr.tagName = `${curr.tagName}, ${ant.tagName}`;
+                }
+              }
+            } else {
+              // Is Antwort
+              if (Array.isArray(curr.tagId) && Array.isArray(ant.tagId)) {
+                if (!_.isEqual(curr.tagId.sort(), ant.tagId.sort())) {
+                  data.data.push(ant);
+                }
+              } else if (
+                Array.isArray(curr.tagId) &&
+                !Array.isArray(ant.tagId) &&
+                ant.tagId
+              ) {
+                if (!curr.tagId.includes(ant.tagId)) {
+                  data.data.push(ant);
+                }
               }
             }
           }
+        } else {
+          antworten.push(newTimestamp);
         }
-      } else {
-        antworten.push(newTimestamp);
-      }
-    });
+      });
+    let end = Date.now() - start;
+    console.log(`Execution time: ${end} ms`);
     return antworten;
   },
   async getAntSatz(str: string): Promise<ISelectSatzResult[]> {

@@ -465,7 +465,8 @@ select
     textTagCI: string,
     textOrthoCI: string,
     textInOrthoCI: string,
-    textLemmaCI: string
+    textLemmaCI: string,
+    kontextSize: number
   ) {
     const selectAntwortenToken = sql<
       ISelectAntwortenTokenParams & ISelectAntwortenTokenQuery
@@ -482,7 +483,14 @@ select
     t.text_in_ortho as "ortho_text",
     pdtig.gruppe_bez, pdtt.team_bez,
     odto.osm_id,
-    pdti.inf_sigle
+    pdti.inf_sigle,
+    t.token_reihung as tokenreihung,
+    kontext.token_reihung as kontextreihung,
+    kontext.ortho as kontextOrtho,
+    kontext.sppos as kontextSppos,
+    kontext.text as kontextText,
+    kontext.phon as kontextPhon,
+    kontext.sigle as kontextSigle
 from token t
   join event e on t.event_id_id = e.id 
   join transcript t3 on t3.id = t.transcript_id_id
@@ -494,6 +502,18 @@ from token t
   join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
   left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
   join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+  join lateral (
+    select t2.ortho, 
+    t2.text_in_ortho, 
+    t2.token_reihung, 
+    coalesce(t2.sppos, '') as sppos, 
+    coalesce(t2.text, '') as text, 
+    coalesce(t2.phon, '') as phon, 
+    pdti2.inf_sigle as sigle from "token" t2 
+    join "PersonenDB_tbl_informanten" pdti2 on pdti2.id = t2."ID_Inf_id"
+    where t2.transcript_id_id = t.transcript_id_id and t2.token_reihung between t.token_reihung - $kontextSize 
+    and t.token_reihung + $kontextSize order by t2.token_reihung  
+ ) as kontext on TRUE
 where odto.osm_id = $osmId
   and ($firstErhArt < 0 or kdte."Art_Erhebung_id" in $$erhArt)
   and ($textTagCI = '' OR t.text || '~' || t.sppos ~* $textTagCI or 
@@ -527,7 +547,14 @@ union
   t.text_in_ortho as "ortho_text",
   pdtig.gruppe_bez, pdtt.team_bez,
   odto.osm_id,
-  pdti.inf_sigle
+  pdti.inf_sigle,
+  t.token_reihung as tokenreihung,
+  kontext.token_reihung as kontextreihung,
+  kontext.ortho as kontextOrtho,
+  kontext.sppos as kontextSppos,
+  kontext.text as kontextText,
+  kontext.phon as kontextPhon,
+  kontext.sigle as kontextSigle
 from tokenset t4
   join tokentoset t2 on t2.id_tokenset_id = t4.id
   join token t on t.id = t2.id_token_id 
@@ -540,6 +567,18 @@ from tokenset t4
   join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
   left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
   join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+  join lateral (
+    select t2.ortho, 
+    t2.text_in_ortho, 
+    t2.token_reihung, 
+    coalesce(t2.sppos, '') as sppos, 
+    coalesce(t2.text, '') as text, 
+    coalesce(t2.phon, '') as phon, 
+    pdti2.inf_sigle as sigle from "token" t2 
+    join "PersonenDB_tbl_informanten" pdti2 on pdti2.id = t2."ID_Inf_id"
+    where t2.transcript_id_id = t.transcript_id_id and t2.token_reihung between t.token_reihung - $kontextSize and 
+    t.token_reihung + $kontextSize order by t2.token_reihung  
+ ) as kontext on TRUE
 where odto.osm_id = $osmId
   and kdti."Dateipfad" not in ('', '0') 
   and kdti."Audiofile" not in ('', '0')
@@ -579,6 +618,7 @@ where odto.osm_id = $osmId
       textOrthoCI: textOrthoCI,
       textInOrthoCI: textInOrthoCI,
       lemmaTokenCI: textLemmaCI,
+      kontextSize: kontextSize,
       // tagGroupLength: String(tagId.length),
     });
   },
@@ -594,7 +634,8 @@ where odto.osm_id = $osmId
     gender: boolean,
     gender_sel: number,
     tagGroupLength: number,
-    phaen: number[]
+    phaen: number[],
+    kontextSize: number
   ) {
     const selectAntwortenTrans = sql<
       ISelectAntwortenTransQuery & ISelectAntwortenTransParams
@@ -614,7 +655,14 @@ where odto.osm_id = $osmId
           pdtig.gruppe_bez, pdtt.team_bez,
           pdti.inf_sigle,
           coalesce(tags."Transkript", '') as "transcript",
-          coalesce(tags."Standardorth", '') as "standardorth"
+          coalesce(tags."Standardorth", '') as "standardorth",
+          t.token_reihung as tokenreihung,
+          kontext.token_reihung as kontextreihung,
+          kontext.ortho as kontextOrtho,
+          kontext.sppos as kontextSppos,
+          kontext.text as kontextText,
+          kontext.phon as kontextPhon,
+          kontext.sigle as kontextSigle
     from (
     	select kdtt."Tag_lang", kdtt."Tag", kdta.ist_token_id, kdta2."id_Antwort_id", kdts."Transkript", kdts."Standardorth"
             from "KorpusDB_tbl_tags" kdtt      
@@ -635,6 +683,14 @@ where odto.osm_id = $osmId
     join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
     left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
     join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+    join lateral (
+      select t2.ortho, t2.text_in_ortho, t2.token_reihung, coalesce(t2.sppos, '') as sppos, 
+      coalesce(t2.text, '') as text, coalesce(t2.phon, '') as phon, pdti2.inf_sigle as sigle
+      from "token" t2 
+      join "PersonenDB_tbl_informanten" pdti2 on pdti2.id = t2."ID_Inf_id"
+      where t2.transcript_id_id = t.transcript_id_id and t2.token_reihung between t.token_reihung - $kontextSize 
+      and t.token_reihung + $kontextSize order by t2.token_reihung  
+    ) as kontext on TRUE
       where ($firstErhArt < 0 or kdte."Art_Erhebung_id" in $$erhArt)
         and odto.osm_id = $osmId
         and kdti."Dateipfad" not in ('', '0') 
@@ -679,7 +735,14 @@ where odto.osm_id = $osmId
         pdtig.gruppe_bez, pdtt.team_bez,
         pdti.inf_sigle,
         coalesce(tags."Transkript", '') as "transcript",
-        coalesce(tags."Standardorth", '') as "standardorth"
+        coalesce(tags."Standardorth", '') as "standardorth",
+        t.token_reihung as tokenreihung,
+        kontext.token_reihung as kontextreihung,
+        kontext.ortho as kontextOrtho,
+        kontext.sppos as kontextSppos,
+        kontext.text as kontextText,
+        kontext.phon as kontextPhon,
+        kontext.sigle as kontextSigle
         from (
           select kdtt."Tag_lang", kdtt."Tag", kdta.ist_tokenset_id, kdta2."id_Antwort_id", kdts."Transkript", kdts."Standardorth"
             from "KorpusDB_tbl_tags" kdtt      
@@ -703,6 +766,14 @@ where odto.osm_id = $osmId
         join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
         left JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id 
         join "PersonenDB_tbl_personen" pdtp on pdtp.id = pdti.id_person_id
+        join lateral (
+          select t2.ortho, t2.text_in_ortho, t2.token_reihung, coalesce(t2.sppos, '') as sppos, 
+          coalesce(t2.text, '') as text, coalesce(t2.phon, '') as phon, pdti2.inf_sigle as sigle
+          from "token" t2 
+          join "PersonenDB_tbl_informanten" pdti2 on pdti2.id = t2."ID_Inf_id"
+          where t2.transcript_id_id = t.transcript_id_id and t2.token_reihung between t.token_reihung - $kontextSize 
+          and t.token_reihung + $kontextSize order by t2.token_reihung  
+        ) as kontext on TRUE
       where ($firstErhArt < 0 or kdte."Art_Erhebung_id" in $$erhArt)
         and odto.osm_id = $osmId
         and kdti."Dateipfad" not in ('', '0') 
@@ -747,6 +818,7 @@ where odto.osm_id = $osmId
       tagGroupLength: tagGroupLength,
       phaen: phaen,
       first_phaen: phaen[0],
+      kontextSize: kontextSize,
     });
   },
   async selectAntwortenFromAufgaben(satzid: number, aufgabeid: number) {

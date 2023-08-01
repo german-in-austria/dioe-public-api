@@ -699,6 +699,39 @@
 				"type": "object",
 				"additionalProperties": true
 			},
+			"AntwortKontext": {
+				"properties": {
+					"reihung": {
+						"type": "number",
+						"format": "double"
+					},
+					"ortho": {
+						"type": "string"
+					},
+					"sppos": {
+						"type": "string"
+					},
+					"text": {
+						"type": "string"
+					},
+					"phon": {
+						"type": "string"
+					},
+					"sigle": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"reihung",
+					"ortho",
+					"sppos",
+					"text",
+					"phon",
+					"sigle"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
 			"AntwortToken": {
 				"properties": {
 					"start": {},
@@ -746,6 +779,12 @@
 					"stdOrth": {
 						"type": "string",
 						"nullable": true
+					},
+					"kontext": {
+						"items": {
+							"$ref": "#/components/schemas/AntwortKontext"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
@@ -758,7 +797,8 @@
 					"text",
 					"phon",
 					"transcript",
-					"stdOrth"
+					"stdOrth",
+					"kontext"
 				],
 				"type": "object",
 				"additionalProperties": true
