@@ -206,6 +206,7 @@ export default {
         }
         if (el.ortho || el.text || el.orthoText) {
           let kontext: AntwortKontext[] = [];
+          console.log(mergeArr[0]);
           kontext = mergeArr
             .filter((kontextEl: any) => {
               return (
@@ -213,7 +214,14 @@ export default {
                 el.text === kontextEl.text &&
                 el.dateipfad === kontextEl.dateipfad &&
                 el.audiofile === kontextEl.audiofile &&
-                el.tagShort === kontextEl.tagShort
+                el.tagShort === kontextEl.tagShort &&
+                validator.compareTimeStampsIfEqual(
+                  { start: el.startAntwort, stop: el.stopAntwort } as Antwort,
+                  {
+                    start: kontextEl.startAntwort,
+                    stop: kontextEl.stopAntwort,
+                  } as Antwort
+                )
               );
             })
             .map((kontextEl: any) => ({
