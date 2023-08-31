@@ -623,13 +623,26 @@
 					"tagName": {
 						"type": "string",
 						"nullable": true
+					},
+					"bezErhebung": {
+						"type": "string"
+					},
+					"erhArt": {
+						"type": "string"
+					},
+					"erhArtId": {
+						"type": "number",
+						"format": "double"
 					}
 				},
 				"required": [
 					"start",
 					"stop",
 					"tagId",
-					"tagName"
+					"tagName",
+					"bezErhebung",
+					"erhArt",
+					"erhArtId"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -756,6 +769,16 @@
 						"type": "string",
 						"nullable": true
 					},
+					"bezErhebung": {
+						"type": "string"
+					},
+					"erhArt": {
+						"type": "string"
+					},
+					"erhArtId": {
+						"type": "number",
+						"format": "double"
+					},
 					"ortho": {
 						"type": "string",
 						"nullable": true
@@ -796,6 +819,9 @@
 					"stop",
 					"tagId",
 					"tagName",
+					"bezErhebung",
+					"erhArt",
+					"erhArtId",
 					"ortho",
 					"orthoText",
 					"text",

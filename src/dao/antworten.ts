@@ -182,7 +182,10 @@ const antwortenDao = {
     odto.osm_id as osmId, 
     pdtig.gruppe_bez, pdtt.team_bez,
     kdti."ID_Erh_id",
-    pdti.inf_sigle
+    pdti.inf_sigle,
+    erh."Bezeichnung_Erhebung",
+    erhArt."Bezeichnung",
+    erh."Art_Erhebung_id"
    from "KorpusDB_tbl_tags" kdtt       
     join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
     join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
@@ -190,7 +193,8 @@ const antwortenDao = {
     LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
     join "KorpusDB_tbl_inf_zu_erhebung" kdtize on pdti.id = kdtize."ID_Inf_id" 
     join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
-    join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti."ID_Erh_id" 
+    join "KorpusDB_tbl_erhebungen" erh on erh.id = kdti."ID_Erh_id" 
+    join "KorpusDB_tbl_erhebungsarten" erhArt on erhArt.id = erh."Art_Erhebung_id"
     join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
     join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
     join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
@@ -215,7 +219,7 @@ const antwortenDao = {
           having count(kdta3."id_Tag_id") >= $tagGroupLength
     )) and 
     ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen) and
-    ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
+    ($firstErhArt < 0 or erh."Art_Erhebung_id" in $$erhArt)
     and odto.osm_id = $osmId
     and kdta3.id = kdta."zu_Aufgabe_id" 
     and pdti.inf_gruppe_id in (
@@ -242,7 +246,10 @@ select
     odto.osm_id as osmId, 
     pdtig.gruppe_bez, pdtt.team_bez,
     kdti."ID_Erh_id",
-    pdti.inf_sigle
+    pdti.inf_sigle,
+    erh."Bezeichnung_Erhebung",
+    erhArt."Bezeichnung",
+    erh."Art_Erhebung_id"
   from "KorpusDB_tbl_tags" kdtt      
     join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
     join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
@@ -250,7 +257,8 @@ select
     LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
     join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
     join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
-    join "KorpusDB_tbl_erhebungen" kdte2 on kdte2.id = kdti."ID_Erh_id"
+    join "KorpusDB_tbl_erhebungen" erh on erh.id = kdti."ID_Erh_id"
+    join "KorpusDB_tbl_erhebungsarten" erhArt on erhArt.id = erh."Art_Erhebung_id"
     join "OrteDB_tbl_orte" odto on pdti.inf_ort_id = odto.id
     join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
     join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
@@ -261,7 +269,7 @@ select
   WHERE 
     ($first_tag < 0 or kdtt.id in $$tagId) 
     and ($first_phaen < 0 OR kdtt."zu_Phaenomen_id" IN $$phaen)
-    and ($firstErhArt < 0 or kdte2."Art_Erhebung_id" in $$erhArt)
+    and ($firstErhArt < 0 or erh."Art_Erhebung_id" in $$erhArt)
     and odto.osm_id = $osmId
     and kdti."Dateipfad" not in ('', '0') 
     and kdti."Audiofile" not in ('', '0')
@@ -298,7 +306,10 @@ select
     kdti."Datum",
     pdtp.geb_datum,
     pdtig.gruppe_bez, pdtt.team_bez,
-    pdti.inf_sigle
+    pdti.inf_sigle,
+    erh."Bezeichnung_Erhebung",
+    erhArt."Bezeichnung",
+    erh."Art_Erhebung_id"
   UNION
     select
       kdte."start_Aufgabe" as "start_Antwort", 
@@ -315,7 +326,10 @@ select
       odto.osm_id as osmId, 
       pdtig.gruppe_bez, pdtt.team_bez,
       kdti."ID_Erh_id",
-      pdti.inf_sigle
+      pdti.inf_sigle,
+      erh."Bezeichnung_Erhebung",
+      erhArt."Bezeichnung",
+      erh."Art_Erhebung_id"
   from "KorpusDB_tbl_tags" kdtt      
     join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Tag_id" = kdtt.id
     join "KorpusDB_tbl_antworten" kdta on kdta2."id_Antwort_id" = kdta.id
@@ -323,6 +337,8 @@ select
     LEFT JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
     join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
     join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
+    join "KorpusDB_tbl_erhebungen" erh on erh.id = kdti."ID_Erh_id"
+    join "KorpusDB_tbl_erhebungsarten" erhArt on erhArt.id = erh."Art_Erhebung_id"
     join "OrteDB_tbl_orte" odto on pdti.inf_ort_id = odto.id
     join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
     join "KorpusDB_tbl_aufgaben" kdta3 on kdte."id_Aufgabe_id" = kdta3.id
@@ -372,7 +388,10 @@ select
     pdtp.geb_datum,
     odto.osm_id, 
     pdtig.gruppe_bez, pdtt.team_bez,
-    pdti.inf_sigle
+    pdti.inf_sigle,
+    erh."Bezeichnung_Erhebung",
+    erhArt."Bezeichnung",
+    erh."Art_Erhebung_id"
     `;
     return await query(getTimeStampAntwort, {
       tagId: tagId,
@@ -484,6 +503,9 @@ select
     pdtig.gruppe_bez, pdtt.team_bez,
     odto.osm_id,
     pdti.inf_sigle,
+    kdte."Bezeichnung_Erhebung",
+    kdte2."Bezeichnung",
+    kdte."Art_Erhebung_id",
     t.token_reihung as tokenreihung,
     kontext.token_reihung as kontextreihung,
     kontext.ortho as kontextOrtho,
@@ -497,6 +519,7 @@ from token t
   join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
   join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
   join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
+  join "KorpusDB_tbl_erhebungsarten" kdte2 on kdte2.id = kdte."Art_Erhebung_id"
   join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
   join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
   join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
@@ -548,6 +571,9 @@ union
   pdtig.gruppe_bez, pdtt.team_bez,
   odto.osm_id,
   pdti.inf_sigle,
+  kdte."Bezeichnung_Erhebung",
+  kdte2."Bezeichnung",
+  kdte."Art_Erhebung_id",
   t.token_reihung as tokenreihung,
   kontext.token_reihung as kontextreihung,
   kontext.ortho as kontextOrtho,
@@ -562,6 +588,8 @@ from tokenset t4
   join transcript t3 on t3.id = t.transcript_id_id
   join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
   join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
+  join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
+  join "KorpusDB_tbl_erhebungsarten" kdte2 on kdte2.id = kdte."Art_Erhebung_id"
   join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
   join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
   join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
@@ -654,6 +682,9 @@ where odto.osm_id = $osmId
           t.text_in_ortho as "ortho_text",
           pdtig.gruppe_bez, pdtt.team_bez,
           pdti.inf_sigle,
+          kdte."Bezeichnung_Erhebung",
+          kdte2."Bezeichnung",
+          kdte."Art_Erhebung_id",
           coalesce(tags."Transkript", '') as "transcript",
           coalesce(tags."Standardorth", '') as "standardorth",
           t.token_reihung as tokenreihung,
@@ -678,6 +709,7 @@ where odto.osm_id = $osmId
     join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
     join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
     join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
+    join "KorpusDB_tbl_erhebungsarten" kdte2 on kdte2.id = kdte."Art_Erhebung_id"
     join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
     join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
     join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
@@ -734,6 +766,9 @@ where odto.osm_id = $osmId
         t.text_in_ortho as "ortho_text",
         pdtig.gruppe_bez, pdtt.team_bez,
         pdti.inf_sigle,
+        kdte."Bezeichnung_Erhebung",
+        kdte2."Bezeichnung",
+        kdte."Art_Erhebung_id",
         coalesce(tags."Transkript", '') as "transcript",
         coalesce(tags."Standardorth", '') as "standardorth",
         t.token_reihung as tokenreihung,
@@ -761,6 +796,7 @@ where odto.osm_id = $osmId
         join "PersonenDB_tbl_informanten" pdti on pdti.id = t."ID_Inf_id"
         join "KorpusDB_tbl_inferhebung" kdti on kdti."id_Transcript_id" = t3.id
         join "KorpusDB_tbl_erhebungen" kdte on kdte.id = kdti."ID_Erh_id"
+        join "KorpusDB_tbl_erhebungsarten" kdte2 on kdte2.id = kdte."Art_Erhebung_id"
         join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id 
         join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id
         join "PersonenDB_tbl_teams" pdtt on pdtt.id = pdtig.gruppe_team_id
@@ -835,7 +871,10 @@ where odto.osm_id = $osmId
           kdtt."Tag_lang" as tag_name,
           pdtig.gruppe_bez, pdtt.team_bez,
           kdta."ist_Satz_id" as "Satz_id",
-          kdte."id_Aufgabe_id" as "Aufgabe_id"
+          kdte."id_Aufgabe_id" as "Aufgabe_id",
+          erh."Bezeichnung_Erhebung",
+          erhArt."Bezeichnung",
+          erh."Art_Erhebung_id"
         from "KorpusDB_tbl_antworten" kdta
           join "KorpusDB_tbl_antwortentags" kdta2 on kdta2."id_Antwort_id" = kdta.id 
           join "KorpusDB_tbl_tags" kdtt on kdtt.id = kdta2."id_Tag_id" 
@@ -844,6 +883,8 @@ where odto.osm_id = $osmId
           JOIN "PersonenDB_inf_ist_beruf" pdiib on pdiib.id_informant_id  = pdti.id
           join "KorpusDB_tbl_inf_zu_erhebung" kdtize on kdtize."ID_Inf_id" = pdti.id 
           join "KorpusDB_tbl_inferhebung" kdti on kdti.id = kdtize.id_inferhebung_id
+          join "KorpusDB_tbl_erhebungen" erh on erh.id = kdti."ID_Erh_id"
+          join "KorpusDB_tbl_erhebungsarten" erhArt on erhArt.id = erh."Art_Erhebung_id"
           join "OrteDB_tbl_orte" odto on odto.id = pdti.inf_ort_id
           join "KorpusDB_tbl_erhinfaufgaben" kdte on kdte."id_InfErh_id" = kdti.id
           join "PersonenDB_tbl_informantinnen_gruppe" pdtig on pdtig.id = pdti.inf_gruppe_id 
@@ -857,7 +898,10 @@ where odto.osm_id = $osmId
           kdta."start_Antwort", kdta."stop_Antwort",
           kdte."id_Aufgabe_id", kdta."ist_Satz_id" ,
           pdtig.gruppe_bez, pdtt.team_bez, 
-          odto.osm_id, odto.lat, odto.lon
+          odto.osm_id, odto.lat, odto.lon, 
+          erh."Bezeichnung_Erhebung",
+          erhArt."Bezeichnung",
+          erh."Art_Erhebung_id"
         order by kdti."Dateipfad", kdti."Audiofile", kdtt.id, odto.osm_id
     `;
     return await query(selectAntwortFromAufgabe, {

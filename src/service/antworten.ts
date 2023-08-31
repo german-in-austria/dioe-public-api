@@ -19,6 +19,9 @@ export interface Antwort {
   stop: any;
   tagId: number | number[] | null;
   tagName: string | null;
+  bezErhebung: string;
+  erhArt: string;
+  erhArtId: number;
 }
 
 export interface AntwortKontext {
@@ -235,7 +238,7 @@ export default {
             .sort((a: AntwortKontext, b: AntwortKontext) =>
               a.reihung < b.reihung ? -1 : 1
             );
-
+          console.log(el);
           ant = {
             start: el.startAntwort,
             stop: el.stopAntwort,
@@ -251,12 +254,18 @@ export default {
             stdOrth: el.standardorth,
             reihung: el.tokenreihung,
             kontext: kontext,
+            erhArt: el.bezeichnungErhebung,
+            erhArtId: el.artErhebungId,
+            bezErhebung: el.Bezeichnung,
           } as AntwortToken;
         } else {
           ant = {
             start: el.startAntwort,
             stop: el.stopAntwort,
             tagId: tagId,
+            erhArt: el.bezeichnungErhebung,
+            erhArtId: el.artErhebungId,
+            bezErhebung: el.Bezeichnung,
             tagName: [
               ...new Set(tag_name.replace(/[{}]*/g, '').split(',')),
             ].join(','),
@@ -397,6 +406,9 @@ export default {
         tagName: el.tagName,
         satzId: el.satzId,
         aufgabeId: el.aufgabeId,
+        bezErhebung: el.bezeichnungErhebung,
+        erhArt: el.bezeichnung,
+        erhArtId: el.artErhebungId,
       };
       const newTimestamp: AntwortTimestamp = {
         dateipfad: el.dateipfad,

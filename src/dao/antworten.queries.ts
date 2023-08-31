@@ -123,7 +123,10 @@ export interface IGetTimeStampAntwortParams {
 /** 'GetTimeStampAntwort' return type */
 export interface IGetTimeStampAntwortResult {
   age: number | null;
+  artErhebungId: number | null;
   audiofile: string | null;
+  bezeichnung: string | null;
+  bezeichnungErhebung: string | null;
   dateipfad: string | null;
   gruppeBez: string | null;
   idErhId: number | null;
@@ -199,7 +202,10 @@ export interface ISelectAntwortenTokenParams {
 /** 'SelectAntwortenToken' return type */
 export interface ISelectAntwortenTokenResult {
   age: number | null;
+  artErhebungId: number | null;
   audiofile: string | null;
+  bezeichnung: string | null;
+  bezeichnungErhebung: string | null;
   dateipfad: string | null;
   gruppeBez: string | null;
   infSigle: string | null;
@@ -250,7 +256,10 @@ export interface ISelectAntwortenTransParams {
 /** 'SelectAntwortenTrans' return type */
 export interface ISelectAntwortenTransResult {
   age: number | null;
+  artErhebungId: number | null;
   audiofile: string | null;
+  bezeichnung: string | null;
+  bezeichnungErhebung: string | null;
   dateipfad: string | null;
   gruppeBez: string | null;
   infSigle: string | null;
@@ -290,8 +299,11 @@ export interface ISelectAntwortFromAufgabeParams {
 
 /** 'SelectAntwortFromAufgabe' return type */
 export interface ISelectAntwortFromAufgabeResult {
+  artErhebungId: number;
   audiofile: string | null;
   aufgabeId: number;
+  bezeichnung: string;
+  bezeichnungErhebung: string;
   dateipfad: string | null;
   gruppeBez: string | null;
   kommentar: string | null;
