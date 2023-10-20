@@ -209,7 +209,6 @@ export default {
         }
         if (el.ortho || el.text || el.orthoText) {
           let kontext: AntwortKontext[] = [];
-          console.log(mergeArr[0]);
           kontext = mergeArr
             .filter((kontextEl: any) => {
               return (
@@ -238,7 +237,6 @@ export default {
             .sort((a: AntwortKontext, b: AntwortKontext) =>
               a.reihung < b.reihung ? -1 : 1
             );
-          console.log(el);
           ant = {
             start: el.startAntwort,
             stop: el.stopAntwort,
@@ -296,12 +294,15 @@ export default {
             ];
           // Data already exists in the return array.
           // Check if the timestamps are also already there
-          const idx = data.data.findIndex(
-            (a: Antwort | AntwortToken) =>
+          const idx = data.data.findIndex((a: Antwort | AntwortToken) => {
+            return (
               validator.compareTimeStampsIfEqual(a, ant) ||
               (validator.compareTimeStamps(a.start, ant.start) > 0 &&
-                validator.compareTimeStamps(a.stop, ant.stop) < 0)
-          );
+                validator.compareTimeStamps(a.stop, ant.stop) < 0) ||
+              (validator.compareTimeStamps(a.start, ant.start) < 0 &&
+                validator.compareTimeStamps(a.stop, ant.stop) > 0)
+            );
+          });
           if (idx < 0) {
             // does not exist
             data.data.push(ant);

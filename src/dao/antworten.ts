@@ -177,8 +177,12 @@ const antwortenDao = {
     kdti."Dateipfad" as dateipfad, 
     kdti."Audiofile" as "audiofile",
     DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
-    CASE WHEN kdtt."Tag" = '' THEN kdtp."Bez_Phaenomen" ELSE kdtt."Tag" END as tagName,
-    kdtt.id::TEXT as tag_id,
+    CONCAT(
+         ARRAY_AGG( DISTINCT
+          CASE WHEN kdtt."Tag" = '' THEN kdtp."Bez_Phaenomen" ELSE kdtt."Tag" END
+        )
+      ) as tag_name,
+    CONCAT( ARRAY_AGG(distinct kdtt.id)) as tag_id,
     odto.osm_id as osmId, 
     pdtig.gruppe_bez, pdtt.team_bez,
     kdti."ID_Erh_id",
@@ -230,6 +234,18 @@ const antwortenDao = {
     and ($aus = '' OR pdti.ausbildung_max = $aus)
     and ($beruf < 0 or pdiib.id_beruf_id = $beruf)
     and ($gender_sel < 0 OR pdtp.weiblich = $gender)
+    GROUP BY
+    kdta."start_Antwort", 
+    kdta."stop_Antwort", kdti."Datum", pdtp.geb_datum,
+    kdti."Audiofile",
+    kdti."Dateipfad",
+    odto.osm_id,
+    pdti.inf_sigle,
+    erh."Bezeichnung_Erhebung",
+    erhArt."Bezeichnung",
+    erh."Art_Erhebung_id",
+    pdtig.gruppe_bez, pdtt.team_bez,
+    kdti."ID_Erh_id"
 UNION
 select
     kdte."start_Aufgabe" as "start_Antwort", 
@@ -238,11 +254,11 @@ select
     kdti."Audiofile" as "audiofile",
     DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
     CONCAT(
-      ARRAY_AGG(
+      ARRAY_AGG( DISTINCT
         CASE WHEN kdtt."Tag" = '' THEN kdtp."Bez_Phaenomen" ELSE kdtt."Tag" END
       )
     ) as tag_name,
-    CONCAT(ARRAY_AGG(kdtt.id)) as tag_id,
+    CONCAT(ARRAY_AGG( DISTINCT kdtt.id)) as tag_id,
     odto.osm_id as osmId, 
     pdtig.gruppe_bez, pdtt.team_bez,
     kdti."ID_Erh_id",
@@ -318,11 +334,11 @@ select
       kdti."Audiofile" as "audiofile",
       DATE_PART('year', AGE(kdti."Datum", pdtp.geb_datum)) as age,
       CONCAT(
-        ARRAY_AGG(
+        ARRAY_AGG( DISTINCT
           CASE WHEN kdtt."Tag" = '' THEN kdtp."Bez_Phaenomen" ELSE kdtt."Tag" END
         )
       ) as tag_name,
-      CONCAT(ARRAY_AGG(kdtt.id)) as tag_id,
+      CONCAT(ARRAY_AGG( DISTINCT kdtt.id)) as tag_id,
       odto.osm_id as osmId, 
       pdtig.gruppe_bez, pdtt.team_bez,
       kdti."ID_Erh_id",
