@@ -344,6 +344,37 @@ export default {
     );
   },
   compareTimeStamps(t1: any, t2: any): number {
+    if (!t1.hours) {
+      t1.hours = 0;
+    }
+
+    if (!t2.hours) {
+      t2.hours = 0;
+    }
+
+    if (!t1.minutes) {
+      t1.minutes = 0;
+    }
+
+    if (!t2.minutes) {
+      t2.minutes = 0;
+    }
+
+    if (!t1.seconds) {
+      t1.seconds = 0;
+    }
+
+    if (!t2.seconds) {
+      t2.seconds = 0;
+    }
+
+    if (!t1.milliseconds) {
+      t1.milliseconds = 0;
+    }
+
+    if (!t2.milliseconds) {
+      t2.milliseconds = 0;
+    }
     if (t1.hours < t2.hours) return -1;
     if (t1.hours > t2.hours) return 1;
 

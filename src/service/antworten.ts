@@ -307,6 +307,14 @@ export default {
             // does not exist
             data.data.push(ant);
           } else {
+            const element = data.data[idx];
+            if (
+              validator.compareTimeStamps(element.start, ant.start) < 0 &&
+              validator.compareTimeStamps(element.stop, ant.stop) > 0
+            ) {
+              element.start = ant.start;
+              element.stop = ant.stop;
+            }
             // exists
             // append tagName, ortho and orthoText to the existing timestamp
             const curr: Antwort | AntwortToken = data.data[idx];

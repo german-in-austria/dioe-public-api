@@ -135,7 +135,7 @@ export interface IGetTimeStampAntwortResult {
   startAntwort: string | null;
   stopAntwort: string | null;
   tagId: string | null;
-  tagname: string | null;
+  tagName: string | null;
   teamBez: string | null;
 }
 
