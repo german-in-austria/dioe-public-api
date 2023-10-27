@@ -309,8 +309,8 @@ export default {
           } else {
             const element = data.data[idx];
             if (
-              validator.compareTimeStamps(element.start, ant.start) < 0 &&
-              validator.compareTimeStamps(element.stop, ant.stop) > 0
+              validator.compareTimeStamps(element.start, ant.start) <= 0 &&
+              validator.compareTimeStamps(element.stop, ant.stop) >= 0
             ) {
               element.start = ant.start;
               element.stop = ant.stop;
