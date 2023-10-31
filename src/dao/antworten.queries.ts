@@ -123,6 +123,50 @@ export interface IGetTimeStampAntwortParams {
 /** 'GetTimeStampAntwort' return type */
 export interface IGetTimeStampAntwortResult {
   age: number | null;
+  artErhebungId: number;
+  audiofile: string | null;
+  bezeichnung: string;
+  bezeichnungErhebung: string;
+  dateipfad: string | null;
+  gruppeBez: string | null;
+  idErhId: number;
+  infSigle: string;
+  osmid: string | null;
+  startAntwort: string;
+  stopAntwort: string;
+  tagId: string | null;
+  tagName: string | null;
+  teamBez: string | null;
+}
+
+/** 'GetTimeStampAntwort' query type */
+export interface IGetTimeStampAntwortQuery {
+  params: IGetTimeStampAntwortParams;
+  result: IGetTimeStampAntwortResult;
+}
+
+/** 'GetTimeStampAntwort' parameters type */
+export interface IGetTimeStampAntwortParams {
+  ageLower: number | null | void;
+  ageUpper: number | null | void;
+  aus: string | null | void;
+  beruf: number | null | void;
+  erhArt: readonly (number | null | void)[];
+  first_phaen: number | null | void;
+  first_tag: number | null | void;
+  firstErhArt: number | null | void;
+  gender: boolean | null | void;
+  gender_sel: number | null | void;
+  osmId: string | null | void;
+  phaen: readonly (number | null | void)[];
+  project_id: number | null | void;
+  tagGroupLength: number | null | void;
+  tagId: readonly (number | null | void)[];
+}
+
+/** 'GetTimeStampAntwort' return type */
+export interface IGetTimeStampAntwortResult {
+  age: number | null;
   artErhebungId: number | null;
   audiofile: string | null;
   bezeichnung: string | null;

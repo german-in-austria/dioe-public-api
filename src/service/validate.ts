@@ -384,8 +384,11 @@ export default {
     if (t1.seconds < t2.seconds) return -1;
     if (t1.seconds > t2.seconds) return 1;
 
-    if (t1.milliseconds < t2.milliseconds) return -1;
-    if (t1.milliseconds > t2.milliseconds) return 1;
+    console.log(Math.floor(t1.milliseconds), Math.floor(t2.milliseconds));
+    console.log(Math.floor(t1.milliseconds) < Math.floor(t2.milliseconds));
+    console.log(Math.floor(t1.milliseconds) > Math.floor(t2.milliseconds));
+    if (Math.floor(t1.milliseconds) < Math.floor(t2.milliseconds)) return -1;
+    if (Math.floor(t1.milliseconds) > Math.floor(t2.milliseconds)) return 1;
 
     return 0;
   },

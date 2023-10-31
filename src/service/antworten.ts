@@ -150,20 +150,37 @@ export default {
         console.log(`Execution time: ${end} ms`);
         let resAntAuf: IGetTimeStampAntwortResult[] = [];
         if (transCheck.length - tagId.length != 0 || resTrans.length === 0) {
-          resAntAuf = await antwortenDao.getTimeStampAntwort(
-            tagId,
-            filter.erhArt,
-            filter.project,
-            el.toString(),
-            filter.ageLower,
-            filter.ageUpper,
-            filter.ausbildung,
-            filter.beruf_id,
-            filter.weiblich,
-            filter.gender_sel,
-            filter.group ? (tagId[0] < 0 ? 0 : tagId.length) : 0,
-            filter.phaen
-          );
+          if (tagId[0] === 1032) {
+            resAntAuf = await antwortenDao.getTimeStampPP02(
+              tagId,
+              filter.erhArt,
+              filter.project,
+              el.toString(),
+              filter.ageLower,
+              filter.ageUpper,
+              filter.ausbildung,
+              filter.beruf_id,
+              filter.weiblich,
+              filter.gender_sel,
+              filter.group ? (tagId[0] < 0 ? 0 : tagId.length) : 0,
+              filter.phaen
+            );
+          } else {
+            resAntAuf = await antwortenDao.getTimeStampAntwort(
+              tagId,
+              filter.erhArt,
+              filter.project,
+              el.toString(),
+              filter.ageLower,
+              filter.ageUpper,
+              filter.ausbildung,
+              filter.beruf_id,
+              filter.weiblich,
+              filter.gender_sel,
+              filter.group ? (tagId[0] < 0 ? 0 : tagId.length) : 0,
+              filter.phaen
+            );
+          }
         }
         content = resTrans;
         content = content.concat(resAntAuf);
@@ -297,12 +314,17 @@ export default {
           const idx = data.data.findIndex((a: Antwort | AntwortToken) => {
             return (
               validator.compareTimeStampsIfEqual(a, ant) ||
-              (validator.compareTimeStamps(a.start, ant.start) > 0 &&
+              (validator.compareTimeStamps(a.start, ant.start) >= 0 &&
                 validator.compareTimeStamps(a.stop, ant.stop) < 0) ||
-              (validator.compareTimeStamps(a.start, ant.start) < 0 &&
+              (validator.compareTimeStamps(a.start, ant.start) <= 0 &&
                 validator.compareTimeStamps(a.stop, ant.stop) > 0)
             );
           });
+          console.log(idx);
+          console.log(ant.start);
+          console.log(ant.stop);
+
+          console.log('-------');
           if (idx < 0) {
             // does not exist
             data.data.push(ant);
