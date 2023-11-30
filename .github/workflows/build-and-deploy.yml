@@ -103,8 +103,8 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,enable={{is_default_branch}}
             type=raw,value={{sha}}
-
-     - name: Build and push the Docker image
+  
+      - name: Build and push the Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
