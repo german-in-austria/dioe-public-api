@@ -19,8 +19,8 @@ jobs:
     outputs:
       environment: ${{ steps.get_environment_from_git_ref.outputs.environment }}
       environment_short: ${{ steps.get_environment_from_git_ref.outputs.environment_short }}
-      image_name: dioe-public-api
-      registry_root: ghcr.io/${{ github.repository }}/
+      image_name: "" # The container is located at the repository registry root at the moment.
+#  Start image_name with a / or add that below. These two are concatenated.
       default_port: "3000"
 # Usually you don't deal with all commits since the repository was created.
 # Increase if you e.g don't find a tag you want to display in the application
@@ -96,7 +96,7 @@ jobs:
         with:
           images: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-            ghcr.io/${{ github.repository }}
+            ghcr.io/${{ github.repository }} # The container is located at the repository registry root at the moment.
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -124,7 +124,7 @@ jobs:
     with:
       environment: ${{ needs.setup_workflow_env.outputs.environment}}
       fetch-depth: ${{ fromJson(needs.setup_workflow_env.outputs.fetch-depth) }}
-      DOCKER_TAG: ${{ needs.setup_workflow_env.outputs.registry_root }}${{ needs.setup_workflow_env.outputs.image_name }}
+      DOCKER_TAG: ${{ needs.setup_workflow_env.outputs.registry_root }}${{ needs.setup_workflow_env.outputs.image_name }} # The container is located at the repository registry root at the moment.
       APP_NAME: ${{ needs.setup_workflow_env.outputs.APP_NAME }}-${{ needs.setup_workflow_env.outputs.environment_short }}
       APP_ROOT: ${{ needs.setup_workflow_env.outputs.APP_ROOT }}
       SERVICE_ID: ${{ needs.setup_workflow_env.outputs.SERVICE_ID }}
