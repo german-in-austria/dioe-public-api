@@ -77,6 +77,8 @@ app.use(
   })
 );
 
+console.log('Using ALLOWED_ORIGINS: ', process.env.ALLOWED_ORIGINS);
+
 // attach rawBody to request
 app.use(
   tsoaConfig.routes.basePath + '/webhook/payment',
